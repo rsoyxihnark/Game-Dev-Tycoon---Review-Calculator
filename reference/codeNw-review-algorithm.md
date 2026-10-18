@@ -77,6 +77,43 @@ for the wrong one and you will read the wrong function. `Platforms.getAudienceWe
 and `Platforms.getPlatformsAudienceWeighting` on line 451 are a second such pair, and only
 the second of those is called from the review.
 
+## The symbols the game shows, and the numbers behind them
+
+Every guide and every comment about this game is written in `+++` and `--`, while this page
+and the code are written in weights. `Knowledge.getFactorAdj` is the translation, and it
+rounds to one decimal before it chooses:
+
+| Weight | Symbol | Word on screen |
+| --- | --- | --- |
+| 1.0 and above | `+++` | great |
+| 0.9 | `++` | good |
+| 0.8 | `+` | okay |
+| 0.7 | `--` | bad |
+| below 0.7 | `---` | terrible |
+
+The same five bands label a topic to genre pair, a topic to audience pair, a platform pair
+and a mission's fit to a genre, so the symbol a player reads never says which of those it is
+or what it costs.
+
+None of the review's own thresholds sit on the band edges a reader would guess:
+
+- the focus bonus wants a mission at 0.9 or better, so `+++` and `++` and nothing else
+- the odd-focus penalty fires below 0.8, so `--` and `---`, which leaves `+` free
+- the halving gate fires at 0.7 or lower, so `--` is a cliff and not one step worse than `+`
+- the platform audience cut reads the normalised weight, where the raw 0.7 and 0.6 of `--`
+  and `---` arrive as 0.8 and 0.65
+
+So `+` is safe wherever the penalty tests for below 0.8, and ruinous nowhere, while the step
+from `+` to `--` is the expensive one on every axis that has a cliff.
+
+The wiki's own mission tables print `~` where the game shows `+`, for the same 0.8. A reader
+moving between the two is looking at one weight under two symbols.
+
+Counting the topic to genre grid with those bands: of the 396 pairs, 138 are great at 1.0 and
+97 are terrible at 0.6. Seventeen of the 66 topics carry more terrible pairs than great ones,
+Transport worst at four against two, so the usual claim that bad pairs are rare holds for the
+grid as a whole and not for a quarter of the topics in it.
+
 ## The pipeline, in order
 
 `Reviews.rateGame(d)` takes the company, reads `d.currentGame`, and writes `g.score`.
@@ -205,6 +242,12 @@ the reason the design-leaning genres are the easier ones to hit.
 
 The id is what the code matches on; the shown name is only a label. A second genre blends
 each weight as `(2*first + second)/3`, so a mixed game can sit between the table's values.
+
+That blending thins out the 0.9 band, which is the real trade in a mixed genre. Strategy on
+its own counts six missions at 0.9 or better and RPG counts six; blend them and only three
+survive, Gameplay, Level Design and World Design, and Strategy with Adventure leaves the same
+three. Fewer missions carry a rule, so most sliders go free, but the focus bonus still wants
+two of them above 40 percent and there are now only three to pick from.
 
 **Topic overrides on mission weights.** Nine of the 66 topics replace individual mission
 weights. `topic.missionOverrides` is six rows, one per genre in the order above, each nine
@@ -528,6 +571,12 @@ leads a mission and adds `0.15 * factor` to it when `flags.expert` matches that 
 factor being the member's design or technology factor depending on the side being counted. An
 expert leading their own mission therefore generates more of both than the same character
 would without the flag.
+
+The same multiplier is where overwork lands. `General.getEffectiveWorkload` is
+`100/(300/optimalTeamSize) * workload`, and the optimal sizes are 1, 3, 5 and 6, so the same
+assignment burns a member at one times on a medium game, five thirds on a large one and twice
+on an AAA. Past 100 the factor is cut by `0.75 * excess`, and below it raised by
+`0.25 * shortfall`, so spreading the work matters more the bigger the game.
 
 ### 6. Random ceilings
 
@@ -908,6 +957,31 @@ the whole total is the topic to genre weight.
 The page itself is damaged where it matters most. Its Technical Expertise section has lost the
 line for a small game, which now reads as a fragment, and the AAA formula after "An AAA game
 has" is simply missing.
+
+The wiki's Game Development Based on Experience page for 1.6.11 is the most accurate of the
+set on everything it counts, and its legend is the clearest statement anywhere of the bands
+at the top of this page. Three things in it do not hold:
+
+- It names Startups among the topics with more terrible pairs than great ones. There is no
+  Startups topic. The game ships 66 and none of them is called that.
+- It calls topics with more terrible pairs than great ones very few, and lists six. There are
+  seventeen, and the list misses Transport, which is the worst in the game at four against
+  two, along with Abstract, Comedy, Dance, Evolution, Government, Technology, Construction,
+  Expedition, Law, Mad Science and Wild West.
+- A comment on it from 2025 reports that Action's stage 3 requirements have been swapped to
+  `+++ ++ ~`. They have not. World Design, Graphic and Sound read 0.8, 1.0 and 0.9 for Action,
+  which is what the page's own table says. Whatever the reporter was reading, it was not the
+  game.
+
+Everything else it states in numbers checks out. Dungeon, Airplane and Fantasy each carry
+four great pairs and one terrible one. Game Dev and Superheroes each carry three terrible
+against one great, and Romance, Hospital and Surgery two against one. Its legend thresholds
+are the review's own tests. Its claim that Strategy or RPG alone leaves six important fields
+while Strategy with Adventure or RPG leaves three is exact. Its staff burn rates of one, five
+thirds and two for medium, large and AAA are `100/(300/optimalTeamSize)` to the digit. A
+comment on it from 2025 quotes the Thief topic's two weight arrays out of the source and both
+are correct today, and another from 2021 reporting Farming with Casual as good rather than
+great is right: that pair is 0.9.
 
 ## How the calculator is held to this
 
