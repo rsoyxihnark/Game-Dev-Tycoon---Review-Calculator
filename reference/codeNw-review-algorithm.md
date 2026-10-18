@@ -239,6 +239,12 @@ The engine pair is an either-or: `usesSameEngineAsSequel && !isExtensionPack ? -
 hasBetterEngineThanSequel && +0.2`. Carrying the same engine forward blocks the bonus.
 The MMO penalty is the one entry that moves neither counter.
 
+An expansion pack goes down the same path as a sequel. `UI._showGameDefinition` sets
+`sequelTo` for both, and `createPack` only adds locked settings on top, so an expansion
+carries a sequel target like any other. That puts it in the better seat on this row: the
+`-0.1` is barred to it by `!isExtensionPack`, while the `+0.2` is not, so an expansion built
+on a newer engine than the game it expands collects the bonus and can never pay the penalty.
+
 The MMO row reads the blended weight, second genre included, and the blend is
 `(2*first + second)/3`. Since no single weight passes 1.0, that blend reaches 1.0 only when
 both genres sit at 1.0, so a mixed-genre MMO needs two great combinations and not one. A
@@ -636,6 +642,12 @@ When the fourth reviewer would make it four tens in a row, the game steps in: wi
 nothing clamps, and without it the fourth is knocked down to 9 unless the floor is 10 and a
 20 percent roll saves it.
 
+Two details decide whether an 11 is even on the table. `psEnabled` is two or more experts,
+set by `2<=c` further up, not three. And the floor it tests is `Math.floor(b)`, the raw final
+score, not the `g` the reviewers are drawn from. Those two part ways between 9.5 and 10: `g`
+is already 10 there through the `9.5<=b` line, so four tens can show, while `Math.floor(b)`
+is still 9, so the eleventh point is refused. An 11 needs a final score of a full 10.
+
 Those four numbers change almost nothing. Every read of `game.reviews` in the file is the
 review screen itself, the save and load pair, a news story that quotes the highest of the
 four, the average printed beside a game in the game list, and two achievements, one needing
@@ -797,6 +809,14 @@ as the override table above. Two of its additions do not hold:
 - A 10 on a small game is not out of reach once you leave the garage. The 0.9 caps the
   ordinary path at 9.0, but 9.0 still counts as a top score, and the third top score is forced
   to 10 after the factor has already been applied.
+- The wiki page adds a section on reaching an 11 out of 10 and puts the expert requirement at
+  three. It is two. `psEnabled` comes from `2<=c`, the same count the AAA branch reads but at
+  a lower bar. Its other claim in that section is right, and sharper than it looks: the 11
+  tests `Math.floor(b)`, so a final score between 9.5 and 10 shows four tens and still cannot
+  reach eleven.
+- It also says an expansion cannot be a sequel and so cannot take the `+0.2`. Both halves are
+  wrong. Expansions run through the same `sequelTo` assignment, and the engine row bars them
+  only from the penalty.
 
 What it adds and gets right: that a mixed-genre MMO wants two great combinations rather than
 one, that the player's own character starts at 300 and 300, and the slider figures around both
