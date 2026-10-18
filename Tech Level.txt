@@ -1,0 +1,44 @@
+--- Tech Level
+Graphics Engine	Tech Level
+Text Based	0
+2D Graphics V1	1
+2D Graphics V2	2
+2D Graphics V3	2
+2D Graphics V4	3
+2D Graphics V5	3
+3D Graphics V1	1
+3D Graphics V2	2
+3D Graphics V3	3
+3D Graphics V4	4
+3D Graphics V5	5
+3D Graphics V6	6
+3D Graphics V7	7
+PC	0
+Govodore 64	1
+TES	2
+Master V	2
+Gameling	2
+Vena Gear	3
+Vena Oasis	3
+Super TES	3
+PlaySystem	3
+TES 64	3
+DreamVast	4
+PlaySystem 2	4
+mBox	4
+Game Sphere	3
+GS	3
+PPS	4
+mBox 360	5
+Nuu	4
+PlaySystem 3	5
+grPhone	4
+grPad	4
+mPad	4
+Wuu	5
+OYA	4
+mBox One	6
+PlaySystem 4	6
+Swap	6
+mBox Next	7
+PlaySystem 5	7
