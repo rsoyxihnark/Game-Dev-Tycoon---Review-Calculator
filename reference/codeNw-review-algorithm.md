@@ -12,9 +12,32 @@ make it workable:
 - `grep -n -o ".\{0,200\}SOMETHING.\{0,300\}" codeNw.js` to read around a name.
 - `sed -n '478,495p' codeNw.js` to read a whole function once you know where it starts.
 
-Watch for reuse. In `Reviews.rateGame` the variable `l` is the MMO factor, then the base
-score, then a loop index. `p` is design points, then the topic-to-genre weight, then a
-boolean. `B` is the staff count, then a tech level. Track the value, not the name.
+Cite line numbers, never byte offsets. A single edit anywhere above moves every offset in
+the file, and a note that says "around offset 244500" is then pointing at nothing.
+
+### What the letters hold inside `Reviews.rateGame`
+
+Track the value, not the name. The same letter carries three different things in one
+function, and reading the tail of `rateGame` with the wrong meaning in mind produces a
+confident, wrong answer.
+
+| Letter | What it holds, in order of assignment |
+| --- | --- |
+| `d` | the company (the function's only argument) |
+| `g` | the game, `d.currentGame` |
+| `k`, `m` | the bad-review and good-review message lists |
+| `l` | the MMO factor (2 for an MMO, else 1), then the base production score |
+| `p` | design points, then the topic to genre weight, then the demotion flag |
+| `q` | technology points, then the previous release, then the platform to genre weight |
+| `s` | the quality term, the thing that becomes `1 + s` |
+| `u` | the good-flag counter, then the technical expertise factor |
+| `t` | the bad-flag counter, then a loop variable |
+| `v` | the golden-ratio percentage, then the genre display name, then topic to audience |
+| `A` | the odd-focus mission list, then the bug factor |
+| `r` | the mission list, then the tech spread factor, then the trend, then the rescue score |
+| `B` | the target top score, then the staff count, then the highest tech level |
+| `z` | the score: first `l / topScore`, then that times ten, then the final value |
+| `n` | the original game when this one is a sequel or an expansion |
 
 ## Where things live
 
@@ -25,22 +48,31 @@ boolean. `B` is the staff count, then a tech level. Track the value, not the nam
 | Trend factor | 249 | `GameTrends.getCurrentTrendFactor` |
 | Duration of a mission | 326 | `General.getDuration` |
 | Size factors | 328, 327 | `General.getGameSizePointsFactor`, `getGameSizeDurationFactor` |
+| Multi-platform duration | 327 | `General.getMultiPlatformDurationFactor` |
 | Topic to audience weight | 331 | `General.getAudienceWeighting` |
 | Optimal team size | 334 | `General.getOptimalTeamSize` |
+| Mission weight with overrides | 417 | `Missions.getGenreWeighting` |
+| Mission table, 9 missions | 418 | `Missions.Stage1Missions` and Stage2, Stage3 |
 | Platform weight normalising | 426 | `Platforms.getNormalizedGenreWeighting` |
 | Platform table | 427 onward | `var a=[{id:"PC"...]` then `Platforms.allPlatforms.addRange(...)` |
-| Multi-platform blend | 451 | `Platforms.getGenreWeighting`, `getAudienceWeighting` |
+| Multi-platform blend | 451 | `Platforms.getGenreWeighting`, `getPlatformsAudienceWeighting` |
 | Topic table, 66 topics | 454 | `Topics.topics=[...]` |
-| Mission table, 9 missions | 418 | `Missions.Stage1Missions` and Stage2, Stage3 |
 | The review module | 473 to 495 | `var Reviews={}` then one IIFE |
+| Target top score and its update | 474 | the IIFE's private `a`, `b` and `c` |
+| Technical expertise factor | 477 | the IIFE's private `f` |
 | The score itself | 478 | `Reviews.rateGame=function(d)` |
-| Four reviewer scores | 493 | `Reviews.getReviews` |
+| Four reviewer scores | 493 | `Reviews.getReviews`, `Reviews.getNewStaff` |
 | Slider to time share | 928 | `UI._getSelectedFeaturePercentages` |
 | The game's tech level | 912 | `b.flags.techLevel=b.features.filter(...).average(...)` |
 
 The platform table is built in pieces. `var a=[...]` holds the first five, then
 `Platforms.allPlatforms.addRange([...])` appends the rest. Reading only the first literal
 gets you five platforms out of twenty-nine.
+
+Two platform functions have near-identical names and different jobs:
+`Platforms.getNormalizedGenreWeighting` maps one raw weight to its normalised value, while
+`Platforms.getNormGenreWeighting` normalises a whole weight array for a genre pair. Grep for
+the wrong one and you will read the wrong function.
 
 ## The pipeline, in order
 
@@ -60,10 +92,24 @@ var r=GameGenre.getGoldenRatio(g.genre,g.secondGenre), r=p*r-q,
 25>=Math.abs(v) ? (s+=0.1,u+=1,...) : 50<Math.abs(v) && (s-=0.1,...)
 ```
 
-`p` is design, `q` is technology. Golden ratios: Action 1.8, Adventure 0.4, RPG 0.6,
-Simulation 1.6, Strategy 1.4, Casual 0.5. A second genre blends as
-`(2*first + second)/3`. Within 25 percent gives `+0.1`, past 50 percent gives `-0.1`, and
-the band between gives nothing. Only the bonus raises the good-flag counter `u`.
+`p` is design, `q` is technology, and the percentage is measured against whichever of the
+two is larger. Golden ratios: Action 1.8, Adventure 0.4, RPG 0.6, Simulation 1.6,
+Strategy 1.4, Casual 0.5. A second genre blends as `(2*first + second)/3`.
+
+Setting `r` to zero means `technology = design * goldenRatio`, so the target reads:
+
+| Genre | Ratio | What to aim for |
+| --- | --- | --- |
+| Action | 1.8 | technology about 1.8 times design |
+| Simulation | 1.6 | technology about 1.6 times design |
+| Strategy | 1.4 | technology about 1.4 times design |
+| RPG | 0.6 | design about 1.7 times technology |
+| Casual | 0.5 | design about 2 times technology |
+| Adventure | 0.4 | design about 2.5 times technology |
+
+Within 25 percent gives `+0.1`, past 50 percent gives `-0.1`, and the band between gives
+nothing. Only the bonus raises the good-flag counter `u`. When the penalty fires, `r < 0`
+prints "focus more on design", because a negative `r` means technology already ran ahead.
 
 **Mission focus.** Each of the 9 dev missions has a share of its stage's time. The game
 compares that share against the mission's genre weight for this game.
@@ -82,6 +128,54 @@ missions therefore cost nothing at all. That is the game's behaviour, not a typo
 
 Each forgotten mission costs `0.15 * mmoFactor` and raises the bad-flag counter `t`.
 
+**The mission table.** `technologyFactor` and `designFactor` decide what a mission's time
+turns into. The six weights are the genre fit, in the order Action, Adventure, RPG,
+Simulation, Strategy, Casual.
+
+| Stage | Mission id | Shown as | Tech | Design | Act | Adv | RPG | Sim | Str | Cas |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | Engine | Engine | 0.8 | 0.2 | 1.0 | 0.7 | 0.7 | 0.9 | 0.9 | 0.6 |
+| 1 | Gameplay | Gameplay | 0.2 | 0.8 | 0.9 | 0.8 | 0.9 | 1.0 | 1.0 | 1.0 |
+| 1 | Story/Quests | Story/Quests | 0.2 | 0.8 | 0.7 | 1.0 | 1.0 | 0.8 | 0.8 | 0.7 |
+| 2 | Dialogs | Dialogues | 0.1 | 0.9 | 0.6 | 1.0 | 1.0 | 0.7 | 0.7 | 0.7 |
+| 2 | Level Design | Level Design | 0.6 | 0.4 | 0.9 | 0.8 | 0.9 | 0.9 | 1.0 | 1.0 |
+| 2 | AI | Artificial Intelligence | 0.8 | 0.2 | 1.0 | 0.7 | 0.8 | 1.0 | 0.9 | 0.6 |
+| 3 | World Design | World Design | 0.4 | 0.6 | 0.8 | 1.0 | 1.0 | 0.8 | 1.0 | 0.7 |
+| 3 | Graphic | Graphic | 0.5 | 0.5 | 1.0 | 0.9 | 0.9 | 1.0 | 0.8 | 1.0 |
+| 3 | Sound | Sound | 0.4 | 0.6 | 0.9 | 0.8 | 0.8 | 0.9 | 0.9 | 0.9 |
+
+The id is what the code matches on; the shown name is only a label. A second genre blends
+each weight as `(2*first + second)/3`, so a mixed game can sit between the table's values.
+
+**Topic overrides on mission weights.** Nine of the 66 topics replace individual mission
+weights. `topic.missionOverrides` is six rows, one per genre in the order above, each nine
+entries long, one per mission. A zero means "keep the mission's own weight", anything else
+replaces it.
+
+```
+var m=Missions.DevMissions.indexOf(d);
+if(-1!=m) for(var l=b.topic.missionOverrides,g=0;g<l.length;g++){var n=l[g][m];n&&(k[g]=n)}
+```
+
+The row is found by `indexOf` on the mission object itself, not by its id. Pass a copy of a
+mission and `indexOf` returns -1, every override is skipped silently, and the score comes
+out wrong with nothing to show why.
+
+| Topic | Genres it overrides |
+| --- | --- |
+| Sports | Action, Adventure, RPG, Simulation, Strategy |
+| Racing | Action, Adventure, Simulation |
+| Mystery | Action, Simulation, Strategy |
+| Horror | Action, Adventure |
+| Detective | Action, Simulation, Strategy |
+| Cyberpunk | Action, Adventure, Simulation, Strategy, Casual |
+| Law | Action, Simulation, Casual |
+| Music | all six |
+| Rythm | all six |
+
+The game spells that last topic `Rythm`. Overrides are keyed by genre only; the target
+audience never changes a mission weight.
+
 **The rest of `s`.**
 
 | Condition | Change |
@@ -94,6 +188,7 @@ Each forgotten mission costs `0.15 * mmoFactor` and raises the bad-flag counter 
 
 The engine pair is an either-or: `usesSameEngineAsSequel && !isExtensionPack ? -0.1 :
 hasBetterEngineThanSequel && +0.2`. Carrying the same engine forward blocks the bonus.
+The MMO penalty is the one entry that moves neither counter.
 
 A perfect run reaches `s = 0.5`, so `1 + s = 1.5`, and 1.3 without the sequel bonus.
 
@@ -121,21 +216,27 @@ then blends across platforms with a running `d *= 0.7`:
 - two: 70 percent of the first plus 30 percent of the second
 - three: 70, 49, and minus 19 percent
 
-The third platform's share really is negative, so a third platform that fits well lowers
-the score. That is in the game.
+The share is negative from the third platform on, and it lands on whichever platform is
+last in `g.platforms`. A third platform that fits the genre well therefore lowers the
+score. That is in the game. The in-game screen offers three platform slots and no more:
+`UI._updatePickPlatformButtonStates` at line 865 loops `for(...,f=0;3>f;f++)`.
 
 **Topic to audience** is the raw table value, not normalised.
 
-**Bugs**: `A = 1 - 0.8 * clamp(100/(technology+design)*bugs, 0, 100)/100`.
+**Bugs**: with no bugs the factor is exactly 1 and the branch is skipped. With bugs,
+`A = 1 - 0.8 * clamp(100/(technology+design)*bugs, 0, 100)/100`, so it floors at 0.2.
 
 **Tech spread**: with more than one platform, `1 - (highest - lowest)/20` over the
-platforms' tech levels. PC is skipped by an explicit `"PC"==id` test in the loop. It also
-happens to carry no `techLevel` field, but that is incidental, not the reason.
+platforms' tech levels. The shipped platforms carry levels 1 to 7, so the widest possible
+spread is 6 and the factor cannot fall below 0.70. One platform leaves it at exactly 1.
+PC is skipped by an explicit `"PC"==id` test in the loop. It also happens to carry no
+`techLevel` field, but that is incidental, not the reason.
 
-**Trend**: 1.2 when the game matches a genre, new-topic or audience trend. During a
-strange-combinations trend it is 0.85 for a perfect topic-genre pair, 1.1 for 0.9, 1.2 for
+**Trend**: 1.2 when the game matches a genre trend, an audience trend, or a new-topic trend,
+and the new-topic case needs a topic that has never appeared in the game log at all. During
+a strange-combinations trend it is 0.85 for a perfect topic-genre pair, 1.1 for 0.9, 1.2 for
 0.8, and 1.4 for anything lower. That lookup passes only the first genre, so a second genre
-can never produce a value in between.
+can never produce a value in between. Any other trend, or none, leaves it at 1.
 
 ### 3. Against the top score
 
@@ -144,20 +245,42 @@ B=a(d); z=l/B;
 ```
 
 `a(d)` is the target the game holds you to. With no top score on record it returns 20.
-Otherwise it is `Math.floor(lastTopScore + lastTopScoreIncrease * yearFactor)`, where the
-year factor is 1.15 up to year 6, 1.2 through year 23, and 1.1 after that. Inside the
-window needed to build another game of the last size, it ramps from the previous top score
-instead. The result is always an integer.
+Otherwise:
 
-Two penalties then land on the ratio:
+```
+yearFactor = year <= 6 ? 1.15 : year > 23 ? 1.10 : 1.20
+target     = floor(lastTopScore + lastTopScoreIncrease * yearFactor)
+warmup     = 6 + 9 * getGameSizeDurationFactor(lastTopScoreGameSize)
+no week on record, or currentWeek >= lastTopScoreWeek + warmup  ->  target
+otherwise  ->  floor(previousTopScore + (target - previousTopScore) * weeksElapsed / warmup)
+```
+
+So the divisor steps up every time you beat it, and inside the warm-up window it ramps
+there one week at a time instead of jumping. The warm-up is the time to build another game
+of the last record-setting size: 15 weeks after a small game, 60 after an AAA. The result
+is always an integer, and by late game it sits in the hundreds.
+
+The increase itself is set when a record is beaten: `lastTopScoreIncrease` becomes
+`max(newScore - lastTopScore, 0.1 * currentTarget)`, and from office level 2 upward it is
+capped at 20 percent of `lastTopScore`. On the very first record there is no previous
+score, so it is `max(newScore - 20, 2)`.
+
+Two penalties then land on the ratio, while it is still `l / topScore` and not yet
+multiplied by ten:
 
 - At 0.6 or above, if either the topic to genre weight or the topic to audience weight is
   0.7 or lower, everything above 0.6 is halved.
 - Above 0.7, the first platform whose normalised audience weight is 0.8 or lower multiplies
   the base score by its raw weight, and the loop stops there. It checks the normalised value
-  and multiplies by the raw one.
+  and multiplies by the raw one. `Platforms.getPlatformsAudienceWeighting` returns the raw
+  number only when its third argument is passed, and falls back to 0.8 raw or 1 normalised
+  when the audience or the weight array is missing.
 
-Then `z = clamp(10 * z, 1, 10)`.
+Then `p=!1` and `z = clamp(10 * z, 1, 10)`.
+
+That `p=!1` matters more than it looks. `p` is still holding the topic to genre weight at
+this point, a number between 0.6 and 1.0, and the random ceiling further down fires on
+`p && ...`. Without this one assignment the demotion at 9 and above would be unconditional.
 
 ### 4. The rescue bracket
 
@@ -171,10 +294,28 @@ per new hire, `t/2` minus `u/2`, 0.5 when the bug factor is under 0.9, the short
 the platform-genre or topic-audience weight is 0.8 or lower, twice the platform tech spread,
 and one random draw. The result is capped at 7.7 and only replaces the score if it is higher.
 
+The optimal team size is 1 for a small game, 3 medium, 5 large, 6 AAA.
+
 Two traps here. The gate is `lastTopScore > 0`, not the top-score achievement count: the
 ceiling demotion below sets `lastTopScore` without touching that counter. And
 `0.9>A ? r-=0.5 : 0.6>=A && (r-=1)` can never reach its second branch, because a bug factor
 of 0.6 or less is already under 0.9. Both are reproduced as written.
+
+**The quiet downward re-anchor.** Still inside the rescue block, after the floor has been
+applied:
+
+```
+if(3<d.gameLog.length){u=!0;
+  for(r=1;3>=r;r++) if(t=d.gameLog[d.gameLog.length-r],
+    t.score>5.2-0.2*t.platforms.length && !t.flags.scoreWithoutBrackets){u=!1;break}
+  u&&(d.lastTopScore=l,g.flags.topScoreDecreased=!0)}
+```
+
+The flag starts true and is cleared the moment any of the last three releases cleared its
+own threshold on its own merit, without having been rescued. So the re-anchor fires only
+when none of the last three did, and it drops `lastTopScore` to the current game's base
+score. A long run of weak games therefore lowers the divisor and makes the next good score
+easier. Nothing in the interface mentions it.
 
 ### 5. Technical expertise
 
@@ -185,17 +326,26 @@ of 0.6 or less is already under 0.9. Both are reproduced as written.
 - large game: `(10 - clamp(3 - techLevel, 0, 3))/10`
 - AAA: `(10 - clamp(5 - techLevel, 0, 3) - 0.6*clamp(3 - experts, 0, 3))/10`
 
-`techLevel` here is `game.flags.techLevel`, set at line 912 as the average tech level of the
-game's selected features. Only the thirteen graphics engines carry a tech level, and they
-sit in one radio group, so exactly one is selected and the value is that engine's level, a
-whole number from 0 to 7. It is not the custom engine's own `techLevel`, which is an average
-over engine parts. That one never reaches the score: it only sets
-`hasBetterEngineThanSequel` and `isNewBetterEngine`, and the second of those is written but
-read nowhere in the file.
+Office level is `company.currentLevel`, the office you have moved into: 1 garage, 2 small
+office, 3 big office, 4 corporate. A small game scores better from the garage than from any
+office you upgrade to, and there is nothing you can do about it except stop making small
+games. A medium game is penalised until the company passes 100000 fans.
+
+`techLevel` is a different field on a different object. It is `game.flags.techLevel`, set at
+line 912 as the average tech level of the game's selected features. Only the thirteen
+graphics engines carry a tech level, and they sit in one radio group, so exactly one is
+selected and the value is that engine's level, a whole number from 0 to 7. It reaches the
+score for large and AAA games only, so on small and medium projects the engine features
+you ship make no difference to the review at all.
+
+It is also not the custom engine's own `techLevel`, which is an average over engine parts.
+That one never reaches the score: it only sets `hasBetterEngineThanSequel` and
+`isNewBetterEngine`, and the second of those is written but read nowhere in the file.
 
 `experts` is the count of dev missions weighted 0.9 or better for this game that have a
 staff member whose `flags.expert` matches. It cannot exceed the number of such missions.
-Two or more also sets `psEnabled`, which only affects the reviewer transform.
+Two or more also sets `psEnabled`, which only affects the reviewer transform. The count is
+computed before the size branches, so `psEnabled` is set whatever size the game is.
 
 ### 6. Random ceilings
 
@@ -214,9 +364,18 @@ Failing that, new staff on the team drops it into 8.15 to 9.10. Either way a fur
 percent chance lifts it to 9.00 to 9.25. The `&&` short-circuits, so the draw only happens
 when `s` is under 0.1.
 
+Which of the two bands you land in is decided by the branch, not by the team. `newStaffIds`
+is written in exactly one place in the whole file, the else-branch of that ternary. So when
+the first branch fires, the `8.45 + 0.65*rand` band applies however many fresh hires worked
+on the game, because the field was never set. A reading that picks the band from the new
+staff count alone gets this wrong.
+
+New staff means `0.2 <= gamesContributed <= 2` among the staff who contributed to this game.
+
 Then the early-game cap, only while the top-score count is under 2 and the year under 4:
 exactly 10 loses 1.05 to 1.50, 9 or above loses 1.05 to 1.25, and anything over 8.5 loses
-0.4 to 0.6.
+0.4 to 0.6. Early 10 out of 10 is therefore out of reach, and the practical ceiling is
+about 9.25.
 
 Finally, `9<=z` raises the top-score count, and a score that is not 10 on the third
 top-score achievement is forced to 10. In practice that fires when the count was 2 going in.
@@ -238,9 +397,22 @@ UI._getSelectedFeaturePercentages=function(){
 ```
 
 Each of the three missions in a stage gets a 10 percent floor plus a share of the remaining
-70. All sliders at zero gives an even third each, and so does all of them at maximum.
+70, so every share lands between 10 and 80 and the three always sum to 100. All sliders at
+zero gives an even third each, and so does all of them at maximum. A stage set to 100, 100
+and 0 does not produce 100, 100 and 0: it produces 45, 45 and 10.
 
-That percentage becomes a duration at line 326 and is divided back out in `rateGame`:
+That is the number the review code reads, which makes the practical rule per stage:
+
+- one mission weighted 0.9 or better needs a share of 40 or more to earn the focus bonus
+- any mission weighted 0.9 or better must stay above 20, or it counts as forgotten
+- any mission weighted below 0.8 must stay under 40, or it counts as odd focus
+- the shares also set how much of the stage's points come from each mission's tech and
+  design mix, so they have to serve the golden ratio at the same time
+
+Hit the focus bonus in two stages and `s` gains 0.2, which is worth more than any other
+single term in the quality factor.
+
+The percentage becomes a duration at line 326 and is divided back out in `rateGame`:
 
 ```
 duration = 3*Missions.BASE_DURATION/100*percentage * sizeFactor * platformFactor
@@ -255,23 +427,88 @@ from four platforms up, and that was enough to flip a focus threshold at eleven 
 `tests/slider-boundary.mjs` walks every slider triple that hits a boundary, and
 `tests/score-parity.mjs` repeats the threshold triples at every platform count from 1 to 29.
 
+One wrinkle the calculator does not model. `General.getMultiPlatformDurationFactor` halves
+the step when the engine carries a `MultiPlatformOptimized` part, so the per-platform factor
+becomes 1.225 instead of 1.45. The same factor is used to build the duration and to divide
+it back out, so the share is the same number mathematically and only the floating-point
+residue differs. Checked exhaustively over every slider triple at one to four platforms and
+all four game sizes, that residue never flips a 0.4 or 0.2 comparison, and three platforms
+is all the game lets you pick. From fifteen platforms up it does flip, which no save can
+reach.
+
 ## The four reviewer scores
 
 `Reviews.getReviews` turns one score into the four numbers on the review screen.
 
 ```
 var g=Math.floor(b).clamp(1,10); 9.5<=b&&(g=10);
+for(...;4>t;t++){
+  if(5===g||6===g) u=0.05>GameManager.company.getRandom()?2:1;
+  var r=1==Math.randomSign()?0:u*Math.randomSign(), v=(g+r).clamp(1,10);
+  ...
+}
 ```
+
+The spread size `u` is 1 for every base score except 5 and 6, and for those two it is
+re-drawn for each reviewer with a 5 percent chance of 2. Read the `||` as binding looser
+than the `&&` and you get the wrong rule: it is not "5 always spreads by 2 and 6 only
+sometimes", both get the same 5 percent.
 
 Each reviewer then draws `r = 1==Math.randomSign() ? 0 : u*Math.randomSign()` and shows
 `clamp(g+r, 1, 10)`. The first sign decides whether there is any deviation at all, and the
 second only gets drawn when the first came up negative, which matters if you are matching
-the random stream. For a base of 5 or 6 there is a 5 percent chance the deviation is 2.
+the random stream.
 
 When the fourth reviewer would make it four tens in a row, the game steps in: with
-`psEnabled` and a floor of exactly 10 there is a 40 percent chance of an 11 out of 10,
-and without it the fourth is knocked down to 9 unless the floor is 10 and a 20 percent roll
-saves it.
+`psEnabled` and a floor of exactly 10 there is a 40 percent chance of an 11 out of 10, which
+nothing clamps, and without it the fourth is knocked down to 9 unless the floor is 10 and a
+20 percent roll saves it.
+
+## Questions players actually ask
+
+**Does the game's name change the score?** No. The title only reaches the flavour text, and
+only when the game has no custom name: a floored score above 3 and below 7 has a 10 percent
+chance of an insult about the name, and 7 or above the same chance of a compliment despite
+it. The company name is never read by `Reviews.rateGame` at all.
+
+**Do I have to rotate genres?** Only away from an exact repeat. The check is the single most
+recent release and all three fields must match:
+
+```
+q=d.gameLog.last();
+q && !g.flags.isExtensionPack && q.genre===g.genre
+  && q.secondGenre===g.secondGenre && q.topic===g.topic   ->  s -= 0.4
+```
+
+So Dungeon-Action, Thief-RPG, Hunting-Simulation, Dungeon-Action is fine: the triple never
+repeats back to back. There is no wider "too many action games" penalty anywhere in the
+review code.
+
+**Does the topic matter?** Yes, in three places: the topic to genre weight `p` sets the
+great or terrible combination message, a `p` of 0.7 or lower halves everything the ratio
+earned above 0.6, and nine topics rewrite mission weights outright. What is true is that the
+development phase ignores the topic: points come from the mission's own genre weight, so a
+city simulation and a racing simulation generate identical design and technology points from
+identical sliders. The difference arrives entirely at the review.
+
+## Easy to misread in the source
+
+Each of these has been got wrong before, in a guide or in a set of notes.
+
+- `MULTIPLATFORM_WEIGHTING` is 0.7 and blends genre weights across platforms.
+  `MULTIPLATFORM_DURATION_FACTOR` is 1.45 and stretches mission durations. They are two
+  separate constants and neither one does the other's job.
+- Mission overrides are keyed by genre, never by audience. There is no audience-specific
+  mission weight anywhere in the file.
+- The bug factor is `1 - 0.8*clamp(100/(T+D)*bugs,0,100)/100`. Writing the division the
+  other way round gives a number that looks plausible and is wrong.
+- `company.currentLevel` is the office tier and `game.flags.techLevel` is the graphics
+  engine level. The small-game branch reads the first, the large and AAA branches read the
+  second.
+- The reviewer spread rule is `if(5===g||6===g)` and then a 5 percent draw, not a condition
+  that treats 5 and 6 differently.
+- The downward re-anchor fires when none of the last three games cleared its threshold
+  unaided, not when all three did.
 
 ## What the published guides get wrong
 
