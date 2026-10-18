@@ -34,24 +34,43 @@ jobs:
       - name: Read the release state
         id: state
         run: |
+          set -euo pipefail
           version="$(node tools/version.mjs)"
           subject="$(git log -1 --pretty=%s)"
           echo "version=$version" >> "$GITHUB_OUTPUT"
-          echo "subject=$subject" >> "$GITHUB_OUTPUT"
-          if printf '%s' "$subject" | grep -q '^\[no release\]'; then
+          {
+            echo 'subject<<GDT_EOF'
+            printf '%s\n' "$subject"
+            echo 'GDT_EOF'
+            echo 'body<<GDT_EOF'
+            git log -1 --pretty=%b
+            echo 'GDT_EOF'
+          } >> "$GITHUB_OUTPUT"
+          if git ls-remote --exit-code --tags origin "refs/tags/v$version" >/dev/null 2>&1; then
+            echo "The source is on v$version, which is already released. Nothing to publish."
             echo "publish=false" >> "$GITHUB_OUTPUT"
           else
             echo "publish=true" >> "$GITHUB_OUTPUT"
           fi
-          {
-            echo 'body<<RELEASE_NOTES_EOF'
-            git log -1 --pretty=%b
-            echo 'RELEASE_NOTES_EOF'
-          } >> "$GITHUB_OUTPUT"
 
-      - name: Require a changelog entry for a change to the calculator
-        if: steps.state.outputs.publish == 'true'
+      - name: Check the commit against the version it claims to ship
+        env:
+          VERSION: ${{ steps.state.outputs.version }}
+          SUBJECT: ${{ steps.state.outputs.subject }}
         run: |
+          set -euo pipefail
+          case "$VERSION" in
+            [0-9]*.[0-9]*.[0-9]*) ;;
+            *) echo "APP_VERSION is '$VERSION', which is not major.minor.patch."; exit 1 ;;
+          esac
+          if printf '%s' "$SUBJECT" | grep -q '^\[no release\]'; then
+            echo "Marked [no release]. The version gate below still decides whether v$VERSION ships."
+            exit 0
+          fi
+          case "$SUBJECT" in
+            "[$VERSION]"*) ;;
+            *) echo "A commit that is not [no release] must start with [$VERSION]. It starts: $SUBJECT"; exit 1 ;;
+          esac
           changed="$(git diff --name-only HEAD~1 HEAD || true)"
           if printf '%s\n' "$changed" | grep -qx 'GameDevTycoon_Calculator.html'; then
             if ! printf '%s\n' "$changed" | grep -qx 'CHANGELOG.md'; then
@@ -61,29 +80,18 @@ jobs:
             fi
           fi
 
-      - name: Require the version to agree with the commit subject and the changelog
+      - name: Check the changelog carries the version
         if: steps.state.outputs.publish == 'true'
+        env:
+          VERSION: ${{ steps.state.outputs.version }}
         run: |
-          version='${{ steps.state.outputs.version }}'
-          subject='${{ steps.state.outputs.subject }}'
-          case "$version" in
-            [0-9]*.[0-9]*.[0-9]*) ;;
-            *) echo "APP_VERSION is '$version', which is not major.minor.patch."; exit 1 ;;
-          esac
-          case "$subject" in
-            "[$version]"*) ;;
-            *) echo "The commit subject must start with [$version]. It starts with: $subject"; exit 1 ;;
-          esac
-          if ! grep -qx "## $version" CHANGELOG.md; then
-            echo "CHANGELOG.md has no '## $version' section."
+          set -euo pipefail
+          if ! grep -qx "## $VERSION" CHANGELOG.md; then
+            echo "CHANGELOG.md has no '## $VERSION' section, so v$VERSION cannot be published."
             exit 1
           fi
           if grep -qiE '^## +unreleased' CHANGELOG.md; then
             echo "CHANGELOG.md still carries an Unreleased heading."
-            exit 1
-          fi
-          if git ls-remote --exit-code --tags origin "refs/tags/v$version" >/dev/null 2>&1; then
-            echo "v$version has already been released. Ship the fix under the next version."
             exit 1
           fi
 
@@ -91,12 +99,18 @@ jobs:
         if: steps.state.outputs.publish == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ steps.state.outputs.version }}
+          BODY: ${{ steps.state.outputs.body }}
         run: |
-          version='${{ steps.state.outputs.version }}'
-          git tag "v$version"
-          git push origin "v$version"
-          printf '%s' '${{ steps.state.outputs.body }}' > release-notes.md
-          gh release create "v$version" \
-            --title "v$version" \
-            --notes-file release-notes.md \
+          set -euo pipefail
+          git tag "v$VERSION"
+          git push origin "v$VERSION"
+          notes=release-notes.md
+          printf '%s\n' "$BODY" > "$notes"
+          if ! grep -q '^- ' "$notes"; then
+            awk '/^## '"$VERSION"'$/{f=1;next} /^## /{f=0} f' CHANGELOG.md > "$notes"
+          fi
+          gh release create "v$VERSION" \
+            --title "v$VERSION" \
+            --notes-file "$notes" \
             GameDevTycoon_Calculator.html

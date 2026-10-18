@@ -1,4 +1,4 @@
-import { chromium } from "playwright";
+import { launchChromium } from "./lib/browser.mjs";
 import { statSync } from "node:fs";
 import { PAGE } from "./lib/paths.mjs";
 import { PAGE_TEXT } from "./lib/page.mjs";
@@ -17,9 +17,7 @@ check("the page is one file under 1 MB", statSync(PAGE).size < 1024 * 1024,
   `${statSync(PAGE).size} bytes`);
 
 heading("it loads and runs with the network switched off");
-const executablePath = process.env.GDT_CHROMIUM
-  || "/opt/pw-browsers/chromium-1194/chrome-linux/chrome";
-const browser = await chromium.launch({ executablePath });
+const browser = await launchChromium();
 try {
   const page = await (await browser.newContext({ viewport: { width: 1440, height: 1000 } })).newPage();
   const errors = [];
