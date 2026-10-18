@@ -302,8 +302,11 @@ dialogue slider of 74 is safe while 75 trips the penalty is exact.
   page, sharing one random stream, and requires the two to be identical bit for bit.
 - `reviewer-parity.mjs` does the same for the four reviewer scores.
 - `slider-boundary.mjs` sweeps every slider triple that lands exactly on a focus threshold.
-- `self-contained.mjs` loads the page in a browser with the network off.
+- `self-contained.mjs` loads the page in a browser with the network off, then puts it into the
+  states a player can reach that once broke it: every genre or audience locked, a saved form
+  state of the wrong shape, an in-game month or week typed past its limit.
 - `text-length.mjs` holds the repository to the 248 character limit and the punctuation rules.
+- `release-consistency.mjs` checks the version, the changelog section and the workflow agree.
 
 Run them with `npm test`. `tests/lib/oracle.mjs` is the piece that lifts `Reviews.rateGame`
 out of `codeNw.js` and runs it. It makes three kinds of change to that source, all named in
@@ -317,6 +320,6 @@ the real loop draws at least once per reviewer. The reviewer test is therefore e
 `getReviews` with that loop removed, not against the game's own draw sequence for a given
 save seed. The score path is unaffected: `getReviews` runs after `g.score` is set.
 
-`tests/mutation.mjs` plants 59 deliberate faults in a copy of the page, one at a time, and
+`tests/mutation.mjs` plants 60 deliberate faults in a copy of the page, one at a time, and
 requires the differential tests to catch every one. Without it a passing suite only shows
 that nothing fired, not that anything could.

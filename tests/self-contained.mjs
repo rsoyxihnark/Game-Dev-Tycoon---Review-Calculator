@@ -96,6 +96,76 @@ try {
   });
   check("the back-solve dialog opens on its button and closes on Cancel",
     modalFlow.opened && modalFlow.closed, JSON.stringify(modalFlow));
+
+  heading("it survives states a player can actually put it in");
+
+  const freshPage = async (seed) => {
+    const ctx = await browser.newContext({ viewport: { width: 1440, height: 1000 } });
+    const p = await ctx.newPage();
+    const errs = [];
+    p.on("pageerror", (e) => errs.push(e.message));
+    p.on("console", (m) => { if (m.type() === "error") errs.push("console: " + m.text()); });
+    await p.route((url) => /^https?:/.test(url.href), (route) => route.abort());
+    if (seed) await p.addInitScript((v) => {
+      try { localStorage.setItem("gdt_calc_state_v2", v); } catch (e) {}
+    }, seed);
+    await p.goto("file://" + PAGE, { waitUntil: "load" });
+    await p.waitForTimeout(900);
+    return { ctx, p, errs };
+  };
+
+  for (const [what, bulk, wording] of [
+    ["genre", '[data-bulk="genre"][data-bulkop="lock"]', "No genre unlocked"],
+    ["audience", '[data-bulk="aud"][data-bulkop="lock"]', "No audience unlocked"],
+  ]) {
+    const { ctx, p, errs } = await freshPage(null);
+    await p.evaluate((sel) => document.querySelectorAll(sel).forEach((b) => b.click()), bulk);
+    await p.waitForTimeout(900);
+    const seen = await p.evaluate(() => ({
+      pill: document.querySelector("#o_pill").textContent.trim(),
+      score: document.querySelector("#o_score").textContent.trim(),
+    }));
+    check(`locking every ${what} leaves the page working and names the library`,
+      errs.length === 0 && seen.pill.startsWith(wording) && seen.score === "-",
+      JSON.stringify({ errs: errs.slice(0, 3), seen }));
+    await ctx.close();
+  }
+
+  for (const seed of ['{"platforms":"PC"}', '{"numeric":"abc"}', '{"checked":5,"sliders":[1,2]}',
+                      '{"numeric":{"0":1},"checked":{"a b":true}}']) {
+    const { ctx, p, errs } = await freshPage(seed);
+    const resetWired = await p.evaluate(() => {
+      document.querySelector("#btn_reset").click();
+      return !document.querySelector("#reset_modal").classList.contains("hidden");
+    });
+    check(`a saved state of the wrong shape still loads and leaves Reset working ${seed}`,
+      errs.length === 0 && resetWired === true,
+      JSON.stringify({ errs: errs.slice(0, 3), resetWired }));
+    await ctx.close();
+  }
+
+  {
+    const { ctx, p, errs } = await freshPage(null);
+    const counts = [];
+    for (const m of ["1", "12", "99", "-7"]) {
+      await p.evaluate((v) => {
+        const el = document.querySelector("#i_month");
+        el.value = v;
+        el.dispatchEvent(new Event("input", { bubbles: true }));
+      }, m);
+      await p.waitForTimeout(400);
+      counts.push(await p.evaluate((typed) => ({
+        typed,
+        listed: document.querySelectorAll("#dl_plats option").length,
+        enabled: [...document.querySelectorAll("[data-plat]")].filter((c) => !c.disabled).length,
+      }), m));
+    }
+    const agree = counts.every((c) => c.listed === c.enabled);
+    const clamped = counts[1].listed === counts[2].listed && counts[0].listed === counts[3].listed;
+    check("an out-of-range in-game month cannot split the platform list from the grid",
+      errs.length === 0 && agree && clamped, JSON.stringify({ errs: errs.slice(0, 3), counts }));
+    await ctx.close();
+  }
 } finally {
   await browser.close();
 }

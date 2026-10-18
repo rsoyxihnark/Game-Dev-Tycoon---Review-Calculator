@@ -1,5 +1,18 @@
 # Changelog
 
+## 1.0.6
+
+- Fixed the score freezing on its last value when every genre or every audience was locked in the Topic & Genre Library
+- Fixed the Game Setup genre dropdown going blank with no explanation when every genre was locked
+- The score now says to open the Topic & Genre Library when no genre or no audience is unlocked
+- Fixed the "no topics unlocked" and "no audiences unlocked" messages pointing at a tab that does not exist
+- Fixed the platform list offering platforms the grid still had disabled after typing an in-game month or week past its limit
+- Fixed Auto-suggest optimal filling in the wrong slider values when every genre was locked
+- Fixed the Slider Suggester showing a blank genre after opening its tab with every genre locked
+- Fixed REPORT ISSUE saying COPIED when the clipboard was blocked and nothing had been copied
+- Fixed the copied report printing an in-game month or week the score was not calculated for
+- Fixed RESET doing nothing after a damaged saved form state, which left no way to clear it
+
 ## 1.0.5
 
 - A new tick box under Reference topScore says a past game set a top score the numbers above do not show, which opens the low-score pity floor.

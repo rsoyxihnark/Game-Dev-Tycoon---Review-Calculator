@@ -7,8 +7,8 @@
     "test": "node tests/run.mjs"
   },
   "devDependencies": {
-    "parse5": "7.2.1",
-    "playwright": "1.49.1",
-    "tailwindcss": "3.4.17"
+    "parse5": "8.0.1",
+    "playwright": "1.64.1",
+    "tailwindcss": "3.4.19"
   }
 }
