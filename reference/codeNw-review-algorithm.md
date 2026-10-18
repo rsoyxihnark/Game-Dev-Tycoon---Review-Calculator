@@ -400,6 +400,43 @@ staff member whose `flags.expert` matches. It cannot exceed the number of such m
 Two or more also sets `psEnabled`, which only affects the reviewer transform. The count is
 computed before the size branches, so `psEnabled` is set whatever size the game is.
 
+How a character gets that flag is a training of its own, one per dev mission, built in a
+loop over the nine so there is exactly one specialisation per mission:
+
+```
+canSee: 7<=a.getLevel() && !a.flags.expert
+canUse: 500*a.technologyFactor > Math.round(900*mission.technologyFactor) &&
+        500*a.designFactor     > Math.round(900*mission.designFactor)
+cost: 5E6, pointsCost: 200
+```
+
+It shows up only at character level 7 or above, and only while the character carries no
+expert flag yet, so one character specialises once and never again. The requirement is 900
+times the mission's own factor on each side, which is why every pair below sums to 900.
+
+| Stage | Mission id | Shown as | Design | Technology |
+| --- | --- | --- | --- | --- |
+| 1 | Engine | Engine | 180 | 720 |
+| 1 | Gameplay | Gameplay | 720 | 180 |
+| 1 | Story/Quests | Story/Quests | 720 | 180 |
+| 2 | Dialogs | Dialogues | 810 | 90 |
+| 2 | Level Design | Level Design | 360 | 540 |
+| 2 | AI | Artificial Intelligence | 180 | 720 |
+| 3 | World Design | World Design | 540 | 360 |
+| 3 | Graphic | Graphic | 450 | 450 |
+| 3 | Sound | Sound | 540 | 360 |
+
+The figures the item's own name advertises are those rounded values, while the gate compares
+the unrounded `500 * factor` and compares it with a strict greater-than, so a character
+sitting exactly on the advertised number does not qualify. Skill points on screen are
+`floor(500 * factor)`, so the 500 in that gate is the on-screen figure, and the highest
+training courses carry `maxP: 900`.
+
+`flags.expert` is not `flags.designSpecialist`. The second one comes from a different
+training, gated on `4 == company.currentLevel` and 700 design skill points, and it is what
+opens the research and development lab. The review counts `flags.expert` only, so three
+design specialists satisfy nothing on the AAA branch.
+
 ### 6. Random ceilings
 
 At 9 or above, the score is usually pulled back down:
@@ -592,6 +629,31 @@ spread formulas, the halving rule, the platform audience override, every branch 
 technical expertise factor, the random ceilings and the early-game cap. The six per-genre
 slider recommendations all score the maximum focus bonus, and the claim that a Casual
 dialogue slider of 74 is safe while 75 trips the penalty is exact.
+
+The Reddit guide's part 3 covers the research and development lab, the hardware lab, AAA and
+MMO. Those sit off the review path, so no test in `tests/` guards what follows. Each line was
+read straight out of `codeNw.js`:
+
+- The research and development lab does not open in a large office. `unlockRnDLab` triggers on
+  `4 === company.currentLevel`, the top tier, whose own level-up text calls it the new
+  headquarters, and it also wants a character carrying `designSpecialist`. Opening it costs
+  2.5M. The design specialist training that gates it is itself visible at level 4 only.
+- Owning that lab is not what unlocks AAA. `Research.AAA.canResearch` looks for a game in the
+  log with `10 === score` and `"large" === gameSize`, so a large game that scored a straight
+  ten. The hardware lab adds `customHardwareResearched` and a character carrying
+  `technologySpecialist` to that same level 4 requirement.
+- The 40 week expansion gap is not measured against the previous expansion. `Reviews.rateGame`
+  reads `g.sequelTo`, the game this one was declared a sequel or expansion to, and raises
+  `sequelsTooClose` when that game's `releaseWeek` falls inside 40 weeks of the current week.
+  Point every expansion at the base game and the gap is measured against the base game.
+
+What part 3 gets right, read the same way: AAA wanting tech level 5 and three experts, the MMO
+penalty when the topic to genre weight is under 1.0, the level 7 and 900 point specialisation
+requirements, the 700 skill points for the lab specialist, and the 3M monthly ceiling on lab
+spending. Two things it leaves out. `getMaxRndBudget` starts that ceiling at 3M but drops it by
+100000 for every design specialist past the first and floors it at 500000. And
+`Research.ownConvention` wants 1000000 fans, or year 23 or later, before the convention it
+describes timing for can be researched at all.
 
 ## How the calculator is held to this
 
