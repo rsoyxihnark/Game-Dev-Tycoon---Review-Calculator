@@ -147,6 +147,10 @@ Simulation, Strategy, Casual.
 | 3 | Graphic | Graphic | 0.5 | 0.5 | 1.0 | 0.9 | 0.9 | 1.0 | 0.8 | 1.0 |
 | 3 | Sound | Sound | 0.4 | 0.6 | 0.9 | 0.8 | 0.8 | 0.9 | 0.9 | 0.9 |
 
+Across the nine the technology factors sum to 4.0 and the design factors to 5.0, so a game
+that spread its time evenly would generate 25 percent more design than technology. That is
+the reason the design-leaning genres are the easier ones to hit.
+
 The id is what the code matches on; the shown name is only a label. A second genre blends
 each weight as `(2*first + second)/3`, so a mixed game can sit between the table's values.
 
@@ -348,13 +352,30 @@ those pull the other way. A medium game is penalised until the company passes 10
 `techLevel` is a different field on a different object. It is `game.flags.techLevel`, set at
 line 912 as the average tech level of the game's selected features. Only the thirteen
 graphics engines carry a tech level, and they sit in one radio group, so exactly one is
-selected and the value is that engine's level, a whole number from 0 to 7. It reaches the
+selected and the value is that engine's level, a whole number from 0 to 7:
+
+| Engine | Level | Engine | Level |
+| --- | --- | --- | --- |
+| Text Based | 0 | 3D Graphics V1 | 1 |
+| 2D Graphics V1 | 1 | 3D Graphics V2 | 2 |
+| 2D Graphics V2 | 2 | 3D Graphics V3 | 3 |
+| 2D Graphics V3 | 2 | 3D Graphics V4 | 4 |
+| 2D Graphics V4 | 3 | 3D Graphics V5 | 5 |
+| 2D Graphics V5 | 3 | 3D Graphics V6 | 6 |
+| | | 3D Graphics V7 | 7 |
+
+So a large game needs level 3 or better, which 2D Graphics V4 and V5 reach as well as
+3D Graphics V3 and up, and an AAA game needs level 5, which only 3D Graphics V5, V6 and V7
+reach. It reaches the
 score for large and AAA games only, so on small and medium projects the engine features
 you ship make no difference to the review at all.
 
 It is also not the custom engine's own `techLevel`, which is an average over engine parts.
 That one never reaches the score: it only sets `hasBetterEngineThanSequel` and
 `isNewBetterEngine`, and the second of those is written but read nowhere in the file.
+Because it is an average it can be fractional, so an engine built with an older graphics
+version alongside a newer one sits between two whole levels. A player who wants the `+0.2`
+sequel bonus again and again can climb in those fractions instead of whole levels.
 
 `experts` is the count of dev missions weighted 0.9 or better for this game that have a
 staff member whose `flags.expert` matches. It cannot exceed the number of such missions.
@@ -534,6 +555,10 @@ Checked against the code, with the check kept in `tests/`:
   more low-weight missions above 40 percent cost nothing.
 - The strange-combinations trend cannot give 1.4 through a mixed second genre. The lookup
   is called with the first genre only, so the value is always one of 0.85, 1.1, 1.2 or 1.4.
+  The published trick of pairing a 1.0 main genre with a 0.9 second to average 0.97 and fall
+  through to 1.4 does nothing: the second genre is never passed to that lookup.
+- A large game does not need 3D Graphics V3. It needs tech level 3, and 2D Graphics V4 and
+  V5 carry level 3 as well. The AAA claim is exact: only 3D Graphics V5 and up reach 5.
 - The first target high score is not `20 + max(base - 20, 2) * yearFactor`. It is
   `floor(base + max(base - 20, 2) * yearFactor)`. At a base of 50 the game gives 84, not 54.5.
 
