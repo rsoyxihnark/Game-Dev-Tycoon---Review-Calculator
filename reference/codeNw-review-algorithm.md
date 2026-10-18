@@ -69,10 +69,13 @@ The platform table is built in pieces. `var a=[...]` holds the first five, then
 `Platforms.allPlatforms.addRange([...])` appends the rest. Reading only the first literal
 gets you five platforms out of twenty-nine.
 
-Two platform functions have near-identical names and different jobs:
-`Platforms.getNormalizedGenreWeighting` maps one raw weight to its normalised value, while
-`Platforms.getNormGenreWeighting` normalises a whole weight array for a genre pair. Grep for
-the wrong one and you will read the wrong function.
+Three platform functions on line 426 have near-identical names and different jobs:
+`Platforms.getNormalizedGenreWeighting` maps one raw weight to its normalised value,
+`Platforms.getNormGenreWeighting` normalises a whole weight array for a genre pair, and
+`Platforms.getNormalizedAudienceWeighting` does the first job for an audience weight. Grep
+for the wrong one and you will read the wrong function. `Platforms.getAudienceWeighting`
+and `Platforms.getPlatformsAudienceWeighting` on line 451 are a second such pair, and only
+the second of those is called from the review.
 
 ## The pipeline, in order
 
@@ -157,9 +160,12 @@ var m=Missions.DevMissions.indexOf(d);
 if(-1!=m) for(var l=b.topic.missionOverrides,g=0;g<l.length;g++){var n=l[g][m];n&&(k[g]=n)}
 ```
 
-The row is found by `indexOf` on the mission object itself, not by its id. Pass a copy of a
-mission and `indexOf` returns -1, every override is skipped silently, and the score comes
-out wrong with nothing to show why.
+`indexOf` supplies the column, the mission's position among the nine, while the row is the
+genre the loop is on. It matches the mission object itself, not its id, so a mission object
+that is not the canonical one scores as if the topic had no overrides at all, silently. The
+line before it repairs the common case: an object with no `genreWeightings` of its own is
+looked up again by id, which is why the game's own feature-log entries work. A copy that
+carries `genreWeightings` is the one that breaks, because then nothing repairs it.
 
 | Topic | Genres it overrides |
 | --- | --- |
@@ -227,8 +233,12 @@ score. That is in the game. The in-game screen offers three platform slots and n
 `A = 1 - 0.8 * clamp(100/(technology+design)*bugs, 0, 100)/100`, so it floors at 0.2.
 
 **Tech spread**: with more than one platform, `1 - (highest - lowest)/20` over the
-platforms' tech levels. The shipped platforms carry levels 1 to 7, so the widest possible
-spread is 6 and the factor cannot fall below 0.70. One platform leaves it at exactly 1.
+platforms' tech levels. The shipped platforms carry levels 1 to 7, so across those the
+widest spread is 6 and the factor stays at 0.70 or above. One platform leaves it at exactly
+1. A console the player builds is not bound by that: its `techLevel` is the average of its
+parts' levels, which run 0 to 7, and its id is not `PC`, so it is neither skipped nor
+rounded. With one of those in the list the spread can pass 6 and the factor can fall below
+0.70.
 PC is skipped by an explicit `"PC"==id` test in the loop. It also happens to carry no
 `techLevel` field, but that is incidental, not the reason.
 
@@ -273,8 +283,11 @@ multiplied by ten:
 - Above 0.7, the first platform whose normalised audience weight is 0.8 or lower multiplies
   the base score by its raw weight, and the loop stops there. It checks the normalised value
   and multiplies by the raw one. `Platforms.getPlatformsAudienceWeighting` returns the raw
-  number only when its third argument is passed, and falls back to 0.8 raw or 1 normalised
-  when the audience or the weight array is missing.
+  number only when its third argument is truthy, and falls back to 0.8 raw or 1 normalised
+  when the audience or the weight array is missing. Its last line, and the matching line in
+  `General.getAudienceWeighting`, is `throw"unknown audience: "+genre`, where `genre` is not
+  a parameter and not declared anywhere in the file, so an unknown audience raises a
+  ReferenceError instead of that message. No shipped audience reaches it.
 
 Then `p=!1` and `z = clamp(10 * z, 1, 10)`.
 
@@ -327,9 +340,10 @@ easier. Nothing in the interface mentions it.
 - AAA: `(10 - clamp(5 - techLevel, 0, 3) - 0.6*clamp(3 - experts, 0, 3))/10`
 
 Office level is `company.currentLevel`, the office you have moved into: 1 garage, 2 small
-office, 3 big office, 4 corporate. A small game scores better from the garage than from any
-office you upgrade to, and there is nothing you can do about it except stop making small
-games. A medium game is penalised until the company passes 100000 fans.
+office, 3 big office, 4 corporate. On this factor alone a small game scores better from the
+garage than from any office, which is worth knowing and is not the whole story: level 1 also
+caps the staff at one and skips the 20 percent cap on the top-score increase, and both of
+those pull the other way. A medium game is penalised until the company passes 100000 fans.
 
 `techLevel` is a different field on a different object. It is `game.flags.techLevel`, set at
 line 912 as the average tech level of the game's selected features. Only the thirteen
@@ -428,8 +442,10 @@ from four platforms up, and that was enough to flip a focus threshold at eleven 
 `tests/score-parity.mjs` repeats the threshold triples at every platform count from 1 to 29.
 
 One wrinkle the calculator does not model. `General.getMultiPlatformDurationFactor` halves
-the step when the engine carries a `MultiPlatformOptimized` part, so the per-platform factor
-becomes 1.225 instead of 1.45. The same factor is used to build the duration and to divide
+the step when the engine carries a `MultiPlatformOptimized` part, so each platform beyond
+the first multiplies by 1.225 instead of 1.45. The halving is skipped when the function is
+called with a second argument, which is what `General.getMultiPlatformCostFactor` does so it
+can apply the 0.5 itself. The review path always calls it with one argument. The same factor is used to build the duration and to divide
 it back out, so the share is the same number mathematically and only the floating-point
 residue differs. Checked exhaustively over every slider triple at one to four platforms and
 all four game sizes, that residue never flips a 0.4 or 0.2 comparison, and three platforms
