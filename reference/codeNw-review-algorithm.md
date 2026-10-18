@@ -132,6 +132,24 @@ So the same 10 to 7 output mix earns the bonus in four genres and just misses it
 and Adventure, the two whose ratios sit furthest from 1. None of the six reaches the 50
 percent penalty on that mix.
 
+Inverting that formula gives the window a player actually has to land in. With `x` as the
+technology to design ratio the game sees, `v` is `abs(ratio - x) * 100` while `x` is at or
+below 1 and `abs(ratio/x - 1) * 100` once `x` passes 1, so the band is not symmetric around
+the target and the upper edge stretches:
+
+| Genre | Ratio | `-0.1` below | `+0.1` from | Target | `+0.1` to | `-0.1` above |
+| --- | --- | --- | --- | --- | --- | --- |
+| Adventure | 0.4 | under 0.00 | 0.15 | 0.40 | 0.65 | over 0.90 |
+| Casual | 0.5 | under 0.00 | 0.25 | 0.50 | 0.75 | over 1.00 |
+| RPG | 0.6 | under 0.10 | 0.35 | 0.60 | 0.85 | over 1.20 |
+| Strategy | 1.4 | under 0.90 | 1.12 | 1.40 | 1.87 | over 2.80 |
+| Simulation | 1.6 | under 1.07 | 1.28 | 1.60 | 2.13 | over 3.20 |
+| Action | 1.8 | under 1.20 | 1.44 | 1.80 | 2.40 | over 3.60 |
+
+So a game lands the `+0.1` when its technology to design ratio sits between the two inner
+columns, and takes the `-0.1` only outside the outer pair. Adventure and Casual have no
+reachable lower penalty at all, since the band bottoms out at zero technology.
+
 **Mission focus.** Each of the 9 dev missions has a share of its stage's time. The game
 compares that share against the mission's genre weight for this game.
 
@@ -220,6 +238,11 @@ audience never changes a mission weight.
 The engine pair is an either-or: `usesSameEngineAsSequel && !isExtensionPack ? -0.1 :
 hasBetterEngineThanSequel && +0.2`. Carrying the same engine forward blocks the bonus.
 The MMO penalty is the one entry that moves neither counter.
+
+The MMO row reads the blended weight, second genre included, and the blend is
+`(2*first + second)/3`. Since no single weight passes 1.0, that blend reaches 1.0 only when
+both genres sit at 1.0, so a mixed-genre MMO needs two great combinations and not one. A
+1.0 paired with a 0.9 blends to 0.9667 and takes the penalty.
 
 A perfect run reaches `s = 0.5`, so `1 + s = 1.5`, and 1.3 without the sequel bonus.
 
@@ -452,7 +475,9 @@ The figures the item's own name advertises are those rounded values, while the g
 the unrounded `500 * factor` and compares it with a strict greater-than, so a character
 sitting exactly on the advertised number does not qualify. Skill points on screen are
 `floor(500 * factor)`, so the 500 in that gate is the on-screen figure, and the highest
-training courses carry `maxP: 900`.
+training courses carry `maxP: 900`. The player's own character starts at `dF` and `tF` of
+0.6, which is 300 design and 300 technology on screen, so every specialisation is a long way
+off at the start.
 
 `flags.expert` is not `flags.designSpecialist`. The second one comes from a different
 training, gated on `4 == company.currentLevel` and 700 design skill points, and it is what
@@ -499,6 +524,13 @@ about 9.25.
 Finally, `9<=z` raises the top-score count, and a score that is not 10 on the third
 top-score achievement is forced to 10. In practice that fires when the count was 2 going in.
 
+That last line runs after the technical expertise factor, which is what makes the third top
+score worth timing. A small game made from office level 2 or above is multiplied by 0.9 and
+so cannot exceed 9.0 on the ordinary path, but 9.0 still trips `9<=z`, so it can be the third
+top score, and then the forcing overwrites it with 10 outright. The same holds for a medium
+game under 100000 fans. The cap limits what the game can earn, not what this one line can
+hand it.
+
 `g.score=z` is stored raw. There is no final clamp, so a score below 1 is possible and real.
 Every reader clamps on its own: the reviewer transform does `Math.floor(b).clamp(1,10)` and
 the sales code does `g.score.clamp(1,10)`.
@@ -519,6 +551,13 @@ Each of the three missions in a stage gets a 10 percent floor plus a share of th
 70, so every share lands between 10 and 80 and the three always sum to 100. All sliders at
 zero gives an even third each, and so does all of them at maximum. A stage set to 100, 100
 and 0 does not produce 100, 100 and 0: it produces 45, 45 and 10.
+
+Reading that backwards gives the slider values the thresholds sit at. With `o` as the other
+two sliders added together, a mission clears the 20 percent floor once its own slider passes
+`o/6`, and reaches the 40 percent focus threshold once it is at least `0.75 * o`. So against
+sliders of 100 and 0, 16 leaves a mission forgotten and 17 saves it, and 75 earns the focus
+bonus where 74 does not. Against 100 and 100 those move to 34 and 150, and the second is out
+of reach.
 
 That is the number the review code reads, which makes the practical rule per stage:
 
@@ -743,6 +782,26 @@ combinations band, the halving rule and that it stops at the first platform it c
 year factors, the increase formula with its 20 percent cap from office level 2, every
 early-game cap range, the third top score forced to 10, and the 0.06 per missing specialist
 on the AAA branch. Its reading of `previousTopScore` is right too, bar the floor at 20.
+
+The same author's wiki page, Success Guild updated for 1.7.8, carries that whole guide again
+with later additions. Its tables are the part the code backs hardest. The design aspect table
+reproduces from `genreWeightings` on all 54 cells with both target columns; the ratio bracket
+table reproduces from the golden-ratio formula for all six genres, one cell rounded up rather
+than down; and the priority override table names the same nine topics and the same genre rows
+as the override table above. Two of its additions do not hold:
+
+- Cycling genres on MMO expansions to dodge the repeat penalty is not needed. That penalty
+  carries `!g.flags.isExtensionPack`, so an expansion never triggers it however many times the
+  topic and genre repeat. What it does still catch is an ordinary game released straight after
+  one that shares its topic and genre pair.
+- A 10 on a small game is not out of reach once you leave the garage. The 0.9 caps the
+  ordinary path at 9.0, but 9.0 still counts as a top score, and the third top score is forced
+  to 10 after the factor has already been applied.
+
+What it adds and gets right: that a mixed-genre MMO wants two great combinations rather than
+one, that the player's own character starts at 300 and 300, and the slider figures around both
+thresholds, 16 against 17 on the forgotten floor and 74 against 75 on the Casual dialogue
+penalty, both of which fall out of the `o/6` and `0.75 * o` rules above.
 
 ## How the calculator is held to this
 
