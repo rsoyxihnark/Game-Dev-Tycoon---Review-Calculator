@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.4
+
+- Fixed the predicted score on games released for more than ten platforms at once, where a focus bonus could be counted or missed by mistake.
+- The strange-combinations trend now says it reads your main genre only, so a second genre no longer sends you to the wrong option.
+
 ## 1.0.3
 
 - The calculator now opens from your own drive with no internet connection.

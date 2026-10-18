@@ -129,7 +129,8 @@ the score. That is in the game.
 **Bugs**: `A = 1 - 0.8 * clamp(100/(technology+design)*bugs, 0, 100)/100`.
 
 **Tech spread**: with more than one platform, `1 - (highest - lowest)/20` over the
-platforms' tech levels. PC is skipped because it carries no `techLevel` field at all.
+platforms' tech levels. PC is skipped by an explicit `"PC"==id` test in the loop. It also
+happens to carry no `techLevel` field, but that is incidental, not the reason.
 
 **Trend**: 1.2 when the game matches a genre, new-topic or audience trend. During a
 strange-combinations trend it is 0.85 for a perfect topic-genre pair, 1.1 for 0.9, 1.2 for
@@ -164,7 +165,8 @@ A floor for bad games that were at least made thoughtfully. It needs all of:
 `lastTopScore > 0`, `z <= 5.2 - 0.2 * platformCount`, `u > 0`, `u > t`, and a team
 contribution of 0.8 or better.
 
-It starts at 6 and subtracts: one point per staff member past optimal plus one, half a point
+It starts at 6 and subtracts: one point for each step of `abs(optimal - count)` beyond the
+first, so being under the optimal team size costs exactly as much as being over it, half a point
 per new hire, `t/2` minus `u/2`, 0.5 when the bug factor is under 0.9, the shortfall when
 the platform-genre or topic-audience weight is 0.8 or lower, twice the platform tech spread,
 and one random draw. The result is capped at 7.7 and only replaces the score if it is higher.
@@ -247,8 +249,11 @@ share    = duration / sizeFactor / platformFactor / (3*Missions.BASE_DURATION)
 
 The factors cancel mathematically but not in floating point, so a slider set that lands on
 exactly 40.000 or 20.000 percent can fall either side of the comparison. The calculator runs
-the same chain rather than the shortcut, and `tests/slider-boundary.mjs` walks every slider
-triple that hits a boundary to prove the two agree.
+the same chain rather than the shortcut, down to building the platform factor with the same
+repeated multiplication: `Math.pow(1.45, n-1)` differs from the game's loop in the last bit
+from four platforms up, and that was enough to flip a focus threshold at eleven platforms.
+`tests/slider-boundary.mjs` walks every slider triple that hits a boundary, and
+`tests/score-parity.mjs` repeats the threshold triples at every platform count from 1 to 29.
 
 ## The four reviewer scores
 
@@ -301,6 +306,17 @@ dialogue slider of 74 is safe while 75 trips the penalty is exact.
 - `text-length.mjs` holds the repository to the 248 character limit and the punctuation rules.
 
 Run them with `npm test`. `tests/lib/oracle.mjs` is the piece that lifts `Reviews.rateGame`
-out of `codeNw.js` and runs it; it names the two edits it makes to that source text, and it
-fails loudly if either anchor disappears, so a future version of the game cannot quietly
-slip past the tests.
+out of `codeNw.js` and runs it. It makes three kinds of change to that source, all named in
+the file: five probe insertions that only copy intermediates onto a global, one replacement
+of the review-message loop inside `getReviews`, and a stub for `getReviews` on the score
+path. Every anchor is unique in the whole file, and the loader fails loudly if one
+disappears, so a future version of the game cannot quietly slip past the tests.
+
+The message-loop replacement does change how many random draws `getReviews` consumes, because
+the real loop draws at least once per reviewer. The reviewer test is therefore exact against
+`getReviews` with that loop removed, not against the game's own draw sequence for a given
+save seed. The score path is unaffected: `getReviews` runs after `g.score` is set.
+
+`tests/mutation.mjs` plants 59 deliberate faults in a copy of the page, one at a time, and
+requires the differential tests to catch every one. Without it a passing suite only shows
+that nothing fired, not that anything could.
