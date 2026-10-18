@@ -686,7 +686,9 @@ from four platforms up, and that was enough to flip a focus threshold at eleven 
 
 One wrinkle the calculator does not model. `General.getMultiPlatformDurationFactor` halves
 the step when the engine carries a `MultiPlatformOptimized` part, so each platform beyond
-the first multiplies by 1.225 instead of 1.45. The halving is skipped when the function is
+the first multiplies by 1.225 instead of 1.45. That is worth 18 percent off the clock on two
+platforms and 40 percent on three, which is the most the game allows, and not the 69 percent
+the Reddit guide's part 1 puts on it. The halving is skipped when the function is
 called with a second argument, which is what `General.getMultiPlatformCostFactor` does so it
 can apply the 0.5 itself. The review path always calls it with one argument. The same factor is used to build the duration and to divide
 it back out, so the share is the same number mathematically and only the floating-point
@@ -982,6 +984,23 @@ thirds and two for medium, large and AAA are `100/(300/optimalTeamSize)` to the 
 comment on it from 2025 quotes the Thief topic's two weight arrays out of the source and both
 are correct today, and another from 2021 reporting Farming with Casual as good rather than
 great is right: that pair is 0.9.
+
+Part 1 of the Reddit guide adds almost nothing the wiki page above does not carry, and the
+author says so in its own comments: the images there were scrambled by a later edit and the
+wiki holds the right ones. Two things in it are worth writing down anyway.
+
+The slider sets it gives for small and medium games are clean. Every one of the eighteen
+stage settings turns into the time allocation its table prints, to the decimal, and all six
+genres come out with two or more missions at 0.9 or better above 40 percent, none below 20,
+and nothing weighted under 0.8 above 40. Six for six on the maximum focus bonus, which is
+what makes the Success Guide's Strategy set, forgetting World Design, the outlier rather than
+the norm.
+
+A comment under it writes three mission ratios backwards. It gives Engine and AI as T/D 8:2,
+which is right, and then Gameplay and Story/Quests as 8:2 and Dialogues as 9:1 in the same
+sentence. Those three are 2:8, 2:8 and 1:9. The advice around them, to even a technology lean
+out with design-heavy features, only makes sense with the real figures, so the numbers are
+flipped and not the reasoning.
 
 ## How the calculator is held to this
 
