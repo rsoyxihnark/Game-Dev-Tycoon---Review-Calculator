@@ -1,0 +1,102 @@
+name: Build and release
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 2
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+
+      - run: npm ci
+
+      - name: Install the browser the render check needs
+        run: npx playwright install --with-deps chromium
+
+      - name: Check the built-in stylesheet is current
+        run: node tools/build-styles.mjs --check
+
+      - name: Run the test suite
+        run: npm test
+
+      - name: Read the release state
+        id: state
+        run: |
+          version="$(node tools/version.mjs)"
+          subject="$(git log -1 --pretty=%s)"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "subject=$subject" >> "$GITHUB_OUTPUT"
+          if printf '%s' "$subject" | grep -q '^\[no release\]'; then
+            echo "publish=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "publish=true" >> "$GITHUB_OUTPUT"
+          fi
+          {
+            echo 'body<<RELEASE_NOTES_EOF'
+            git log -1 --pretty=%b
+            echo 'RELEASE_NOTES_EOF'
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Require a changelog entry for a change to the calculator
+        if: steps.state.outputs.publish == 'true'
+        run: |
+          changed="$(git diff --name-only HEAD~1 HEAD || true)"
+          if printf '%s\n' "$changed" | grep -qx 'GameDevTycoon_Calculator.html'; then
+            if ! printf '%s\n' "$changed" | grep -qx 'CHANGELOG.md'; then
+              echo "This commit changes the calculator but leaves CHANGELOG.md untouched."
+              echo "Add its entries, or mark the commit [no release] if nothing reaches a user."
+              exit 1
+            fi
+          fi
+
+      - name: Require the version to agree with the commit subject and the changelog
+        if: steps.state.outputs.publish == 'true'
+        run: |
+          version='${{ steps.state.outputs.version }}'
+          subject='${{ steps.state.outputs.subject }}'
+          case "$version" in
+            [0-9]*.[0-9]*.[0-9]*) ;;
+            *) echo "APP_VERSION is '$version', which is not major.minor.patch."; exit 1 ;;
+          esac
+          case "$subject" in
+            "[$version]"*) ;;
+            *) echo "The commit subject must start with [$version]. It starts with: $subject"; exit 1 ;;
+          esac
+          if ! grep -qx "## $version" CHANGELOG.md; then
+            echo "CHANGELOG.md has no '## $version' section."
+            exit 1
+          fi
+          if grep -qiE '^## +unreleased' CHANGELOG.md; then
+            echo "CHANGELOG.md still carries an Unreleased heading."
+            exit 1
+          fi
+          if git ls-remote --exit-code --tags origin "refs/tags/v$version" >/dev/null 2>&1; then
+            echo "v$version has already been released. Ship the fix under the next version."
+            exit 1
+          fi
+
+      - name: Tag and publish
+        if: steps.state.outputs.publish == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          version='${{ steps.state.outputs.version }}'
+          git tag "v$version"
+          git push origin "v$version"
+          printf '%s' '${{ steps.state.outputs.body }}' > release-notes.md
+          gh release create "v$version" \
+            --title "v$version" \
+            --notes-file release-notes.md \
+            GameDevTycoon_Calculator.html

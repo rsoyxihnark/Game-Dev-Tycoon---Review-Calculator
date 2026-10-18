@@ -1,0 +1,11 @@
+# Changelog
+
+## 1.0.3
+
+- The calculator now opens from your own drive with no internet connection.
+- Fixed the Back-solve topScore window staying on screen with Cancel doing nothing.
+- Fixed the score for a game made before your first top-rated game, where the low-score pity floor was skipped.
+- Fixed the predicted score being pushed up to 1.00 when the game itself records it lower.
+- Fixed the reviewer spread drawing its scores the wrong way round.
+- Fixed Engine techLevel accepting values above 7, which no graphics engine in the game reaches.
+- The expert count is now capped at the number of missions this topic and genre can actually have an expert on.
