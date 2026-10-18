@@ -638,10 +638,14 @@ read straight out of `codeNw.js`:
   `4 === company.currentLevel`, the top tier, whose own level-up text calls it the new
   headquarters, and it also wants a character carrying `designSpecialist`. Opening it costs
   2.5M. The design specialist training that gates it is itself visible at level 4 only.
-- Owning that lab is not what unlocks AAA. `Research.AAA.canResearch` looks for a game in the
-  log with `10 === score` and `"large" === gameSize`, so a large game that scored a straight
-  ten. The hardware lab adds `customHardwareResearched` and a character carrying
-  `technologySpecialist` to that same level 4 requirement.
+- The prose has owning that lab unlock AAA, where the guide's own project table has it right.
+  `Research.AAA.canResearch` looks for a game in the log with `10 === score` and
+  `"large" === gameSize`, so a large game that scored a straight ten. The hardware lab adds
+  `customHardwareResearched` and a character carrying `technologySpecialist` to that same
+  level 4 requirement.
+- The project table prices both AAA lab projects at 2000 research points. Both carry
+  `pointsCost: 1E3`. `AAAMarketingCampaign` and `AAACustomHardware` cost 1000 each, and each
+  wants a current game whose `gameSize` is `aaa`, the hardware one also wanting `hwLabUnlocked`.
 - The 40 week expansion gap is not measured against the previous expansion. `Reviews.rateGame`
   reads `g.sequelTo`, the game this one was declared a sequel or expansion to, and raises
   `sequelsTooClose` when that game's `releaseWeek` falls inside 40 weeks of the current week.
@@ -650,7 +654,8 @@ read straight out of `codeNw.js`:
 What part 3 gets right, read the same way: AAA wanting tech level 5 and three experts, the MMO
 penalty when the topic to genre weight is under 1.0, the level 7 and 900 point specialisation
 requirements, the 700 skill points for the lab specialist, and the 3M monthly ceiling on lab
-spending. Two things it leaves out. `getMaxRndBudget` starts that ceiling at 3M but drops it by
+spending. Its project table holds up on nine of its eleven rows, the two AAA prices being the
+exception, and the gates it lists for AAA Games, Own Convention and Hardware are exact. Two things it leaves out. `getMaxRndBudget` starts that ceiling at 3M but drops it by
 100000 for every design specialist past the first and floors it at 500000. And
 `Research.ownConvention` wants 1000000 fans, or year 23 or later, before the convention it
 describes timing for can be researched at all.
