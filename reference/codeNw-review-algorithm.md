@@ -114,6 +114,24 @@ Within 25 percent gives `+0.1`, past 50 percent gives `-0.1`, and the band betwe
 nothing. Only the bonus raises the good-flag counter `u`. When the penalty fires, `r < 0`
 prints "focus more on design", because a negative `r` means technology already ran ahead.
 
+The percentage is not symmetric. It divides by whichever of design and technology is
+larger, while the ratio multiplies the design side, so a target above 1 and its reciprocal
+below 1 do not cost the same for a mirrored point split. Produce 100 and 70 in the
+direction the genre wants and the miss reads:
+
+| Genre | Ratio | Split | Off by |
+| --- | --- | --- | --- |
+| Strategy | 1.4 | D70 T100 | 2 percent |
+| RPG | 0.6 | D100 T70 | 10 percent |
+| Simulation | 1.6 | D70 T100 | 12 percent |
+| Casual | 0.5 | D100 T70 | 20 percent |
+| Action | 1.8 | D70 T100 | 26 percent |
+| Adventure | 0.4 | D100 T70 | 30 percent |
+
+So the same 10 to 7 output mix earns the bonus in four genres and just misses it in Action
+and Adventure, the two whose ratios sit furthest from 1. None of the six reaches the 50
+percent penalty on that mix.
+
 **Mission focus.** Each of the 9 dev missions has a share of its stage's time. The game
 compares that share against the mission's genre weight for this game.
 
@@ -559,6 +577,11 @@ Checked against the code, with the check kept in `tests/`:
   through to 1.4 does nothing: the second genre is never passed to that lookup.
 - A large game does not need 3D Graphics V3. It needs tech level 3, and 2D Graphics V4 and
   V5 carry level 3 as well. The AAA claim is exact: only 3D Graphics V5 and up reach 5.
+- The quality terms are not separate multipliers. The balance bonus, the focus bonus, the
+  sequel terms and every penalty add into one number `s`, and the base score is multiplied
+  by `1 + s` exactly once, so `+0.2` and `-0.15` together are `+0.05` and not `1.2 * 0.85`.
+  The five factors after it, platform to genre, topic to audience, bugs, tech spread and
+  trend, are the ones that multiply separately.
 - The first target high score is not `20 + max(base - 20, 2) * yearFactor`. It is
   `floor(base + max(base - 20, 2) * yearFactor)`. At a base of 50 the game gives 84, not 54.5.
 
