@@ -187,7 +187,9 @@ of 0.6 or less is already under 0.9. Both are reproduced as written.
 game's selected features. Only the thirteen graphics engines carry a tech level, and they
 sit in one radio group, so exactly one is selected and the value is that engine's level, a
 whole number from 0 to 7. It is not the custom engine's own `techLevel`, which is an average
-over engine parts and is only used to decide `hasBetterEngineThanSequel`.
+over engine parts. That one never reaches the score: it only sets
+`hasBetterEngineThanSequel` and `isNewBetterEngine`, and the second of those is written but
+read nowhere in the file.
 
 `experts` is the count of dev missions weighted 0.9 or better for this game that have a
 staff member whose `flags.expert` matches. It cannot exceed the number of such missions.
