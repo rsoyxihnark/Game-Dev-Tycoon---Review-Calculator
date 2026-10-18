@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.5
+
+- A new tick box under Reference topScore says a past game set a top score the numbers above do not show, which opens the low-score pity floor.
+- The calculator now warns when you pick more than three platforms, which no real Game Dev Tycoon release can do.
+- The calculator now warns when Recently-hired staff is larger than Team size, which the game never counts.
+
 ## 1.0.4
 
 - Fixed the predicted score on games released for more than ten platforms at once, where a focus bonus could be counted or missed by mistake.

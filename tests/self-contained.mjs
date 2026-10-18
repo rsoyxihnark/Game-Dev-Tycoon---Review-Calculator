@@ -54,6 +54,37 @@ try {
   const toast = await page.evaluate(() => document.querySelector("#toast_host")?.innerText || "");
   check("no warning toast on load", toast.trim() === "", JSON.stringify(toast));
 
+  await page.evaluate(() => {
+    for (const k of ["topics", "genres", "audiences"]) localStorage.setItem("gdt_calc_locked_" + k + "_v1", "[]");
+    location.reload();
+  });
+  await page.waitForTimeout(1600);
+  const overrideEffect = await page.evaluate(async () => {
+    const set = (id, v) => {
+      const e = document.querySelector(id);
+      e.value = v;
+      e.dispatchEvent(new Event("change", { bubbles: true }));
+      e.dispatchEvent(new Event("input", { bubbles: true }));
+    };
+    const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+    set("#i_topic", "Fantasy"); set("#i_genre", "RPG"); set("#i_aud", "everyone");
+    set("#i_size", "medium"); set("#i_D", "14"); set("#i_T", "10"); set("#i_top", "20");
+    set("#i_year", "6"); set("#i_tsa", "0"); set("#i_fans", "500000");
+    set("#i_clevel", "2"); set("#i_team", "3");
+    document.querySelectorAll("[data-mission]").forEach((el, i) => {
+      el.value = [100, 100, 0, 100, 100, 0, 100, 0, 0][i];
+      el.dispatchEvent(new Event("input", { bubbles: true }));
+    });
+    await wait(1400);
+    const before = document.querySelector("#o_score").textContent;
+    document.querySelector("#i_hadtop").click();
+    await wait(1400);
+    return { before, after: document.querySelector("#o_score").textContent };
+  });
+  check("ticking the past-top-score box opens the pity floor and the score moves",
+    overrideEffect.before !== overrideEffect.after,
+    `score stayed at ${overrideEffect.before}; a new input that is missing from paramsSignature looks exactly like this`);
+
   const modalFlow = await page.evaluate(async () => {
     const modal = document.querySelector("#calib_modal");
     document.querySelector("#btn_calibrate").click();

@@ -105,7 +105,8 @@ const MUTANTS = [
   ["topic audience weight normalised", "const v_val = topic.a[ai(audience)];", "const v_val = normAud(topic.a[ai(audience)]);"],
   ["good focus raises the counter once", "if(good.length >= 2){ s += 0.2; uCount += good.length;", "if(good.length >= 2){ s += 0.2; uCount += 1;"],
   ["odd focus raises the bad counter", "if(odd.length === 2){ s -= 0.2*mmoFactor; tCount += odd.length;", "if(odd.length === 2){ s -= 0.2*mmoFactor;"],
-  ["rescue gated on achievements again", "const hasTopScore = p.hasTopScore !== undefined ? !!p.hasTopScore : hasRecordedTopScore(p);", "const hasTopScore = p.tsa > 0;"],
+  ["rescue gated on achievements again", "    : (!!p.hadTopScoreOverride || hasRecordedTopScore(p));", "    : (p.tsa > 0);"],
+  ["top score override ignored", "(!!p.hadTopScoreOverride || hasRecordedTopScore(p))", "(hasRecordedTopScore(p))"],
 ];
 
 const RUNS = Number(process.env.GDT_MUTATION_RUNS || 2500);

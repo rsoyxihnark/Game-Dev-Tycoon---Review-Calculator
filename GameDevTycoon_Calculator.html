@@ -396,6 +396,12 @@
             <span>Back-solve from a past game</span>
           </button>
         </label>
+        <label class="col-span-2 flex items-start gap-2 text-[11px] text-[#a9b1d6]" title="codeNw.js opens the low-score pity floor on lastTopScore > 0, which is not the topScore field above. A game knocked down from 9 records a top score without raising your achievement count, and under 20 the divisor still reads 20.">
+          <input type="checkbox" id="i_hadtop" class="mt-0.5">
+          <span>A past game set a top score the numbers above do not show.
+            <span class="text-[#7d8294]">Tick this only if a game of yours was knocked down from 9 or more while topScore stayed at 20 and achievements stayed at 0. It opens the low-score pity floor.</span>
+          </span>
+        </label>
       </div>
     </div>
 
@@ -849,7 +855,7 @@
 (function(){
 "use strict";
 
-const APP_VERSION = "1.0.4";
+const APP_VERSION = "1.0.5";
 
 const TOPSCORE_MAX = 10000;
 
@@ -1382,7 +1388,9 @@ function calcReview(p, rng, skipLog){
 
   const teamSize = p.teamSize > 0 ? p.teamSize : optTeam;
   const teamContribOk = (p.teamContrib ?? 1) >= 0.8;
-  const hasTopScore = p.hasTopScore !== undefined ? !!p.hasTopScore : hasRecordedTopScore(p);
+  const hasTopScore = p.hasTopScore !== undefined
+    ? !!p.hasTopScore
+    : (!!p.hadTopScoreOverride || hasRecordedTopScore(p));
   const rescueGate = hasTopScore && z_raw <= 5.2 - 0.2*plats.length;
   const rescueCondition = rescueGate && uCount > 0 && uCount > tCount && teamContribOk;
 
@@ -1795,7 +1803,7 @@ function saveState(){
     const sliders = {};
     document.querySelectorAll("[data-mission]").forEach(el => sliders[el.dataset.mission] = +el.value || 0);
     const platforms = [...document.querySelectorAll("[data-plat]:checked")].map(x=>x.dataset.plat);
-    const checked = ["i_fat","i_seq","i_sameEng","i_betterEng","i_expansion","i_mmo","i_multiplat"]
+    const checked = ["i_fat","i_seq","i_sameEng","i_betterEng","i_expansion","i_mmo","i_multiplat","i_hadtop"]
       .reduce((a,id)=>{a[id]=$("#"+id).checked; return a;},{});
     const numeric = ["i_topic","i_genre","i_genre2","i_aud","i_size","i_year","i_month","i_week","i_tsa","i_top","i_fans","i_D","i_T","i_bugs","i_tl","i_clevel","i_trend","i_newstaff","i_team","i_teamcontrib","i_experts"]
       .reduce((a,id)=>{a[id]=$("#"+id).value; return a;},{});
@@ -2650,6 +2658,7 @@ function gatherParams(){
     size,
     year: sanitizeInt($("#i_year").value, 1, 40, 1),
     tsa: sanitizeInt($("#i_tsa").value, 0, 999, 0),
+    hadTopScoreOverride: $("#i_hadtop").checked,
     lastTop: sanitizeFloat($("#i_top").value, 20, TOPSCORE_MAX, 20),
     fans: sanitizeInt($("#i_fans").value, 0, 1000000000, 0),
     platforms,
@@ -2681,7 +2690,7 @@ function paramsSignature(dateKey, p){
     + "|" + p.D + "|" + p.T + "|" + p.bugs + "|" + p.tl + "|" + p.companyLevel + "|" + p.trend
     + "|" + p.newStaff + "|" + p.teamSize + "|" + p.teamContrib + "|" + p.experts
 
-    + "|" + [p.fatigue, p.seq, p.sameEng, p.betterEng, p.expansion, p.mmo].map(f => f?1:0).join("-")
+    + "|" + [p.fatigue, p.seq, p.sameEng, p.betterEng, p.expansion, p.mmo, p.hadTopScoreOverride].map(f => f?1:0).join("-")
     + "|" + p.platforms.join(",");
   for(const m of MISSIONS) s += "|" + (p.sliders[m.id] ?? 0);
   return s;
@@ -3703,6 +3712,25 @@ function renderSlowPanels(params, out, colorFor){
       ⚠ <b>Year ${params.year} with 0 fans</b> is implausible, by year 4+ a real save has thousands of fans from prior releases.<br>
       <span class="text-[#7d8294]">Fix:</span> set Fans to a realistic value (the in-game corner display shows your current count).
     `});
+  }
+  if(params.platforms.length > 3){
+    sug.push({sev:"warn", html:`
+      ⚠ <b>${params.platforms.length} platforms selected</b>: Game Dev Tycoon gives a game three platform slots,
+      so no real release reaches this many.<br>
+      The score below follows the game's own formula for this count, but it is not a score the game can hand you.<br>
+      <span class="text-[#7d8294]">Fix:</span> drop down to <b>3</b> or fewer to model a release you can actually ship.
+    `});
+  }
+  {
+    const workingTeam = params.teamSize > 0 ? params.teamSize : (OPT_TEAM_SIZE[params.size] ?? 1);
+    if(params.newStaff > workingTeam){
+      sug.push({sev:"warn", html:`
+        ⚠ <b>${params.newStaff} recent hires on a team of ${workingTeam}</b>: the game counts new staff among the
+        people working on the game, so it can never be more than the team size.<br>
+        The rescue branch subtracts <b>half a point per new hire</b>, so this takes off more than the game ever would.<br>
+        <span class="text-[#7d8294]">Fix:</span> lower Recently-hired staff to <b>${workingTeam}</b> or less, or raise Team size.
+      `});
+    }
   }
   if(params.year === 1 && params.tsa > 0){
     sug.push({sev:"bad", html:`

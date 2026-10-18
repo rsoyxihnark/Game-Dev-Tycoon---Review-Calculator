@@ -94,10 +94,13 @@ export function boundarySetup(R) {
   if (R() < 0.5) { const total = 20 + ri(21); D = ri(total + 1); T = total - D; }
   else { D = ri(600); T = ri(600); }
 
-  const lastTopScore = R() < 0.8 ? 40 + ri(900) : 0;
+  let lastTopScore = R() < 0.8 ? 40 + ri(900) : 0;
+  let hadTopScoreOverride = false;
+  if (!lastTopScore && R() < 0.25) { lastTopScore = 18 + ri(2); hadTopScoreOverride = true; }
   return {
-    topic: topic.id, genre, second, audience: pick(AUDIENCES), size,
-    year: 1 + ri(30), tsa: lastTopScore ? ri(5) : 0, lastTopScore, lastTop: lastTopScore || 20,
+    topic: topic.id, genre, second, audience: pick(AUDIENCES), size, hadTopScoreOverride,
+    year: 1 + ri(30), tsa: lastTopScore && !hadTopScoreOverride ? ri(5) : 0,
+    lastTopScore, lastTop: lastTopScore || 20,
     fans: ri(2) ? ri(100001) : ri(5000000), platforms,
     D, T, bugs: R() < 0.7 ? 0 : ri(60), tl: ri(8), companyLevel: 1 + ri(4),
     trend: pick(REACHABLE_TRENDS),
