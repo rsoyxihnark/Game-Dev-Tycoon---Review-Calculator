@@ -437,6 +437,13 @@ training, gated on `4 == company.currentLevel` and 700 design skill points, and 
 opens the research and development lab. The review counts `flags.expert` only, so three
 design specialists satisfy nothing on the AAA branch.
 
+That flag does work away from the review as well, which is easy to miss because nothing in
+`Reviews` hints at it. `General.getResponsibleStaffFactor` builds the multiplier for whoever
+leads a mission and adds `0.15 * factor` to it when `flags.expert` matches that mission, the
+factor being the member's design or technology factor depending on the side being counted. An
+expert leading their own mission therefore generates more of both than the same character
+would without the flag.
+
 ### 6. Random ceilings
 
 At 9 or above, the score is usually pulled back down:
@@ -646,6 +653,11 @@ read straight out of `codeNw.js`:
 - The project table prices both AAA lab projects at 2000 research points. Both carry
   `pointsCost: 1E3`. `AAAMarketingCampaign` and `AAACustomHardware` cost 1000 each, and each
   wants a current game whose `gameSize` is `aaa`, the hardware one also wanting `hwLabUnlocked`.
+- A comment under part 3 puts the cost of mixing tech levels across platforms on the
+  technical expertise factor. It lands on the tech spread factor instead, which is the
+  separate `1 - (highest - lowest)/20` term above. The comment is right that a custom console
+  takes its level from its graphics engine and that PC does not count, though PC is skipped by
+  an explicit `"PC"==id` test rather than by having no level.
 - The 40 week expansion gap is not measured against the previous expansion. `Reviews.rateGame`
   reads `g.sequelTo`, the game this one was declared a sequel or expansion to, and raises
   `sequelsTooClose` when that game's `releaseWeek` falls inside 40 weeks of the current week.
