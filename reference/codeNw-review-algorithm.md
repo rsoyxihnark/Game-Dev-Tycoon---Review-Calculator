@@ -144,8 +144,11 @@ compares that share against the mission's genre weight for this game.
 Two or more good: `s += 0.2`, and `u` rises by how many. Exactly one: `s += 0.1`, `u += 1`.
 None at all: `s -= 0.15 * mmoFactor`, where the MMO factor is 2 for an MMO and 1 otherwise.
 
-Odd focus is counted with `2===A.length` and `1===A.length`, not "two or more". Three odd
-missions therefore cost nothing at all. That is the game's behaviour, not a typo to fix.
+Odd focus costs `0.2 * mmoFactor` for exactly two and `0.1 * mmoFactor` for exactly one, and
+raises `t` by the number counted. It is counted with `2===A.length` and `1===A.length`, not
+"two or more". Three odd missions therefore cost nothing at all. That is the game's
+behaviour, not a typo to fix. Both odd-focus amounts carry the MMO doubling, the same as the
+no-good-focus and forgotten-mission penalties, so on an MMO two odd missions cost 0.4.
 
 Each forgotten mission costs `0.15 * mmoFactor` and raises the bad-flag counter `t`.
 
@@ -297,6 +300,20 @@ The increase itself is set when a record is beaten: `lastTopScoreIncrease` becom
 capped at 20 percent of `lastTopScore`. On the very first record there is no previous
 score, so it is `max(newScore - 20, 2)`.
 
+`previousTopScore`, the floor the ramp starts from, is rewritten in the same step and
+nowhere else:
+
+```
+l = max(lastTopScore, 20)
+previousTopScore = min(l, currentTarget)
+previousTopScore += abs(newScore - previousTopScore) / 3
+if (previousTopScore > newScore) previousTopScore = newScore
+```
+
+So it lands a third of the way from the smaller of the old record and the old target up
+towards the new base score, and never above that score. The `abs` makes no difference to the
+result, because the line after it caps anything that overshoots.
+
 Two penalties then land on the ratio, while it is still `l / topScore` and not yet
 multiplied by ten:
 
@@ -306,7 +323,12 @@ multiplied by ten:
   the base score by its raw weight, and the loop stops there. It checks the normalised value
   and multiplies by the raw one. `Platforms.getPlatformsAudienceWeighting` returns the raw
   number only when its third argument is truthy, and falls back to 0.8 raw or 1 normalised
-  when the audience or the weight array is missing. Its last line, and the matching line in
+  when the audience or the weight array is missing. `Platforms.getNormalizedAudienceWeighting`
+  is `a >= 0.8 ? a+0.2 : a >= 0.7 ? a+0.1 : a+0.05`, so raw 1.0, 0.9 and 0.8 normalise to
+  1.2, 1.1 and 1.0, while 0.7 becomes 0.8 and 0.6 becomes 0.65. The gate therefore admits
+  exactly the platforms whose raw weight is 0.7 or 0.6, and across all 91 shipped platform
+  entries those are the only raw values below 0.8. The multiplier is only ever 0.7 or 0.6.
+  Its last line, and the matching line in
   `General.getAudienceWeighting`, is `throw"unknown audience: "+genre`, where `genre` is not
   a parameter and not declared anywhere in the file, so an unknown audience raises a
   ReferenceError instead of that message. No shipped audience reaches it.
@@ -506,6 +528,18 @@ That is the number the review code reads, which makes the practical rule per sta
 - the shares also set how much of the stage's points come from each mission's tech and
   design mix, so they have to serve the golden ratio at the same time
 
+A fourth demand lands on the same three shares and never touches the review.
+`General.getFeatureEfficiencyFromMissionFocus` gives a mission's engine features their full
+effect only once its share reaches `5 * sum(v)` percent, where `v` is each feature's own
+value, scaled by 0.7 for a large game and 0.4 for an AAA one and left alone below those.
+Short of that the feature still works, at `share / (5 * sum(v) * sizeCoefficient)` of its
+effect. The graphics parts carry `v` at twice their tech level, so 3D Graphics V3, V4 and V5
+want 30, 40 and 50 percent of their stage on a small or medium game, 21, 28 and 35 on a
+large one, and 12, 16 and 20 on an AAA. Adding the part whose id is `Stereoscopic 3D` and
+whose name on screen is Advanced Stereoscopic 3D, `v` 4, to V5 raises those three to 70, 49
+and 28. A stage can only reach 80, so the 70 is close to the ceiling and the AAA column is
+the easy one.
+
 Hit the focus bonus in two stages and `s` gains 0.2, which is worth more than any other
 single term in the quality factor.
 
@@ -562,6 +596,14 @@ When the fourth reviewer would make it four tens in a row, the game steps in: wi
 `psEnabled` and a floor of exactly 10 there is a 40 percent chance of an 11 out of 10, which
 nothing clamps, and without it the fourth is knocked down to 9 unless the floor is 10 and a
 20 percent roll saves it.
+
+Those four numbers change almost nothing. Every read of `game.reviews` in the file is the
+review screen itself, the save and load pair, a news story that quotes the highest of the
+four, the average printed beside a game in the game list, and two achievements, one needing
+an average of exactly 10 and one needing an average above 10, which only the 11 out of 10
+can reach. Sales and the top score both read `game.score`, the single number behind them. So
+a lucky or unlucky spread across the four reviewers changes what the screen says and can
+cost an achievement, and it moves no money.
 
 ## Questions players actually ask
 
@@ -671,6 +713,36 @@ exception, and the gates it lists for AAA Games, Own Convention and Hardware are
 100000 for every design specialist past the first and floors it at 500000. And
 `Research.ownConvention` wants 1000000 fans, or year 23 or later, before the convention it
 describes timing for can be researched at all.
+
+Part 2 of the same guide walks the review algorithm itself and gets most of it right, which
+makes the places it slips worth naming:
+
+- The random ceiling does not wait for a quality factor under 0.1. Part 2 writes that
+  threshold twice, and by its own definition the quality factor starts at 1, so as written
+  the branch could never fire at all. The code tests `0.1 > s`, the bonus total on its own,
+  which is a quality factor under 1.1. That branch therefore catches any game at 9 or above
+  that did not collect 0.1 of bonuses, which is the common case, not a rare one.
+- The 0.9 on a medium game carries no publishing deal and no office level. The test is
+  `"medium" === gameSize && 1E5 >= fans` and nothing else, so a self-published medium game
+  under 100000 fans takes it too.
+- Part 2 guesses that the platform to audience multipliers were meant to be 0.8 and 0.65 and
+  that a true and a false were swapped. They were not. 0.8 and 0.65 are what
+  `getNormalizedAudienceWeighting` returns for raw 0.7 and raw 0.6, which is the gate's side
+  of the same pair. The third argument does exactly what it reads as: it asks for the raw
+  number instead of the normalised one.
+- The two claims corrected further up, the first target high score and the 1.4 reached
+  through a mixed second genre, both come from part 2. It is where they entered circulation.
+- Part 2 repeats the "at least twice" reading of the odd-focus penalty, which the first entry
+  in this list already answers.
+
+What part 2 gets right, which is most of it: the base score formula and its term order, the
+size factors, the quality factor bands and the 30 point cutoff, the focus thresholds and
+their MMO doubling, the one, two and three platform blend down to the negative third share,
+the bug formula, the tech spread formula, the trend values including every strange
+combinations band, the halving rule and that it stops at the first platform it catches, the
+year factors, the increase formula with its 20 percent cap from office level 2, every
+early-game cap range, the third top score forced to 10, and the 0.06 per missing specialist
+on the AAA branch. Its reading of `previousTopScore` is right too, bar the floor at 20.
 
 ## How the calculator is held to this
 
