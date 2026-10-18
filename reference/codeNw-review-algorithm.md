@@ -150,6 +150,19 @@ So a game lands the `+0.1` when its technology to design ratio sits between the 
 columns, and takes the `-0.1` only outside the outer pair. Adventure and Casual have no
 reachable lower penalty at all, since the band bottoms out at zero technology.
 
+A second genre moves the target, and `(2*first + second)/3` over six ratios gives thirty
+ordered pairs. The one that lands on a target of exactly 1.0, where the game simply wants
+equal design and technology, is RPG with Action second:
+
+| Pair | Target | Pair | Target |
+| --- | --- | --- | --- |
+| RPG / Action | 1.000 | Strategy / Casual | 1.100 |
+| Strategy / Adventure | 1.067 | Strategy / RPG | 1.133 |
+| Casual / Action | 0.933 | Adventure / Action | 0.867 |
+| RPG / Simulation | 0.933 | Casual / Simulation | 0.867 |
+
+Order matters, since the first genre counts twice. Action with RPG second is 1.400, not 1.000.
+
 **Mission focus.** Each of the 9 dev missions has a share of its stage's time. The game
 compares that share against the mission's genre weight for this game.
 
@@ -485,6 +498,25 @@ training courses carry `maxP: 900`. The player's own character starts at `dF` an
 0.6, which is 300 design and 300 technology on screen, so every specialisation is a long way
 off at the start.
 
+Which mission to specialise in is decided by how many genres count it. A specialist only
+counts where the mission's weight for that genre is 0.9 or better, so the nine split like
+this:
+
+| Mission | Genres that count it | The ones that do not |
+| --- | --- | --- |
+| Level Design | 5 | Adventure |
+| Graphic | 5 | Strategy |
+| Gameplay | 5 | Adventure |
+| Sound | 4 | Adventure, RPG |
+| World Design | 3 | Action, Simulation, Casual |
+| Engine | 3 | Adventure, RPG, Casual |
+| AI | 3 | Adventure, RPG, Casual |
+| Story/Quests | 2 | Action, Simulation, Strategy, Casual |
+| Dialogs | 2 | Action, Simulation, Strategy, Casual |
+
+Three share the top, and Graphic is not the safe pick it looks: it is the one of those three
+that fails on Strategy.
+
 `flags.expert` is not `flags.designSpecialist`. The second one comes from a different
 training, gated on `4 == company.currentLevel` and 700 design skill points, and it is what
 opens the research and development lab. The review counts `flags.expert` only, so three
@@ -676,12 +708,27 @@ So Dungeon-Action, Thief-RPG, Hunting-Simulation, Dungeon-Action is fine: the tr
 repeats back to back. There is no wider "too many action games" penalty anywhere in the
 review code.
 
-**Does the topic matter?** Yes, in three places: the topic to genre weight `p` sets the
-great or terrible combination message, a `p` of 0.7 or lower halves everything the ratio
-earned above 0.6, and nine topics rewrite mission weights outright. What is true is that the
-development phase ignores the topic: points come from the mission's own genre weight, so a
-city simulation and a racing simulation generate identical design and technology points from
-identical sliders. The difference arrives entirely at the review.
+**Does the topic matter?** More than this page said until the Success Guide's comment thread
+sent me back to the points code. It matters in four places, and the first one is not in
+`Reviews` at all.
+
+The design and technology a game produces are multiplied by the topic to genre weight before
+they ever reach the review. The last line of the points function is `return n*l`, and `l` is
+`GameGenre.getGenreWeighting(game.topic.genreWeightings, game.genre, game.secondGenre)`, the
+same 0.6 to 1.0 number the review later calls `p`. A pair sitting at 0.6 therefore generates
+40 percent fewer points than one at 1.0 off identical sliders, and then the review applies
+`p` again at the halving gate. A bad topic and genre pair is charged for twice.
+
+The mission's own genre weight is in there too, but only on one term.
+`Missions.getGeneralFactor` returns `Missions.getGenreWeighting(mission, game, game)` times
+the mission's level bonus, and that multiplies `Missions.BASE_POINTS` alone. The engine tech
+term `getGameBasePoints(game)/9` and the feature bonus are added after it, so neither is
+scaled by the mission weight. The feature bonus has its own gate instead, the
+`5 * sum(v)` time share above.
+
+The other three places are the ones this page already had: `p` sets the great or terrible
+combination message, a `p` of 0.7 or lower halves everything the ratio earned above 0.6, and
+nine topics rewrite mission weights outright.
 
 ## Easy to misread in the source
 
@@ -822,6 +869,45 @@ What it adds and gets right: that a mixed-genre MMO wants two great combinations
 one, that the player's own character starts at 300 and 300, and the slider figures around both
 thresholds, 16 against 17 on the forgotten floor and 74 against 75 on the Casual dialogue
 penalty, both of which fall out of the `o/6` and `0.75 * o` rules above.
+
+The wiki's older Success Guide, the one all three of the above are built on, is where the
+multiplying quality terms in the first entry of this list come from. It writes the additive
+form correctly and then works an example the other way round, arguing that a `+20` and a
+`-15.4` give 1.52 percent rather than 4.6. The additive form it wrote first is the right one.
+Four more of its claims do not survive the code:
+
+- Its slider set for Strategy forgets World Design. The same three stages, 100/50/0 then
+  0/50/100 then 0/100/50, are given for Action, Simulation and Strategy. World Design is
+  weighted 0.8 for Action and Simulation and so costs nothing at a 10 percent share, but it
+  is 1.0 for Strategy, which makes it a forgotten mission at `-0.15`. Those sliders earn
+  `+0.20` in the other two genres and a net `+0.05` in Strategy.
+- Its conclusion table puts Strategy's ideal balance at 1.6 with the same 1.46 and 9.6
+  percent as Simulation above it. Strategy's golden ratio is 1.4. The row was copied.
+- It calls a Graphics specialist useful everywhere. Graphic is 0.8 for Strategy, which is the
+  one genre that does not count it, as the table above shows.
+- It names Simulation with Adventure as the multi-genre pair closest to balance, at 1.02.
+  That pair is 1.200. The one that reaches exactly 1.000 is RPG with Action second, which the
+  guide never mentions.
+
+What it gets right is the hard part. Its target score approximation, `Top_Score` plus the
+greater of the last increase and 12 percent, with a 20 percent ceiling outside the garage, is
+`0.1 * target * yearFactor` written out, and 0.12 is that with the 1.2 of years 7 to 23. Its
+balance delta formula is the game's own, and its worked example showing a technology genre
+charged 40 percent where a design genre is charged 20 on a mirrored point split is exactly
+the asymmetry above. Its nine design and technology splits are the mission table. And a reply
+in its comments, that a quality bonus raises the stored top score along with the game score
+because the top score is the base score after every multiplier, is right and is why a run of
+high-quality games makes the next one harder.
+
+One of its comments overreaches. It has the bonus from an engine feature scaled by the
+mission's genre weight, so that Better AI would pay 9 to 7 more in Strategy than in Adventure.
+The feature bonus is added after `Missions.getGeneralFactor` has already been applied and is
+never multiplied by it. What scales the feature bonus is the time share rule, and what scales
+the whole total is the topic to genre weight.
+
+The page itself is damaged where it matters most. Its Technical Expertise section has lost the
+line for a small game, which now reads as a fragment, and the AAA formula after "An AAA game
+has" is simply missing.
 
 ## How the calculator is held to this
 
