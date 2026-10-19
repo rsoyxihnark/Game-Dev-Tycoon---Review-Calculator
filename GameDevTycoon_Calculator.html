@@ -858,7 +858,7 @@
 (function(){
 "use strict";
 
-const APP_VERSION = "1.0.15";
+const APP_VERSION = "1.0.16";
 
 const TOPSCORE_MAX = 10000;
 
@@ -2224,16 +2224,19 @@ function initUI(){
     const baseParams = gatherParams();
     const SEEDS = [0, 1, 2, 3, 4, 5, 6, 7];
     const displayOf = displayedScore;
-    let best = {top:20, dDisp:1e9, dZ:1e9, zMean:0, dispMean:0};
+    let best = {top:20, dDisp:1e9, dZ:1e9, zMean:0, dispMean:0, capped:0, pinned:0};
+    const DISP_TIE = 0.5;
 
     const evalAt = (t) => {
       const p = Object.assign({}, baseParams, {lastTop:t});
-      let zSum = 0, dispSum = 0, n = 0;
+      let zSum = 0, dispSum = 0, n = 0, capped = 0, pinned = 0;
       for(const seed of SEEDS){
         const r = calcReview(p, mulberry32(seed), true);
         if(!r || r.error) continue;
         zSum    += r.z_final;
         dispSum += displayOf(r.z_final);
+        if(r.ceilingDemoted || r.earlyCapApplied) capped++;
+        if(r.z_raw >= 9.999999 || r.z_final <= 1.000001) pinned++;
         n++;
       }
       if(!n) return;
@@ -2241,8 +2244,8 @@ function initUI(){
       const dispMean = dispSum / n;
       const dDisp = Math.abs(dispMean - obs);
       const dZ    = Math.abs(zMean   - obs);
-      if(dDisp < best.dDisp - 1e-9 || (Math.abs(dDisp - best.dDisp) < 1e-9 && dZ < best.dZ)){
-        best = {top:t, dDisp, dZ, zMean, dispMean};
+      if(dDisp < best.dDisp - DISP_TIE || (dDisp <= best.dDisp + DISP_TIE && dZ < best.dZ)){
+        best = {top:t, dDisp, dZ, zMean, dispMean, capped, pinned};
       }
     };
 
@@ -2285,8 +2288,10 @@ function initUI(){
     const m = $("#calib_msg");
     m.classList.remove("hidden");
     m.style.color = best.dDisp < 0.5 ? "#9ece6a" : best.dDisp < 1.0 ? "#e0af68" : "#f7768e";
-    const rngWarn = best.zMean >= 9
-      ? `<br><span class="text-[#e0af68]">⚠ predicted z ≥ 9, actual in-game score is RNG-capped, calibration uncertainty is higher.</span>`
+    const rngWarn = best.zMean >= 9 || best.capped
+      ? `<br><span class="text-[#e0af68]">⚠ the score is RNG-capped at this fit, so calibration uncertainty is higher.</span>`
+      : best.pinned
+      ? `<br><span class="text-[#e0af68]">⚠ the score sits at the top or the bottom of the 1 to 10 range here, so a wide span of topScore values fits it equally and this is only one of them.</span>`
       : "";
     m.innerHTML = `Best fit: <b>topScore = ${best.top}</b> → avg displayed <b>${best.dispMean.toFixed(2)}</b>
                    (avg z=${best.zMean.toFixed(2)}, residual ${best.dDisp.toFixed(2)} vs your observed ${obs.toFixed(1)}, averaged over ${SEEDS.length} RNG seeds).${rngWarn}`;

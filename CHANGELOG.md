@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.16
+
+- Fixed Back-solve from a past game answering 20 for a mid-range score, when the right topScore was in the hundreds
+- Back-solve from a past game now says when your score sits at the top or the bottom of the 1 to 10 range, where a wide span of topScore values fits it equally
+
 ## 1.0.15
 
 - Fixed the AAA warning saying the size needs the corporate office, when AAA Games unlocks off a large game that scored a straight 10
