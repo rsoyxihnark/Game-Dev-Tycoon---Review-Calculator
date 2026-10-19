@@ -339,6 +339,27 @@ score. That is in the game. The in-game screen offers three platform slots and n
 
 **Topic to audience** is the raw table value, not normalised.
 
+A console the player builds does not take its weights from a table. `GameManager`
+generates both arrays from the game log at the moment the console ships, and nothing
+rerolls them afterwards, so they are a record of what that company has been making:
+
+```
+getCalculatedPlatformGenreWeightings:
+  tally each released game, 1 for its genre and 0.5 for its second genre
+  hand out [1, 1, 0.9, 0.8, 0.8, 0.7] in order of that tally, highest first
+
+getCalculatedPlatformAudienceWeightings:
+  tally each released game by target audience
+  hand out [1, 0.9, 0.8] in order of that tally, highest first
+```
+
+Both start from a default of 0.8 everywhere, and ties break on genre order. So the two
+genres a company has used most come out great, the third good, the fourth and fifth okay and
+the sixth bad, and a second genre counts half. A studio that has made nothing but RPGs and
+Adventures builds a console that is great at exactly those and bad at whatever it never
+touched. The audience array works the same way over three slots instead of six.
+
+
 **Bugs**: with no bugs the factor is exactly 1 and the branch is skipped. With bugs,
 `A = 1 - 0.8 * clamp(100/(technology+design)*bugs, 0, 100)/100`, so it floors at 0.2.
 
@@ -1001,6 +1022,56 @@ which is right, and then Gameplay and Story/Quests as 8:2 and Dialogues as 9:1 i
 sentence. Those three are 2:8, 2:8 and 1:9. The advice around them, to even a technology lean
 out with design-heavy features, only makes sense with the real figures, so the numbers are
 flipped and not the reasoning.
+
+The 1.4.3 page is the 1.6.11 page's older self and its article adds only the console rule
+above. Its value is its comment thread, 1006 of them with a body, 862 from 2013. Only 84
+name a mechanism, a number or a combination; the rest are anecdotes, one-liners, questions
+and three pieces of spam. Of those 84, these are wrong:
+
+- A reply puts the AAA gate at a large game rated 9.5 or better. It is a score of exactly
+  10. A later reply in the same thread gets it right, and so does the code.
+- One has the specialisation requirements as 900 and 900 for Graphic, 900 and 100 for
+  Dialogues and 600 and 900 for Level Design. The ratios are right and the base is not: 900
+  is split across the two sides, not asked of each, so those three are 450 and 450, 810 and
+  90, and 360 and 540.
+- One has PC at 1.3 for a mature audience with flat weights across every genre. PC's mature
+  weight is a raw 1.0, which normalises to 1.2, the ceiling; and its genre row is
+  0.9, 1.0, 0.9, 1.0, 1.0, 0.6, which is anything but flat. Casual on PC is the worst band
+  there is.
+- The same comment has every topic at 1.0 for the everyone and mature audiences. Twenty
+  seven of the 66 miss on everyone and 35 on mature. Its third claim holds: young is the one
+  most often marked down, in 49 of the 66.
+- One has Gameling at 0.7 for everyone. It is 0.9. Its other two figures, a flat young and a
+  0.6 mature, are right, and that 0.6 is low enough to trip the platform audience cut.
+- One explains a missing great-combination message by saying it only shows the first time.
+  The review prints that line whenever the blended topic to genre weight is exactly 1, every
+  time, with no memory of earlier games. A second genre under 1.0 is the ordinary way to lose
+  it.
+- One holds that balance and the topic to genre combination do not matter at all, only
+  beating your own last score. Both feed the base score, and the topic weight multiplies the
+  points the game generates on top of that, so they are two of the levers that raise the
+  score being compared.
+- One asks whether a custom console's genre multipliers are random. They are not: they come
+  out of the game log by the rule above.
+- One has the strange-combinations trend paying 1.2 for anything that is not a great
+  combination. It pays 1.1 at 0.9, 1.2 at 0.8 and 1.4 below that.
+- Two comments, and the 1.6.11 page, name a Startups topic. There is none.
+
+What the thread gets right, all of it checked against the source: the 140000 fans and four
+staff behind Large Games and the straight 10 behind AAA; the tech level order of all thirteen
+graphics engines, grouped exactly; the responsible-staff factor of 0.7 where nobody is
+assigned and 1 on a small game; Fantasy at a flat 1.0 across all three audiences; multi-genre
+as two thirds and one third; that Engine and AI are the two technology-heaviest missions and
+so the ones to max for an Action target; and that Alternate History with Strategy is 0.9, the
+commenter reading the data correctly against a wiki table that showed a minus.
+
+Its combination reports hold up almost perfectly. Spy with Strategy is 0.7 and bad, Military
+with Adventure is 0.6 and terrible, and Sci-Fi with Strategy, Sci-Fi with Simulation, Dance
+with Simulation, Wild West with RPG, Martial Arts with RPG, Sports with Action, Military with
+Action, Military with Strategy, Medieval with Adventure and Fantasy with Adventure are all
+1.0. One is wrong: a player who tested Spy with Adventure and reported it as not great was
+looking at a 1.0 pair. Space with Adventure, asked about as a pair that does not combine, is
+0.8, which earns no message and costs nothing.
 
 ## How the calculator is held to this
 
