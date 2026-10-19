@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.13
+
+- The calculator now warns when a large or AAA game is set on Gameling, Vena Gear, grPhone, PPS or GS, which Game Dev Tycoon refuses in Game Setup
+- The calculator now warns when MMO is ticked on a small or medium game, which Game Dev Tycoon refuses in Game Setup
+
 ## 1.0.12
 
 - Recently-hired staff now says your own character never counts as a fresh hire, whatever it has shipped

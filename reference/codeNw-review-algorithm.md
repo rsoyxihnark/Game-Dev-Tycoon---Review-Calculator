@@ -74,6 +74,17 @@ The platform table is built in pieces. `var a=[...]` holds the first five, then
 `Platforms.allPlatforms.addRange([...])` appends the rest. Reading only the first literal
 gets you five platforms out of twenty-nine.
 
+Five of those twenty-nine refuse the two big sizes. `Platforms.doesPlatformSupportGameSize`
+returns true for every platform on a small or a medium game, and on a large or an AAA one it
+bars Gameling, Vena Gear, grPhone, PPS and GS. Nothing in `Reviews.rateGame` reads it, so the
+review would score such a pairing happily; it is Game Setup that refuses it, with the line
+"{0} does not support {1} games!".
+
+The same validation block holds two more rules the review never sees. An MMO must be large
+or AAA, refused otherwise with "MMO's cannot be small or medium.", and an MMO needs an
+engine carrying the `mmoSupport` part, refused with "Engine does not support MMO.". So every
+game that reaches the MMO doubling in `rateGame` is a large or an AAA one.
+
 Three platform functions on line 426 have near-identical names and different jobs:
 `Platforms.getNormalizedGenreWeighting` maps one raw weight to its normalised value,
 `Platforms.getNormGenreWeighting` normalises a whole weight array for a genre pair, and
