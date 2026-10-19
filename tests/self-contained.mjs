@@ -284,6 +284,86 @@ try {
   }
 
   {
+    const { ctx, p, errs } = await freshPage(null, ALL_UNLOCKED);
+    const trend = await p.evaluate(async () => {
+      const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+      const out = {};
+      for (const [name, value] of [["none", "1.0"], ["penalty", "0.85"], ["bonus", "1.2_genre"]]) {
+        const el = document.querySelector("#i_trend");
+        el.value = value;
+        el.dispatchEvent(new Event("change", { bubbles: true }));
+        el.dispatchEvent(new Event("input", { bubbles: true }));
+        await wait(800);
+        const row = document.querySelector("#o_trend");
+        const spans = row.querySelectorAll(".chainbar > span");
+        const fill = spans[spans.length - 1];
+        const mark = row.querySelector("[title]");
+        out[name] = {
+          bars: spans.length,
+          width: fill ? fill.style.width : null,
+          left: fill ? fill.style.left : null,
+          tip: mark ? mark.getAttribute("title") : null,
+        };
+      }
+      return out;
+    });
+    check("the trend row marks no loss while no trend is running",
+      errs.length === 0 && trend.none.width === "0%" && !/loss|losing/i.test(trend.none.tip) &&
+        trend.penalty.left === "0%" && trend.penalty.width !== "0%" &&
+        trend.bonus.left === "50%" && trend.bonus.width !== "0%",
+      JSON.stringify({ errs: errs.slice(0, 3), trend }));
+    await ctx.close();
+  }
+
+  {
+    const { ctx, p, errs } = await freshPage(null, ALL_UNLOCKED);
+    const naming = await p.evaluate(() => {
+      const btn = document.querySelector("#btn_pick_perfect");
+      const strip = (t) => t.replace(/[^A-Za-z ]/g, " ").replace(/\s+/g, " ").trim();
+      return {
+        heading: strip(btn.closest(".card").querySelector("h2").textContent),
+        button: strip(btn.textContent),
+      };
+    });
+    check("the picker button and its panel carry one name",
+      errs.length === 0 && naming.heading === naming.button, JSON.stringify(naming));
+    await ctx.close();
+  }
+
+  {
+    const { ctx, p, errs } = await freshPage(null, ALL_UNLOCKED);
+    const bar = await p.evaluate(async () => {
+      const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+      const scale = () => {
+        const el = document.querySelector("#toast_host .toast");
+        if (!el) return null;
+        const m = getComputedStyle(el, "::after").transform.match(/matrix\(([^,]+)/);
+        return m ? Number(m[1]) : null;
+      };
+      const year = document.querySelector("#i_year");
+      year.value = "30";
+      year.dispatchEvent(new Event("input", { bubbles: true }));
+      await wait(900);
+      document.querySelector('.tab[data-tab="combo"]').click();
+      await wait(400);
+      const chip = document.querySelector("#cmb_tbody .cmb-arrow");
+      chip.click();
+      await wait(1500);
+      const halfway = scale();
+      document.querySelector('.tab[data-tab="combo"]').click();
+      await wait(200);
+      document.querySelector("#cmb_tbody .cmb-arrow").click();
+      await wait(150);
+      return { halfway, restarted: scale(), toasts: document.querySelectorAll("#toast_host .toast").length };
+    });
+    check("a repeated notification restarts its countdown bar",
+      errs.length === 0 && bar.toasts === 1 && bar.halfway !== null &&
+        bar.halfway < 0.75 && bar.restarted > 0.9,
+      JSON.stringify({ errs: errs.slice(0, 3), bar }));
+    await ctx.close();
+  }
+
+  {
     const { ctx, p, errs } = await freshPage(null, { topics: [], genres: ["Casual"], audiences: ["young", "mature"] });
     const seen = await p.evaluate(async () => {
       const wait = (ms) => new Promise((r) => setTimeout(r, ms));

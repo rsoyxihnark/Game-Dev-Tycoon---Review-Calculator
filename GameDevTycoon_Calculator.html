@@ -113,7 +113,8 @@
   #toast_host .toast.bad  { background:#3a1f24; color:#ff8da3; border:1px solid #f7768e; }
 
   #toast_host .toast::after { content:""; position:absolute; left:0; bottom:0; height:2px; width:100%;
-    background:currentColor; opacity:0.5; transform-origin:left; animation: toastShrink var(--toast-ms,3000ms) linear forwards; }
+    background:currentColor; opacity:0.5; transform-origin:left; }
+  #toast_host .toast.ticking::after { animation: toastShrink var(--toast-ms,3000ms) linear forwards; }
   @keyframes toastIn { from{transform:translateY(8px); opacity:0;} to{transform:translateY(0); opacity:1;} }
   @keyframes toastShrink { from{transform:scaleX(1);} to{transform:scaleX(0);} }
 
@@ -464,7 +465,7 @@
         </div>
         <button id="btn_pick_perfect" type="button"
                 class="px-4 py-2 rounded-lg bg-[#7aa2f7] hover:bg-[#9ec1ff] text-[#0e1016] font-bold text-sm shadow-md whitespace-nowrap">
-          🎲 Pick best for me
+          🎲 Pick a Perfect Game
           <span id="pick_idx_badge"
                 class="ml-1 inline-block px-1.5 py-0.5 rounded bg-[#0e1016] text-[#9ec1ff] font-mono text-[11px] align-middle hidden"
                 title="Cursor position in the deterministic candidate list, clicking advances by 1, wrapping at the end."></span>
@@ -858,7 +859,7 @@
 (function(){
 "use strict";
 
-const APP_VERSION = "1.0.18";
+const APP_VERSION = "1.0.19";
 
 const TOPSCORE_MAX = 10000;
 
@@ -1673,11 +1674,15 @@ function toast(msg, kind, ms){
   const existing = [...host.children].find(n => n.dataset.msg === msg);
   if(existing){
     clearTimeout(+existing.dataset.timer);
+    existing.style.setProperty("--toast-ms", ms + "ms");
+    existing.classList.remove("ticking");
+    void existing.offsetWidth;
+    existing.classList.add("ticking");
     existing.dataset.timer = setTimeout(() => existing.remove(), ms);
     return;
   }
   const el = document.createElement("div");
-  el.className = "toast " + kind;
+  el.className = "toast ticking " + kind;
   el.textContent = msg;
   el.dataset.msg = msg;
 
@@ -3002,7 +3007,7 @@ function pickPerfectGame(arg, forceApply){
     ? ` · <span class="text-[#e0af68]">⚠ D/T totals (${curD}/${curT}) don't match any unlocked genre's golden ratio, slider-balance penalty unavoidable until you grow Tech or Design points</span>`
     : "";
   const tag = (outsidePool
-    ? `<span class="text-[#e0af68]">⚠ taken from the Perfect Combos table, below the best tier Pick best for me cycles</span>`
+    ? `<span class="text-[#e0af68]">⚠ taken from the Perfect Combos table, below the best tier Pick a Perfect Game cycles</span>`
     : fallbackUsed
     ? `<span class="text-[#e0af68]">⚠ best available: ${topTier}/4 axes at 1.0${warningsRemain ? `, no warning-free combo exists yet (clean t↔g, t↔a, p↔g requires unlocking more topics or a better platform)` : ` (warning-free pick within this tier)`}</span>`
     : `(${combos.length} perfect 4/4 combo${combos.length===1?"":"s"} available)`) + balanceNote;
@@ -3578,7 +3583,22 @@ function _recalcCore(){
   chainRow("o_r", out.r_val, 1.0, 3);
   chainRow("o_u", out.u_factor, 1.0, 3);
 
-  chainRow("o_trend", params.trend, 1.4, 2);
+  {
+    const tr = params.trend;
+    const span = tr >= 1 ? 0.4 : 0.15;
+    const ratio = Math.max(-1, Math.min(1, (tr - 1) / span));
+    const fillPct = Math.abs(ratio) * 50;
+    const fillLeft = ratio < 0 ? (50 - fillPct) : 50;
+    const tColor = tr > 1 ? "#9ece6a" : tr < 1 ? "#f7768e" : "#7d8294";
+    const tGlyph = tr > 1 ? "✓" : tr < 1 ? "✗" : "·";
+    const tTip = tr > 1 ? "trend bonus" : tr < 1 ? "trend penalty" : "no trend running, which is the normal state";
+    O("o_trend").innerHTML =
+      `<span class="chainbar" style="position:relative">` +
+        `<span style="position:absolute;left:50%;top:0;bottom:0;width:1px;background:#3d4256"></span>` +
+        `<span style="position:absolute;left:${fillLeft.toFixed(1)}%;top:0;bottom:0;width:${fillPct.toFixed(1)}%;background:${tColor};border-radius:2px"></span>` +
+      `</span>` +
+      `<span style="color:${tColor};font-weight:600"><span title="${tTip}">${tGlyph}</span> ${tr.toFixed(2)}</span>`;
+  }
 
   {
     const ratio = Math.max(-1, Math.min(1, out.s / 0.4));

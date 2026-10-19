@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.19
+
+- Fixed the trend row in Chain multipliers marking a score loss when no trend is running, which is the normal state
+- The Pick a Perfect Game button now carries the panel's own name, instead of a second name for the same thing
+- Fixed the countdown bar under a repeated notification sitting empty while the notification was still on screen
+
 ## 1.0.18
 
 - Fixed the golden ratio row claiming a perfect balance while your Design and Technology points are still under 30
