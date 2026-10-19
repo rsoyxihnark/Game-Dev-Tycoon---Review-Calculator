@@ -858,7 +858,7 @@
 (function(){
 "use strict";
 
-const APP_VERSION = "1.0.14";
+const APP_VERSION = "1.0.15";
 
 const TOPSCORE_MAX = 10000;
 
@@ -3811,6 +3811,26 @@ function renderSlowPanels(params, out, colorFor){
       }
     }
   }
+
+  {
+    const mo = sanitizeInt($("#i_month").value, 1, 12, 1);
+    const beforeY12M9 = params.year < 12 || (params.year === 12 && mo <= 8);
+    const beforeY17M3 = params.year < 17 || (params.year === 17 && mo <= 2);
+    if(params.second && beforeY12M9){
+      sug.push({sev:"warn", html:`
+        ⚠ <b>A second genre is not available yet</b>: Multi Genre only becomes researchable from <b>year 12, month 9</b>,
+        and you are on year ${params.year}, month ${mo}.<br>
+        <span class="text-[#7d8294]">Fix:</span> clear the second genre, or set the date to year 12 month 9 or later.
+      `});
+    }
+    if(params.platforms.length > 1 && beforeY17M3){
+      sug.push({sev:"warn", html:`
+        ⚠ <b>More than one platform is not available yet</b>: Multi Platform only becomes researchable from
+        <b>year 17, month 3</b>, and you are on year ${params.year}, month ${mo}.<br>
+        <span class="text-[#7d8294]">Fix:</span> drop to one platform, or set the date to year 17 month 3 or later.
+      `});
+    }
+  }
   {
     const workingTeam = params.teamSize > 0 ? params.teamSize : (OPT_TEAM_SIZE[params.size] ?? 1);
     if(params.newStaff > workingTeam){
@@ -3842,8 +3862,8 @@ function renderSlowPanels(params, out, colorFor){
   }
   if(params.size === "aaa" && params.year <= 2){
     sug.push({sev:"bad", html:`
-      ⛔ <b>AAA game in Year ${params.year}</b>: the AAA size requires the corporate office (level 4) and is gated until much later in a real save.<br>
-      <span class="text-[#7d8294]">Fix:</span> use medium / large until you've reached year 8-10 with the corporate office.
+      ⛔ <b>AAA game in Year ${params.year}</b>: AAA Games only unlocks once a <b>large</b> game of yours has scored a straight <b>10</b>, then costs 2000 research points.<br>
+      <span class="text-[#7d8294]">Fix:</span> use medium / large until you have that 10/10 large game behind you.
     `});
   }
   if(params.size === "large" && params.year === 1 && params.companyLevel === 1){

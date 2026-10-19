@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.15
+
+- Fixed the AAA warning saying the size needs the corporate office, when AAA Games unlocks off a large game that scored a straight 10
+- The calculator now warns when a second genre is set before year 12 month 9, which is the earliest Multi Genre can be researched
+- The calculator now warns when more than one platform is picked before year 17 month 3, which is the earliest Multi Platform can be researched
+
 ## 1.0.14
 
 - The calculator now warns when a trend is set on a garage company, because Game Dev Tycoon only starts a trend from office level 2 up

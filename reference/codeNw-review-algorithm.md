@@ -85,6 +85,15 @@ or AAA, refused otherwise with "MMO's cannot be small or medium.", and an MMO ne
 engine carrying the `mmoSupport` part, refused with "Engine does not support MMO.". So every
 game that reaches the MMO doubling in `rateGame` is a large or an AAA one.
 
+Which sizes and features exist at all is research, never an office level. Medium games want
+10 research points and a second member of staff, large games 40 points with over 140000 fans
+and more than four staff, AAA 2000 points and a large game already scored at a straight 10,
+and MMO 1700 points. Multi Genre is 80 points and `isLaterOrEqualThan(12,8)`, Multi Platform
+100 points and `isLaterOrEqualThan(17,2)`. That helper takes a week as its third argument and
+neither call passes one, so the equal-month branch compares against `undefined` and is always
+false: the two become researchable a month after the numbers read, year 12 month 9 and year
+17 month 3.
+
 Three platform functions on line 426 have near-identical names and different jobs:
 `Platforms.getNormalizedGenreWeighting` maps one raw weight to its normalised value,
 `Platforms.getNormGenreWeighting` normalises a whole weight array for a genre pair, and
