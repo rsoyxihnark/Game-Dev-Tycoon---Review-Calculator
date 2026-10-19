@@ -1,5 +1,21 @@
 # Changelog
 
+## 1.0.17
+
+- Fixed Perfect Combos applying a different game than the row you clicked, whenever a filter narrowed the table below the best tier
+- Fixed changing the in-game date replacing a game you had just applied from Perfect Combos
+- Pick best for me now says when the game it applied came from the Perfect Combos table rather than its own best tier
+- Fixed the Reviewer score distribution filling back in after the score had gone blank, so it no longer charts a rejected setup
+- Fixed REPORT ISSUE losing its own label for good when you click it twice
+- Fixed the advice offering a platform that is not on the market at your in-game date
+- Fixed the advice telling you to switch to an audience you have locked in the Topic & Genre Library
+- Fixed the advice offering topics you have locked in the Topic & Genre Library as the fix for a weak topic and genre pair
+- Fixed the advice ranking platforms on the main genre alone when a second genre is set, which is not the q the calculator scores
+- The advice now says when no platform on the market can close the q gap, instead of naming one that is no better
+- Design points, Technology points, Bugs, Fans and Recently-hired staff now snap back when you type past what the calculator accepts
+- Fixed the storage warning calling your topic, genre and audience locks undefined when storage is full or switched off
+- Fixed a stray full stop in the topic and audience warnings, where the halved score is explained
+
 ## 1.0.16
 
 - Fixed Back-solve from a past game answering 20 for a mid-range score, when the right topScore was in the hundreds

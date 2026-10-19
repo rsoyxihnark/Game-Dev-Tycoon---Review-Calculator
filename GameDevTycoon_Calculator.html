@@ -307,7 +307,7 @@
     <div class="flex items-center gap-2 bg-[#1f2230] border border-[#2d3142] rounded-lg px-3 py-1.5 font-mono"
          title="Mirrors the in-game corner display. Date (Y/M/W) drives platform availability + the early-game score cap; fans drive the medium-size tech-fit penalty.">
       <label class="flex items-center gap-1 text-xs">
-        <input type="number" id="i_fans" value="0" min="0" step="1000"
+        <input type="number" id="i_fans" value="0" min="0" max="1000000000" step="1000"
                class="w-20 text-right text-sm no-spin" style="padding:2px 6px;">
         <span class="text-[#e0af68] text-xs">Fans</span>
       </label>
@@ -514,13 +514,13 @@
       <h2 class="text-[#7aa2f7] font-bold mb-3">Production points</h2>
       <div class="grid grid-cols-2 gap-3">
         <label class="flex flex-col text-xs gap-1">Design points (D)
-          <input type="number" id="i_D" value="13" step="10" min="0">
+          <input type="number" id="i_D" value="13" step="10" min="0" max="1000000">
         </label>
         <label class="flex flex-col text-xs gap-1">Technology points (T)
-          <input type="number" id="i_T" value="13" step="10" min="0">
+          <input type="number" id="i_T" value="13" step="10" min="0" max="1000000">
         </label>
         <label class="flex flex-col text-xs gap-1">Bugs (at release)
-          <input type="number" id="i_bugs" value="0" min="0">
+          <input type="number" id="i_bugs" value="0" min="0" max="1000000">
         </label>
         <label class="flex flex-col text-xs gap-1" title="game.flags.techLevel in codeNw.js: the tech level of the graphics engine picked for this game. Only Large and AAA tech-fit read it. The small-game penalty uses Company office level, which is the next input.">
           <span>Graphics engine tech level <span class="text-[#7d8294]" title="the tech level of the one graphics engine this game uses">ⓘ</span></span>
@@ -565,7 +565,7 @@
         </label>
         <label class="flex flex-col text-xs gap-1" title="Number of staff hired recently (within the last ~2 game releases) who worked on this game. Your own character never counts, whatever it has shipped. Fresh hires drag the 9→10 ceiling down.">
           <span>Recently-hired staff <span class="text-[#7d8294]">ⓘ</span></span>
-          <input type="number" id="i_newstaff" value="0" min="0">
+          <input type="number" id="i_newstaff" value="0" min="0" max="100">
           <span class="text-[10px] text-[#7d8294] leading-snug">
             How many staff did you hire <b>during the last ~2 games</b> (count people who joined recently, fresh employees the game still considers "new").<br>
             If &gt; 0, the score has a hard time reaching <b>9.0+</b> (the game randomly drags 9s down to ~8.15-9.10). Set to <b>0</b> if you haven't hired anyone in the last 2 releases.
@@ -858,7 +858,7 @@
 (function(){
 "use strict";
 
-const APP_VERSION = "1.0.16";
+const APP_VERSION = "1.0.17";
 
 const TOPSCORE_MAX = 10000;
 
@@ -1133,13 +1133,13 @@ function saveLockSet(key, set, label){
   try { localStorage.setItem(key, JSON.stringify([...set])); }
   catch(e){ if(typeof toast === "function") toast(`Couldn't save ${label} (storage full or disabled)`, "warn"); }
 }
-function loadLockSet(key, defaults, assign){
+function loadLockSet(key, defaults, assign, label){
   try {
     const raw = localStorage.getItem(key);
     if(raw === null){
       const seed = new Set(defaults);
       assign(seed);
-      saveLockSet(key, seed);
+      saveLockSet(key, seed, label);
     } else {
       assign(new Set(JSON.parse(raw)));
     }
@@ -1149,7 +1149,7 @@ function loadLockSet(key, defaults, assign){
 const TOPIC_LOCK_KEY = "gdt_calc_locked_topics_v1";
 
 let LOCKED_TOPICS = new Set(TOPICS.map(t => t.id));
-function loadTopicLocks(){ loadLockSet(TOPIC_LOCK_KEY, TOPICS.map(t => t.id), s => { LOCKED_TOPICS = s; }); }
+function loadTopicLocks(){ loadLockSet(TOPIC_LOCK_KEY, TOPICS.map(t => t.id), s => { LOCKED_TOPICS = s; }, "topic locks"); }
 function saveTopicLocks(){ saveLockSet(TOPIC_LOCK_KEY, LOCKED_TOPICS, "topic locks"); }
 function isTopicUnlocked(id){ return !LOCKED_TOPICS.has(id); }
 
@@ -1157,14 +1157,14 @@ const GENRE_LOCK_KEY = "gdt_calc_locked_genres_v1";
 
 const GENRE_DEFAULT_LOCKED = ["Casual"];
 let LOCKED_GENRES = new Set(GENRE_DEFAULT_LOCKED);
-function loadGenreLocks(){ loadLockSet(GENRE_LOCK_KEY, GENRE_DEFAULT_LOCKED, s => { LOCKED_GENRES = s; }); }
+function loadGenreLocks(){ loadLockSet(GENRE_LOCK_KEY, GENRE_DEFAULT_LOCKED, s => { LOCKED_GENRES = s; }, "genre locks"); }
 function saveGenreLocks(){ saveLockSet(GENRE_LOCK_KEY, LOCKED_GENRES, "genre locks"); }
 function isGenreUnlocked(id){ return !LOCKED_GENRES.has(id); }
 
 const AUD_LOCK_KEY = "gdt_calc_locked_audiences_v1";
 const AUD_DEFAULT_LOCKED = ["young", "mature"];
 let LOCKED_AUDIENCES = new Set(AUD_DEFAULT_LOCKED);
-function loadAudienceLocks(){ loadLockSet(AUD_LOCK_KEY, AUD_DEFAULT_LOCKED, s => { LOCKED_AUDIENCES = s; }); }
+function loadAudienceLocks(){ loadLockSet(AUD_LOCK_KEY, AUD_DEFAULT_LOCKED, s => { LOCKED_AUDIENCES = s; }, "audience locks"); }
 function saveAudienceLocks(){ saveLockSet(AUD_LOCK_KEY, LOCKED_AUDIENCES, "audience locks"); }
 function isAudienceUnlocked(id){ return !LOCKED_AUDIENCES.has(id); }
 
@@ -1710,7 +1710,8 @@ function debounceDelay(fn, ms){
   };
 }
 
-const _runMonteCarlo = debounceDelay(function(zFinal, psEnabled, colorFor, seed){
+const _runMonteCarlo = debounceDelay(function(zFinal, psEnabled, colorFor, seed, token){
+  if(token !== recalc._slowToken) return;
   const { sumHist, n } = simulateReviewers(zFinal, psEnabled, MONTE_RUNS, seed);
   const buckets = new Array(10).fill(0);
 
@@ -2523,6 +2524,7 @@ function initUI(){
 
   const reportBtn = $("#btn_report");
   if(reportBtn){
+    const reportLabel = reportBtn.innerHTML;
     reportBtn.addEventListener("click", async () => {
       const params = gatherParams();
       const out    = applyCapExpectedValue(params, calcReview(params, mulberry32(0)));
@@ -2583,16 +2585,13 @@ function initUI(){
       const text = lines.join("\n");
 
       const flash = (msg, color) => {
-        reportBtn.dataset.flash = "1";
-        const orig = reportBtn.innerHTML;
         reportBtn.innerHTML = `<span class="text-xl leading-none">${color==="ok"?"✓":"✗"}</span><span>${msg}</span>`;
 
         const cls = color === "ok" ? "btn-flash-ok" : "btn-flash-bad";
         reportBtn.classList.add(cls);
         setTimeout(() => {
-          reportBtn.innerHTML = orig;
+          reportBtn.innerHTML = reportLabel;
           reportBtn.classList.remove("btn-flash-ok", "btn-flash-bad");
-          delete reportBtn.dataset.flash;
         }, 1800);
       };
 
@@ -2893,7 +2892,7 @@ function narrowToCleanestTier(tuples){
   };
 }
 
-const PICKER_STATE = { lastKey: null, currentIdx: -1, poolSize: 0 };
+const PICKER_STATE = { lastKey: null };
 
 function buildPickerPool(){
   const allTuples = findPerfectGameCombos(0.9);
@@ -2940,8 +2939,6 @@ function pickPerfectGame(arg, forceApply){
   if(allTuples.length === 0){
     if(badge) badge.classList.add("hidden");
     PICKER_STATE.lastKey = null;
-    PICKER_STATE.currentIdx = -1;
-    PICKER_STATE.poolSize = 0;
     if(typeof rerenderCombosIfActive === "function") rerenderCombosIfActive();
 
     const fracYear = getCurrentFractionalYear();
@@ -2964,10 +2961,14 @@ function pickPerfectGame(arg, forceApply){
   const prevIdx = lastKey
     ? combos.findIndex(c => `${c.topic}|${c.genre}|${c.aud}|${c.plat}` === lastKey)
     : -1;
-  if(!shouldAdvance && !forceApply && prevIdx >= 0){
-    PICKER_STATE.currentIdx = prevIdx;
-    PICKER_STATE.poolSize   = combos.length;
-    if(badge){ badge.textContent = `${prevIdx + 1}/${combos.length}`; badge.classList.remove("hidden"); }
+  const outside = (lastKey && prevIdx < 0)
+    ? allTuples.find(c => `${c.topic}|${c.genre}|${c.aud}|${c.plat}` === lastKey)
+    : null;
+  if(!shouldAdvance && !forceApply && (prevIdx >= 0 || outside)){
+    if(badge){
+      if(prevIdx < 0) badge.classList.add("hidden");
+      else { badge.textContent = `${prevIdx + 1}/${combos.length}`; badge.classList.remove("hidden"); }
+    }
     if(typeof rerenderCombosIfActive === "function") rerenderCombosIfActive();
     return;
   }
@@ -2977,13 +2978,13 @@ function pickPerfectGame(arg, forceApply){
   } else {
     idx = prevIdx >= 0 ? prevIdx : 0;
   }
-  const pick = combos[idx];
-  PICKER_STATE.lastKey    = `${pick.topic}|${pick.genre}|${pick.aud}|${pick.plat}`;
-  PICKER_STATE.currentIdx = idx;
-  PICKER_STATE.poolSize   = combos.length;
+  let pick = combos[idx];
+  if(forceApply && outside){ pick = outside; idx = -1; }
+  const outsidePool = idx < 0;
+  PICKER_STATE.lastKey = `${pick.topic}|${pick.genre}|${pick.aud}|${pick.plat}`;
   if(badge){
-    badge.textContent = `${idx + 1}/${combos.length}`;
-    badge.classList.remove("hidden");
+    if(outsidePool) badge.classList.add("hidden");
+    else { badge.textContent = `${idx + 1}/${combos.length}`; badge.classList.remove("hidden"); }
   }
 
   $("#i_topic").value  = pick.topic;
@@ -2995,16 +2996,18 @@ function pickPerfectGame(arg, forceApply){
 
   document.querySelectorAll("[data-plat]").forEach(cb => { cb.checked = (cb.dataset.plat === pick.plat); });
 
-  result.className = `text-xs ${fallbackUsed ? "text-[#e0af68]" : "text-[#9ece6a]"} mt-2 min-h-[1.25rem]`;
+  result.className = `text-xs ${(fallbackUsed || outsidePool) ? "text-[#e0af68]" : "text-[#9ece6a]"} mt-2 min-h-[1.25rem]`;
 
   const balanceNote = balanceWarn
     ? ` · <span class="text-[#e0af68]">⚠ D/T totals (${curD}/${curT}) don't match any unlocked genre's golden ratio, slider-balance penalty unavoidable until you grow Tech or Design points</span>`
     : "";
-  const tag = (fallbackUsed
+  const tag = (outsidePool
+    ? `<span class="text-[#e0af68]">⚠ taken from the Perfect Combos table, below the best tier Pick best for me cycles</span>`
+    : fallbackUsed
     ? `<span class="text-[#e0af68]">⚠ best available: ${topTier}/4 axes at 1.0${warningsRemain ? `, no warning-free combo exists yet (clean t↔g, t↔a, p↔g requires unlocking more topics or a better platform)` : ` (warning-free pick within this tier)`}</span>`
     : `(${combos.length} perfect 4/4 combo${combos.length===1?"":"s"} available)`) + balanceNote;
   result.innerHTML = `✓ Picked <b>${pick.topic} / ${pick.genre} / ${pick.aud}</b> on <b>${pick.plat}</b>
-                      <span class="text-[#a9b1d6] font-mono">[${idx+1}/${combos.length}]</span>
+                      ${outsidePool ? "" : `<span class="text-[#a9b1d6] font-mono">[${idx+1}/${combos.length}]</span>`}
                       <span class="text-[#7d8294]">${tag}</span>`;
 
   $("#tab-calc").dispatchEvent(new Event("input", {bubbles:true}));
@@ -3039,17 +3042,13 @@ function syncPickerToManualSetup(){
   const key = (single && !second) ? `${topicId}|${genre}|${aud}|${single}` : null;
   const idx = key ? combos.findIndex(c => `${c.topic}|${c.genre}|${c.aud}|${c.plat}` === key) : -1;
   if(idx >= 0){
-    PICKER_STATE.lastKey    = key;
-    PICKER_STATE.currentIdx = idx;
-    PICKER_STATE.poolSize   = combos.length;
+    PICKER_STATE.lastKey = key;
     if(badge){ badge.textContent = `${idx + 1}/${combos.length}`; badge.classList.remove("hidden"); }
     result.className = "text-xs text-[#9ece6a] mt-2 min-h-[1.25rem]";
     result.innerHTML = `✓ Manual setup <b>${topicId} / ${genre} / ${aud}</b> on <b>${single}</b> is in the
       perfect pool <span class="text-[#a9b1d6] font-mono">[${idx + 1}/${combos.length}]</span>: picker synced.`;
   } else {
-    PICKER_STATE.lastKey    = null;
-    PICKER_STATE.currentIdx = -1;
-    PICKER_STATE.poolSize   = combos.length;
+    PICKER_STATE.lastKey = null;
     if(badge) badge.classList.add("hidden");
 
     const reasons = [];
@@ -3630,26 +3629,32 @@ function renderSlowPanels(params, out, colorFor){
 
   const sug = [];
   if(out.p_val < 1.0){
-    const fixes = TOPICS.filter(t => t.g[gi(params.genre)] === 1.0).map(t=>t.id);
+    const fixes = TOPICS
+      .filter(t => isTopicUnlocked(t.id) && genreWeightRaw(t.g, params.genre, params.second) >= 0.999)
+      .map(t => t.id);
     const severity = out.p_val <= 0.7 ? "bad" : "warn";
     const tag = severity==="bad" ? "⛔ <b>Topic doesn't fit the genre</b>" : "⚠ <b>Topic is not a perfect fit for the genre</b>";
-    const extra = out.p_val <= 0.7 ? ", this also <b>halves</b> the score above 0.6, a huge hidden penalty." : "";
+    const extra = out.p_val <= 0.7 ? " This also <b>halves</b> the score above 0.6, a huge hidden penalty." : "";
+    const topicFix = fixes.length
+      ? `change topic to one of <span class="text-[#b6e08c]">${fixes.slice(0,12).join(", ")}${fixes.length>12?", …":""}</span>`
+      : `no topic you have unlocked reaches 1.00 here`;
     sug.push({sev:severity, html:`
       ${tag} (weight ${out.p_val.toFixed(2)}, target 1.00).${extra}<br>
       <span class="text-[#7d8294]">Fix:</span>
-      Keep <b>${params.genre}</b> and change topic to one of:
-      <span class="text-[#b6e08c]">${fixes.slice(0,12).join(", ")}${fixes.length>12?", …":""}</span>.
+      Keep <b>${params.genre}</b> and ${topicFix}.
       Or keep <b>${params.topic}</b> and pick a genre with weight 1.0 for it (see <i>Perfect Combos</i>).
     `});
   }
   if(out.v_val < 1.0){
     const topic = TOPICS_BY_ID.get(params.topic);
-    const better = AUDIENCES.map((a,i)=>({a, w: topic.a[i]})).filter(x=>x.w > out.v_val).sort((a,b)=>b.w-a.w);
+    const better = AUDIENCES.map((a,i)=>({a, w: topic.a[i]}))
+      .filter(x => x.w > out.v_val && isAudienceUnlocked(x.a))
+      .sort((a,b)=>b.w-a.w);
     const sev = out.v_val <= 0.7 ? "bad" : "warn";
-    const extra = out.v_val <= 0.7 ? ", this also <b>halves</b> the score above 0.6 (same hidden penalty)." : "";
+    const extra = out.v_val <= 0.7 ? " This also <b>halves</b> the score above 0.6, the same hidden penalty." : "";
     const fix = better.length
       ? `Switch audience to <b>${better[0].a}</b> (weight ${better[0].w.toFixed(2)})`
-      : `No higher-weighted audience exists for <b>${params.topic}</b>: change the topic`;
+      : `No audience you have unlocked scores higher on <b>${params.topic}</b>: change the topic`;
     sug.push({sev, html:`
       ${sev==="bad"?"⛔":"⚠"} <b>Audience doesn't love this topic</b>
       (weight ${out.v_val.toFixed(2)}, target 1.00).${extra}<br>
@@ -3657,16 +3662,20 @@ function renderSlowPanels(params, out, colorFor){
     `});
   }
   if(out.q_val < 1.1){
-    const top3 = [...PLATFORMS]
-      .map(p => ({id:p.id, w:normGenre(p.g[gi(params.genre)])}))
+    const onMarket = getCurrentFractionalYear();
+    const picks = PLATFORMS
+      .filter(p => isPlatformAvailable(p.id, onMarket))
+      .map(p => ({id:p.id, w: platGenreWeighting([p], params.genre, params.second)}))
       .sort((a,b)=>b.w-a.w).slice(0,5);
-    const best = top3[0];
+    const best = picks[0];
+    const others = picks.slice(1).map(x=>`<span class="text-[#a9b1d6]">${x.id}</span>`).join(", ");
+    const platFix = best.w > out.q_val + 1e-9
+      ? `release on <b>${best.id}</b> (q ${best.w.toFixed(2)}), the best on the market right now. ${others ? "Other strong picks: " + others + "." : ""}`
+      : `nothing on the market right now does better, so this gap stays until a stronger platform launches.`;
     sug.push({sev:"warn", html:`
       ⚠ <b>Platform isn't ideal for ${params.genre}</b>
       (q = ${out.q_val.toFixed(2)}, max ≈ 1.10).<br>
-      <span class="text-[#7d8294]">Fix:</span> release on
-      <b>${best.id}</b> (q ${best.w.toFixed(2)}). Other strong picks:
-      ${top3.slice(1).map(x=>`<span class="text-[#a9b1d6]">${x.id}</span>`).join(", ")}.
+      <span class="text-[#7d8294]">Fix:</span> ${platFix}
       Adding extra platforms <i>dilutes</i> q via 0.7^n falloff.
     `});
   }
@@ -3957,7 +3966,7 @@ function renderSlowPanels(params, out, colorFor){
   const monteKey = `${out.z_final.toFixed(4)}|${out.psEnabled ? 1 : 0}|${out.displayed}|${out.ceilingDemoted ? 1 : 0}|${out.earlyCapApplied ? 1 : 0}|${out.rescueApplied ? 1 : 0}`;
   if(recalc._lastMonteKey !== monteKey){
     recalc._lastMonteKey = monteKey;
-    _runMonteCarlo(out.z_final, out.psEnabled, colorFor, hashSeed(monteKey));
+    _runMonteCarlo(out.z_final, out.psEnabled, colorFor, hashSeed(monteKey), recalc._slowToken);
   }
 
   const capEl = O("o_capwarn");

@@ -99,16 +99,21 @@ try {
 
   heading("it survives states a player can actually put it in");
 
-  const freshPage = async (seed) => {
+  const freshPage = async (seed, locks) => {
     const ctx = await browser.newContext({ viewport: { width: 1440, height: 1000 } });
     const p = await ctx.newPage();
     const errs = [];
     p.on("pageerror", (e) => errs.push(e.message));
     p.on("console", (m) => { if (m.type() === "error") errs.push("console: " + m.text()); });
     await p.route((url) => /^https?:/.test(url.href), (route) => route.abort());
-    if (seed) await p.addInitScript((v) => {
-      try { localStorage.setItem("gdt_calc_state_v2", v); } catch (e) {}
-    }, seed);
+    if (seed || locks) await p.addInitScript((v) => {
+      try {
+        if (v.seed) localStorage.setItem("gdt_calc_state_v2", v.seed);
+        for (const [what, ids] of Object.entries(v.locks || {})) {
+          localStorage.setItem("gdt_calc_locked_" + what + "_v1", JSON.stringify(ids));
+        }
+      } catch (e) {}
+    }, { seed, locks });
     await p.goto("file://" + PAGE, { waitUntil: "load" });
     await p.waitForTimeout(900);
     return { ctx, p, errs };
@@ -164,6 +169,113 @@ try {
     const clamped = counts[1].listed === counts[2].listed && counts[0].listed === counts[3].listed;
     check("an out-of-range in-game month cannot split the platform list from the grid",
       errs.length === 0 && agree && clamped, JSON.stringify({ errs: errs.slice(0, 3), counts }));
+    await ctx.close();
+  }
+
+  const ALL_UNLOCKED = { topics: [], genres: [], audiences: [] };
+
+  {
+    const { ctx, p, errs } = await freshPage(null, ALL_UNLOCKED);
+    const applied = await p.evaluate(async () => {
+      const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+      const year = document.querySelector("#i_year");
+      year.value = "30";
+      year.dispatchEvent(new Event("input", { bubbles: true }));
+      await wait(900);
+      document.querySelector('.tab[data-tab="combo"]').click();
+      await wait(400);
+      const filter = document.querySelector("#cmb_topic");
+      filter.value = "Pirate";
+      filter.dispatchEvent(new Event("input", { bubbles: true }));
+      await wait(500);
+      const arrow = document.querySelector("#cmb_tbody .cmb-arrow");
+      const clicked = arrow ? arrow.dataset.ckey : null;
+      const tier = document.querySelector("#cmb_count").textContent;
+      if (arrow) arrow.click();
+      await wait(1400);
+      const got = [
+        document.querySelector("#i_topic").value,
+        document.querySelector("#i_genre").value,
+        document.querySelector("#i_aud").value,
+        ...[...document.querySelectorAll("[data-plat]:checked")].map((x) => x.dataset.plat),
+      ].join("|");
+      return { clicked, tier, got };
+    });
+    check("a combo applied from a filtered Perfect Combos table is the one that was clicked",
+      errs.length === 0 && applied.tier.includes("top tier 3/4") && applied.clicked === applied.got,
+      JSON.stringify({ errs: errs.slice(0, 3), applied }));
+    await ctx.close();
+  }
+
+  {
+    const { ctx, p, errs } = await freshPage(null, ALL_UNLOCKED);
+    const dist = await p.evaluate(async () => {
+      const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+      const multi = document.querySelector("#i_multiplat");
+      multi.checked = true;
+      multi.dispatchEvent(new Event("change", { bubbles: true }));
+      await wait(900);
+      const filled = document.querySelector("#o_dist").innerText;
+      const design = document.querySelector("#i_D");
+      design.value = "77";
+      design.dispatchEvent(new Event("input", { bubbles: true }));
+      await wait(60);
+      const pc = document.querySelector('[data-plat="PC"]');
+      pc.checked = false;
+      pc.dispatchEvent(new Event("change", { bubbles: true }));
+      await wait(900);
+      return {
+        filled,
+        after: document.querySelector("#o_dist").innerText,
+        median: document.querySelector("#o_dist_p50").textContent.trim(),
+        score: document.querySelector("#o_score").textContent.trim(),
+      };
+    });
+    check("the reviewer distribution does not come back after the setup goes invalid",
+      errs.length === 0 && dist.filled.includes("%") && dist.score === "-" &&
+        !dist.after.includes("%") && dist.median === "median -",
+      JSON.stringify({ errs: errs.slice(0, 3), dist }));
+    await ctx.close();
+  }
+
+  {
+    const { ctx, p, errs } = await freshPage(null, ALL_UNLOCKED);
+    const label = await p.evaluate(async () => {
+      const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+      const btn = document.querySelector("#btn_report");
+      const before = btn.textContent.replace(/\s+/g, " ").trim();
+      btn.click();
+      await wait(300);
+      btn.click();
+      await wait(2600);
+      return { before, after: btn.textContent.replace(/\s+/g, " ").trim() };
+    });
+    check("the report button gets its own label back after a second click",
+      errs.length === 0 && label.before === label.after,
+      JSON.stringify({ errs: errs.slice(0, 3), label }));
+    await ctx.close();
+  }
+
+  {
+    const { ctx, p, errs } = await freshPage(null, { topics: [], genres: ["Casual"], audiences: ["young", "mature"] });
+    const seen = await p.evaluate(async () => {
+      const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+      for (const [id, v] of [["#i_year", "1"], ["#i_topic", "Military"], ["#i_genre", "Action"]]) {
+        const el = document.querySelector(id);
+        el.value = v;
+        el.dispatchEvent(new Event("change", { bubbles: true }));
+        el.dispatchEvent(new Event("input", { bubbles: true }));
+      }
+      await wait(1800);
+      return {
+        advice: document.querySelector("#o_sug").innerText,
+        offMarket: [...document.querySelectorAll("[data-plat]")].filter((c) => c.disabled).map((c) => c.dataset.plat),
+      };
+    });
+    const named = seen.offMarket.filter((id) => seen.advice.includes(id));
+    check("the advice offers no platform that is off the market and no audience still locked",
+      errs.length === 0 && named.length === 0 && seen.advice.includes("No audience you have unlocked"),
+      JSON.stringify({ errs: errs.slice(0, 3), named, advice: seen.advice.slice(0, 300) }));
     await ctx.close();
   }
 } finally {
