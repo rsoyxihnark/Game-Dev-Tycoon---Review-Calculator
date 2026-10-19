@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.0.10
+
+- Fixed the Slider Suggester telling you its own RPG, Strategy and Casual sliders miss the balance bonus, when those sliders earn the +0.1
+- Fixed the Slider Suggester warning of the unbalanced penalty on its own Action sliders, which the game does not penalise
+- Fixed the Slider Suggester legend giving the 20 % and 40 % thresholds as slider numbers, when they are shares of the stage
+- Fixed the Slider Suggester legend putting the odd-focus line at a weight of 0.7, when anything under 0.8 takes it
+- Fixed the warning marker on a Slider Suggester mission card missing a mixed-genre weight between 0.7 and 0.8
+
 ## 1.0.9
 
 - Fixed the Perfect Combos T↔A column not saying a fit of 0.7 or below halves the score above 0.6, which the T↔G column already said

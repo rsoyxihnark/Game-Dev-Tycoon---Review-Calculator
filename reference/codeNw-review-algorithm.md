@@ -891,8 +891,10 @@ What part 3 gets right, read the same way: AAA wanting tech level 5 and three ex
 penalty when the topic to genre weight is under 1.0, the level 7 and 900 point specialisation
 requirements, the 700 skill points for the lab specialist, and the 3M monthly ceiling on lab
 spending. Its project table holds up on nine of its eleven rows, the two AAA prices being the
-exception, and the gates it lists for AAA Games, Own Convention and Hardware are exact. Two things it leaves out. `getMaxRndBudget` starts that ceiling at 3M but drops it by
-100000 for every design specialist past the first and floors it at 500000. And
+exception, and the gates it lists for AAA Games, Own Convention and Hardware are exact. Two things it leaves out. `getMaxRndBudget` starts that ceiling at 3M and drops it by
+100000 for every design specialist past the first, but the count is clamped at seven, so the
+budget bottoms out at 2.3M with eight specialists and the 500000 floor in the same line can
+never be reached. And
 `Research.ownConvention` wants 1000000 fans, or year 23 or later, before the convention it
 describes timing for can be researched at all.
 
