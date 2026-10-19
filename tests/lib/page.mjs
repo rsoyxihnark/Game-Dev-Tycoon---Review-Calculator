@@ -17,10 +17,12 @@ export async function loadCalculator() {
     slice(lineOf(/^const TOPSCORE_MAX/), lineOf(/^const _MARKET_SHARE_MEMO/) - 1),
     slice(lineOf(/^const TOPICS_BY_ID/), lineOf(/^const OPT_TEAM_SIZE/)),
     slice(lineOf(/^const gi = /), lineOf(/^function findCombos/) - 1),
+    slice(lineOf(/^function suggestSliders/), lineOf(/^const \$  = sel/) - 1),
     slice(lineOf(/^function mulberry32/), lineOf(/^function mulberry32/) + 8),
     "export { calcReview, simulateReviewers, displayedScore, hasRecordedTopScore, mulberry32,",
-    "  platformMarketUnits, ymwToWeek, dateStrToWeek,",
-    "  TOPICS, PLATFORMS, MISSIONS, PLATFORM_DATES, PLATFORM_MARKET, GENRES, AUDIENCES, GAME_SIZES };",
+    "  platformMarketUnits, ymwToWeek, dateStrToWeek, suggestSliders, missionGenreWeight,",
+    "  TOPICS, PLATFORMS, MISSIONS, MISSIONS_BY_STAGE, PLATFORM_DATES, PLATFORM_MARKET,",
+    "  GENRES, AUDIENCES, GAME_SIZES };",
   ].join("\n");
 
   const dir = mkdtempSync(join(tmpdir(), "gdt-page-"));

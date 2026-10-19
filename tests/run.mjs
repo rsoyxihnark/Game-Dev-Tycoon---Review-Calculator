@@ -10,6 +10,7 @@ const SUITES = [
   "score-parity.mjs",
   "reviewer-parity.mjs",
   "slider-boundary.mjs",
+  "suggester.mjs",
   "mutation.mjs",
   "self-contained.mjs",
 ];
