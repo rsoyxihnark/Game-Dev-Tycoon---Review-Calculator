@@ -616,8 +616,11 @@ would without the flag.
 The same multiplier is where overwork lands. `General.getEffectiveWorkload` is
 `100/(300/optimalTeamSize) * workload`, and the optimal sizes are 1, 3, 5 and 6, so the same
 assignment burns a member at one times on a medium game, five thirds on a large one and twice
-on an AAA. Past 100 the factor is cut by `0.75 * excess`, and below it raised by
-`0.25 * shortfall`, so spreading the work matters more the bigger the game.
+on an AAA. The factor peaks at a workload of exactly 100 and falls away on both sides: past
+100 it is cut by `0.75 * excess` and below 100 by `0.25 * shortfall`, so under-loading a
+member costs too, a third as fast as overworking them. The deviation is clamped to one
+either way, so the worst overwork leaves a quarter of the factor and the worst under-load
+three quarters of it.
 
 ### 6. Random ceilings
 
@@ -643,6 +646,9 @@ on the game, because the field was never set. A reading that picks the band from
 staff count alone gets this wrong.
 
 New staff means `0.2 <= gamesContributed <= 2` among the staff who contributed to this game.
+The loop starts at index 1, so the player's own character is never counted however many games
+it has, which is the only thing keeping a one-person studio off this penalty for its second
+and third releases.
 
 Then the early-game cap, only while the top-score count is under 2 and the year under 4:
 exactly 10 loses 1.05 to 1.50, 9 or above loses 1.05 to 1.25, and anything over 8.5 loses

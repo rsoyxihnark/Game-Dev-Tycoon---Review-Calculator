@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.12
+
+- Recently-hired staff now says your own character never counts as a fresh hire, whatever it has shipped
+
 ## 1.0.11
 
 - Fixed the Calculator marking a mission weighted 0.8 with a minus, where Game Dev Tycoon marks it with a plus
