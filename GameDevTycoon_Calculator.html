@@ -803,15 +803,18 @@
   <div class="card p-5 max-w-4xl text-sm leading-7 space-y-3">
     <h2 class="text-[#7aa2f7] font-bold text-lg">Where does the score come from?</h2>
     <ol class="list-decimal list-inside space-y-1 text-[#a9b1d6]">
-      <li><span class="text-[#e0af68] font-semibold">Topic</span> sets <code>p</code> (topic↔genre raw 0.6..1.0) AND <code>v</code> (topic↔audience raw 0.6..1.0). If <code>p ≤ 0.7</code> the score above 0.6 is halved → huge effective penalty. 9 topics also override individual mission weights via <code>missionOverrides</code> (Sports, Racing, Mystery, Horror, Detective, Cyberpunk, Law, Music, Rythm).</li>
+      <li><span class="text-[#e0af68] font-semibold">Topic</span> sets <code>p</code> (topic↔genre raw 0.6..1.0) AND <code>v</code> (topic↔audience raw 0.6..1.0). If <code>p ≤ 0.7</code> or <code>v ≤ 0.7</code> the score above 0.6 is halved → huge effective penalty. 9 topics also override individual mission weights via <code>missionOverrides</code> (Sports, Racing, Mystery, Horror, Detective, Cyberpunk, Law, Music, Rythm).</li>
       <li><span class="text-[#e0af68] font-semibold">Genre / Second genre</span> set the golden ratio (Action 1.8 / Sim 1.6 / Strat 1.4 / RPG 0.6 / Casual 0.5 / Adv 0.4; combo = (2·main+second)/3). Tech ≈ Design · ratio. |T − D·ratio| / max(D,T) ≤ 25 % → +0.1 bonus, &gt; 50 % → −0.1.</li>
       <li><span class="text-[#e0af68] font-semibold">Platforms</span> give <code>q</code> (normalized weights 0.9..1.1, multi-platform via 0.7^n falloff). 3rd platform contributes <i>negative</i> weight. Wrong audience for a platform applies an additional raw-weight multiplier (when z &gt; 0.7).</li>
-      <li><span class="text-[#e0af68] font-semibold">Sliders</span> = the 9 dev missions, each with fixed Tech/Design factors and per-genre weights. <b>Across all 9</b> (not per stage): ≥2 weight≥0.9 missions at ≥40 % → +0.2; weight&lt;0.8 mission at ≥40 % → −0.1 for exactly one, −0.2 for exactly two, nothing for three or more, doubled on an MMO; weight≥0.9 mission at ≤20 % → −0.15 each.</li>
+      <li><span class="text-[#e0af68] font-semibold">Sliders</span> = the 9 dev missions, each with fixed Tech/Design factors and per-genre weights. The three rules below count <b>across all 9</b>, not per stage, and every penalty among them doubles on an MMO.</li>
+      <li><b>Focus</b>: weight≥0.9 missions at ≥40 % → +0.2 for two or more, +0.1 for exactly one, −0.15 for none at all.</li>
+      <li><b>Odd focus</b>: weight&lt;0.8 mission at ≥40 % → −0.1 for exactly one, −0.2 for exactly two, nothing for three or more.</li>
+      <li><b>Forgotten</b>: weight≥0.9 mission at ≤20 % → −0.15 each.</li>
       <li><span class="text-[#e0af68] font-semibold">Fatigue</span> = ONLY the immediately previous game with identical topic + genre + secondGenre triggers −0.4, and an expansion pack never takes it.</li>
       <li><span class="text-[#e0af68] font-semibold">Engine techLevel</span> matters for Large (need ≥3) and AAA (need ≥5 and 3 experts; 2 experts is psEnabled, which is a different thing). <span class="text-[#e0af68] font-semibold">Company office level</span> matters for Small: office level ≥2 (small office / big office / corporate) → 0.9× hidden penalty. Medium with ≤100k fans → 0.9× hidden penalty. (Source: <code>Reviews.f(d,g)</code> uses <code>company.currentLevel</code> for the small branch, NOT <code>flags.techLevel</code>: these are separate fields in <code>codeNw.js</code>.)</li>
       <li><span class="text-[#e0af68] font-semibold">Title / Company name</span> change only review flavor text, NEVER the number.</li>
-      <li>9→10 ceiling: getting z≥9 requires <code>s ≥ 0.1</code> AND no fresh hires, plus an internal RNG. Early-game cap drags any 8.5+ down by 0.4..1.5 until you've achieved a top score twice or year ≥ 4.</li>
-      <li>Reviewer noise: 4 reviewers each pick <code>floor(z) ± {0,1}</code> (occasionally ±2 for 5/6). When the first 3 are all 10 and avg=10, the 4th is biased <i>down</i> by default; with <code>psEnabled</code> (≥2 expert staff matched to weight≥0.9 missions, ANY game size) AND <code>floor(z)=10</code> the 4th reviewer has a 40% chance to be <i>promoted</i> to 11 instead of demoted.</li>
+      <li>9→10 ceiling: <code>s ≥ 0.1</code> with nobody hired recently keeps z≥9 outright; under that <code>s</code> it survives one roll in five, and a fresh hire knocks it down every time. Early-game cap drags any 8.5+ down by 0.4..1.5 until you've achieved a top score twice or year ≥ 4.</li>
+      <li>Reviewer noise: 4 reviewers each pick <code>floor(z) ± {0,1}</code> (occasionally ±2 for 5/6). When the first 3 are all 10 and avg=10, the 4th is biased <i>down</i> by default; with <code>psEnabled</code> (≥2 expert staff matched to weight≥0.9 missions, ANY game size) the 4th is never demoted, and at <code>floor(z)=10</code> it has a 40% chance of being <i>promoted</i> to 11.</li>
     </ol>
     <p class="text-[#7d8294] text-xs mt-3">See <code>reference/codeNw-review-algorithm.md</code> for the full source dive. <span class="text-[#9ece6a]">All formulas verified against codeNw.js.</span></p>
   </div>
@@ -855,7 +858,7 @@
 (function(){
 "use strict";
 
-const APP_VERSION = "1.0.7";
+const APP_VERSION = "1.0.8";
 
 const TOPSCORE_MAX = 10000;
 
@@ -1285,10 +1288,12 @@ function calcReview(p, rng, skipLog){
 
   const gr = goldenRatio(genre, second);
   const grActual = D>0 ? T/D : 0;
+  let grPct = null;
   if(D+T >= 30){
     const r = D*gr - T;
     const denom = T>D ? T : D;
     const pct = denom ? Math.abs(r/denom)*100 : 0;
+    grPct = pct;
     LP(`Golden target T/D=${gr.toFixed(3)}. Actual=${grActual.toFixed(3)}. pctDiff=${pct.toFixed(1)}%`);
     if(pct <= 25){ s += 0.1; uCount++; LP("  +0.1  great balance"); }
     else if(pct > 50){ s -= 0.1; LP("  -0.1  unbalanced ("+ (r<0?"focus more on design":"focus more on technology") +")"); }
@@ -1479,7 +1484,7 @@ function calcReview(p, rng, skipLog){
   const displayed = displayedScore(z_final);
 
   return {
-    z_raw, z_final, displayed, s, p_val, q_val, v_val, A_val, r_val, u_factor, l_total, gr, grActual, z, B, log,
+    z_raw, z_final, displayed, s, p_val, q_val, v_val, A_val, r_val, u_factor, l_total, gr, grActual, grPct, z, B, log,
     ceilingDemoted, earlyCapApplied, hasTopScore, experts, expertCapable, psEnabled,
     rescueApplied, rescueThreshold, zPreRescue,
   };
@@ -3587,9 +3592,9 @@ function _recalcCore(){
   O("o_gr").textContent = out.gr.toFixed(3);
 
   {
-    const tgt = out.gr;
-    const closeness = tgt > 0 ? 1 - Math.min(1, Math.abs(out.grActual - tgt) / tgt) : 0;
-    const color = closeness >= 0.85 ? "#9ece6a" : closeness >= 0.5 ? "#e0af68" : "#f7768e";
+    const off = out.grPct ?? 0;
+    const closeness = 1 - Math.min(1, off/100);
+    const color = off <= 25 ? "#9ece6a" : off <= 50 ? "#e0af68" : "#f7768e";
     O("o_gra").innerHTML = `<span class="chainbar"><span style="width:${(closeness*100).toFixed(1)}%; background:${color};"></span></span>${out.grActual.toFixed(3)}`;
   }
   O("o_ltot").textContent = out.l_total.toFixed(2);
@@ -3661,14 +3666,14 @@ function renderSlowPanels(params, out, colorFor){
     `});
   }
   const grIdeal = params.D * out.gr;
-  const ratioPctOff = params.D>0 ? Math.abs(out.grActual - out.gr)/out.gr*100 : 0;
-  if(params.D + params.T >= 30 && ratioPctOff > 15){
+  const ratioPctOff = out.grPct ?? 0;
+  if(out.grPct !== null && ratioPctOff > 25){
     const dir = out.grActual < out.gr ? "more Technology (right sliders)" : "more Design (left sliders)";
     const breaker = ratioPctOff > 50;
     sug.push({sev: breaker ? "bad" : "warn", html:`
       ${breaker ? "⛔" : "⚠"} <b>${breaker ? "GOLDEN-RATIO BREAKER" : "Design ↔ Technology balance is off"}</b>
       ${breaker ? "(this triggers the game's −0.1 unbalanced penalty)" : ""}
-      <br>Target T = D × ${out.gr.toFixed(2)} (i.e. T ≈ <b>${grIdeal.toFixed(0)}</b>), you have T/D = ${out.grActual.toFixed(2)} (T = ${params.T}). <b>${ratioPctOff.toFixed(0)}% off.</b><br>
+      <br>Target T = D × ${out.gr.toFixed(2)} (i.e. T ≈ <b>${grIdeal.toFixed(0)}</b>), you have T/D = ${out.grActual.toFixed(2)} (T = ${params.T}). <b>${ratioPctOff.toFixed(0)}% off</b>, and the +0.1 needs 25% or less.<br>
       <span class="text-[#7d8294]">Fix:</span> push for ${dir}.
       ${breaker ? `<br><span class="text-[#a9b1d6]">⚡ Note: the auto-suggester optimises mission <i>weights</i>, not the T/D ratio. For tech-heavy genres (Action 1.8, Simulation 1.6), you must <b>manually skew sliders toward Tech missions</b> (Engine, AI, Level Design) after auto-suggesting.</span>` : ""}
     `});
@@ -3680,8 +3685,8 @@ function renderSlowPanels(params, out, colorFor){
   if(params.size==="aaa" && params.tl < 5)
     sug.push({sev:"bad", html:`
       ⛔ <b>AAA game with engine techLevel ${params.tl}</b>:
-      need at least <b>5</b> high-tier engine parts or the review caps.<br>
-      <span class="text-[#7d8294]">Fix:</span> research more engine features before the next AAA project.
+      the graphics engine needs level <b>5</b>, and every level short costs 0.1 off the tech-fit factor.<br>
+      <span class="text-[#7d8294]">Fix:</span> research 3D Graphics V5 or better before the next AAA project.
     `});
   if(params.size==="large" && params.tl < 3)
     sug.push({sev:"bad", html:`
@@ -3724,13 +3729,13 @@ function renderSlowPanels(params, out, colorFor){
     if(params.experts < 2){
       sug.push({sev:"bad", html:`
         ⛔ <b>AAA with only ${params.experts} expert staff</b> on weight≥0.9 missions:
-        need <b>≥2</b> for <i>psEnabled</i>, missing experts also subtract <b>0.6</b> per gap (up to −1.8 on u).<br>
+        need <b>≥2</b> for <i>psEnabled</i>, and each missing expert takes another <b>0.06</b> off the tech-fit factor, up to 0.18.<br>
         <span class="text-[#7d8294]">Fix:</span> assign 2-3 specialists whose <code>flags.expert</code> matches a high-weight dev mission this game uses.
       `});
     } else if(params.experts < 3){
       sug.push({sev:"warn", html:`
         ⚠ <b>AAA with ${params.experts} experts</b>: <i>psEnabled</i> active, but you're still losing
-        <b>${(0.6*(3-params.experts)).toFixed(1)}×</b> on the tech-fit factor for the missing 3rd expert.<br>
+        <b>${(0.06*(3-params.experts)).toFixed(2)}</b> off the tech-fit factor for the missing 3rd expert.<br>
         <span class="text-[#7d8294]">Fix:</span> add one more specialist on a weight≥0.9 mission to remove the gap.
       `});
     }

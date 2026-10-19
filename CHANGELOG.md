@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.0.8
+
+- Fixed "Where does the score come from?" saying only a poor Topic/Genre fit halves the score above 0.6, when a poor Topic/Audience fit does it too
+- Fixed "Where does the score come from?" leaving out the slider bonus for one well-fitting mission and the penalty for none at all
+- Fixed "Where does the score come from?" saying an MMO only doubles the odd-slider penalty, when it doubles every slider penalty
+- Fixed "Where does the score come from?" saying a score of 9 can still be dropped at random when nobody was hired recently
+- Fixed "Where does the score come from?" saying the fourth reviewer can still be marked down with two matched experts on the game
+- Fixed GOLDEN-RATIO BREAKER appearing on games the game itself does not penalise, and staying away from ones it does
+- Fixed "What's wrong & how to fix it" asking for five engine parts on an AAA game, when it is one graphics engine at level 5
+- Fixed "What's wrong & how to fix it" overstating what a missing AAA expert costs by ten times
+
 ## 1.0.7
 
 - Fixed the notes saying an AAA game needs 2 experts, when 3 are needed to avoid the score penalty

@@ -179,13 +179,19 @@ the target and the upper edge stretches:
 | Adventure | 0.4 | under 0.00 | 0.15 | 0.40 | 0.65 | over 0.90 |
 | Casual | 0.5 | under 0.00 | 0.25 | 0.50 | 0.75 | over 1.00 |
 | RPG | 0.6 | under 0.10 | 0.35 | 0.60 | 0.85 | over 1.20 |
-| Strategy | 1.4 | under 0.90 | 1.12 | 1.40 | 1.87 | over 2.80 |
-| Simulation | 1.6 | under 1.07 | 1.28 | 1.60 | 2.13 | over 3.20 |
+| Strategy | 1.4 | under 0.90 | 1.12 | 1.40 | 1.866 | over 2.80 |
+| Simulation | 1.6 | under 1.067 | 1.28 | 1.60 | 2.133 | over 3.20 |
 | Action | 1.8 | under 1.20 | 1.44 | 1.80 | 2.40 | over 3.60 |
 
 So a game lands the `+0.1` when its technology to design ratio sits between the two inner
 columns, and takes the `-0.1` only outside the outer pair. Adventure and Casual have no
 reachable lower penalty at all, since the band bottoms out at zero technology.
+
+The edges for any other target, a blended one included: below a ratio of 1 they are the
+target give or take 0.25 for the bonus and 0.5 for the penalty, and above 1 they are the
+target over 1.25 and over 0.75 for the bonus, over 1.5 and doubled for the penalty. Only
+Strategy and Simulation land off a round hundredth, which is why they carry three decimals
+above.
 
 A second genre moves the target, and `(2*first + second)/3` over six ratios gives thirty
 ordered pairs. The one that lands on a target of exactly 1.0, where the game simply wants
@@ -432,9 +438,9 @@ multiplied by ten:
   when the audience or the weight array is missing. `Platforms.getNormalizedAudienceWeighting`
   is `a >= 0.8 ? a+0.2 : a >= 0.7 ? a+0.1 : a+0.05`, so raw 1.0, 0.9 and 0.8 normalise to
   1.2, 1.1 and 1.0, while 0.7 becomes 0.8 and 0.6 becomes 0.65. The gate therefore admits
-  exactly the platforms whose raw weight is 0.7 or 0.6, and across all 91 shipped platform
-  entries those are the only raw values below 0.8. The multiplier is only ever 0.7 or 0.6.
-  Its last line, and the matching line in
+  exactly the platforms whose raw weight is 0.7 or 0.6, and across the 87 audience entries
+  on the 29 shipped platforms those are the only raw values below 0.8. The multiplier is
+  only ever 0.7 or 0.6. Its last line, and the matching line in
   `General.getAudienceWeighting`, is `throw"unknown audience: "+genre`, where `genre` is not
   a parameter and not declared anywhere in the file, so an unknown audience raises a
   ReferenceError instead of that message. No shipped audience reaches it.
@@ -707,8 +713,8 @@ from four platforms up, and that was enough to flip a focus threshold at eleven 
 
 One wrinkle the calculator does not model. `General.getMultiPlatformDurationFactor` halves
 the step when the engine carries a `MultiPlatformOptimized` part, so each platform beyond
-the first multiplies by 1.225 instead of 1.45. That is worth 18 percent off the clock on two
-platforms and 40 percent on three, which is the most the game allows, and not the 69 percent
+the first multiplies by 1.225 instead of 1.45. That is worth 16 percent off the clock on two
+platforms and 29 percent on three, which is the most the game allows, and not the 69 percent
 the Reddit guide's part 1 puts on it. The halving is skipped when the function is
 called with a second argument, which is what `General.getMultiPlatformCostFactor` does so it
 can apply the 0.5 itself. The review path always calls it with one argument. The same factor is used to build the duration and to divide
