@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.0.7
+
+- Fixed the notes saying an AAA game needs 2 experts, when 3 are needed to avoid the score penalty
+- Fixed the Topic & Genre Library saying only 0.6 and below is penalised, when 0.7 is penalised too
+- Fixed the Topic & Genre Library listing three of the five values a Topic/Genre or Topic/Audience fit can take
+- Fixed the notes saying every unimportant slider above 40% costs the same, when three or more cost nothing
+- Fixed the notes pointing you at a file the download does not contain
+- The notes now say that an expansion pack never takes the same topic and genre penalty
+
 ## 1.0.6
 
 - Fixed the score freezing on its last value when every genre or every audience was locked in the Topic & Genre Library
