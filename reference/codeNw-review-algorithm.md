@@ -1134,7 +1134,9 @@ looking at a 1.0 pair. Space with Adventure, asked about as a pair that does not
 `tests/` runs the game's own code against the page:
 
 - `data-parity.mjs` checks all 66 topics, 29 platforms and 9 missions, with weights, audience
-  weights, mission overrides, tech levels, release and retirement dates and market sizes.
+  weights, mission overrides, tech levels, release and retirement dates and market sizes. It
+  then walks the market curve itself, every platform at every week of the forty years, and
+  requires the page's interpolation between the key points to land on the game's to the bit.
 - `score-parity.mjs` scores randomised setups with the game's `Reviews.rateGame` and with the
   page, sharing one random stream, and requires the two to be identical bit for bit.
 - `reviewer-parity.mjs` does the same for the four reviewer scores.
