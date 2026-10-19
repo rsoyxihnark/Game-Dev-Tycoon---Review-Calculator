@@ -111,6 +111,13 @@ None of the review's own thresholds sit on the band edges a reader would guess:
 So `+` is safe wherever the penalty tests for below 0.8, and ruinous nowhere, while the step
 from `+` to `--` is the expensive one on every axis that has a cliff.
 
+That holds for a single genre, where every weight is a round tenth. A second genre blends the
+weights, and the symbol rounds while the rule does not, so the two part ways. A mission at 0.7
+for the main genre and 0.9 for the second blends to 0.7667, shows `+`, and still takes the
+odd-focus penalty. One at 0.8 with 1.0 second blends to 0.8667, shows `++`, and earns no focus
+bonus. Of the twenty-five ordered pairs, four show `+` while the penalty fires and three show
+`++` while the bonus does not, so in a mixed-genre game the symbol is a label and not the test.
+
 The wiki's own mission tables print `~` where the game shows `+`, for the same 0.8. A reader
 moving between the two is looking at one weight under two symbols.
 
@@ -523,9 +530,11 @@ selected and the value is that engine's level, a whole number from 0 to 7:
 
 So a large game needs level 3 or better, which 2D Graphics V4 and V5 reach as well as
 3D Graphics V3 and up, and an AAA game needs level 5, which only 3D Graphics V5, V6 and V7
-reach. It reaches the
-score for large and AAA games only, so on small and medium projects the engine features
-you ship make no difference to the review at all.
+reach. The tech level itself reaches the score for large and AAA games only, so on a small
+or medium project no engine lifts this factor above 1. The features still pay there, through
+the points they generate rather than through this factor, and they are harder to max out on
+those sizes than above them: the time-share gate asks for the full `5 * sum(v)` percent
+below large, and only 0.7 and 0.4 of it on a large and an AAA game.
 
 It is also not the custom engine's own `techLevel`, which is an average over engine parts.
 That one never reaches the score: it only sets `hasBetterEngineThanSequel` and

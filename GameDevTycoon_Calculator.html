@@ -858,7 +858,7 @@
 (function(){
 "use strict";
 
-const APP_VERSION = "1.0.10";
+const APP_VERSION = "1.0.11";
 
 const TOPSCORE_MAX = 10000;
 
@@ -2564,7 +2564,7 @@ function initUI(){
         scored ? `Golden ratio (target / actual T÷D): ${out.gr.toFixed(3)} / ${out.grActual.toFixed(3)}` : "",
         scored ? `l_total: ${out.l_total.toFixed(2)}   |  z (l_total ÷ topScore): ${out.z.toFixed(3)}` : "",
         scored && out.rescueApplied
-          ? `Rescue branch: FIRED, un-rescued raw score ${out.zPreRescue.toFixed(3)} was ≤ gate ${out.rescueThreshold.toFixed(1)}; shown score is the game's pity-floor (6-7.7 band), not raw quality`
+          ? `Rescue branch: FIRED, un-rescued raw score ${out.zPreRescue.toFixed(3)} was ≤ gate ${out.rescueThreshold.toFixed(1)}; shown score is the game's pity-floor (starts at 6, your team, hires, bugs and fits move it, capped at 7.7), not raw quality`
           : (scored && out.hasTopScore && out.zPreRescue > out.rescueThreshold && out.zPreRescue < 7.7
               ? `Rescue branch: dead zone, raw ${out.zPreRescue.toFixed(3)} sits between the gate (${out.rescueThreshold.toFixed(1)}) and the rescue ceiling (7.7); a slightly worse game would likely display HIGHER`
               : ""),
@@ -2753,7 +2753,7 @@ function updateMissionVisuals(){
       if(wEl){
         let cls = "text-[#7d8294]";
         if(w >= 0.9) cls = "text-[#9ece6a]";
-        else if(w <= 0.7) cls = "text-[#f7768e]";
+        else if(w < 0.8) cls = "text-[#f7768e]";
         wEl.className = cls + " font-mono text-[11px] mb-1";
         wEl.textContent = "w " + w.toFixed(2) + (overridden ? " *" : "");
         wEl.title = overridden ? "Modified by topic missionOverrides for selected genre" : "";
@@ -2774,7 +2774,7 @@ function updateMissionVisuals(){
         let txt, cls, tip;
         if(wr >= 1.0)      { txt = "+++"; cls = "text-[#9ece6a]"; tip = "very important"; }
         else if(wr >= 0.9) { txt = "++";  cls = "text-[#9ece6a]"; tip = "quite important"; }
-        else if(wr >= 0.8) { txt = "-";   cls = "text-[#e0af68]"; tip = "not very important"; }
+        else if(wr >= 0.8) { txt = "+";   cls = "text-[#e0af68]"; tip = "okay, the game's + band; a blend that rounds up to 0.8 can still take the odd-focus penalty"; }
         else if(wr >= 0.7) { txt = "--";  cls = "text-[#e0af68]"; tip = "not important"; }
         else               { txt = "---"; cls = "text-[#f7768e]"; tip = "not at all important"; }
         emph.className = cls + " text-sm font-mono font-bold tracking-tight";
@@ -3836,7 +3836,8 @@ function renderSlowPanels(params, out, colorFor){
     sug.push({sev:"warn", html:`
       ⚠ <b>Score shown is the game's "rescue" pity-floor, not your game's real quality.</b>
       Raw score was <b>${out.zPreRescue.toFixed(2)}</b> (≤ gate ${out.rescueThreshold.toFixed(1)}), so the game
-      lifted it to ~<b>${out.z_raw.toFixed(2)}</b> (band 6-7.7, minus an RNG draw).<br>
+      lifted it to ~<b>${out.z_raw.toFixed(2)}</b>.<br>
+      That floor starts at 6, then your team size, recent hires, bugs and weak fits move it, an RNG draw comes off it, and 7.7 caps it.<br>
       <span class="text-[#e0af68]">⚡ Counter-intuitive consequence:</span> a small improvement that pushes
       the raw score just past <b>${out.rescueThreshold.toFixed(1)}</b> will <b>lower</b> the displayed score,
       because the pity-floor switches off.<br>

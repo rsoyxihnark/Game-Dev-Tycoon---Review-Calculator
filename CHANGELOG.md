@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.11
+
+- Fixed the Calculator marking a mission weighted 0.8 with a minus, where Game Dev Tycoon marks it with a plus
+- Fixed the Calculator leaving a mission weight unmarked when a second genre blends it just under 0.8, which still takes the odd-focus penalty
+- Fixed the rescue warning and the copied report calling the pity-floor a 6 to 7.7 band, when your team size, recent hires, bugs and weak fits move it well below 6
+
 ## 1.0.10
 
 - Fixed the Slider Suggester telling you its own RPG, Strategy and Casual sliders miss the balance bonus, when those sliders earn the +0.1
