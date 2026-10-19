@@ -32,22 +32,27 @@ confident, wrong answer.
 | `s` | the quality term, the thing that becomes `1 + s` |
 | `u` | the good-flag counter, then the technical expertise factor |
 | `t` | the bad-flag counter, then a loop variable |
-| `v` | the golden-ratio percentage, then the genre display name, then topic to audience |
-| `A` | the odd-focus mission list, then the bug factor |
-| `r` | the mission list, then the tech spread factor, then the trend, then the rescue score |
-| `B` | the target top score, then the staff count, then the highest tech level |
-| `z` | the score: first `l / topScore`, then that times ten, then the final value |
+| `v` | the golden-ratio percentage, then the good-focus mission list, then the genre display name, then topic to audience |
+| `A` | the odd-focus mission list, then the forgotten-mission list, then a platform genre weight, then the bug factor |
+| `r` | the golden ratio and its residual, then the mission list, then the tech spread factor, then the trend, then the rescue score |
+| `B` | a platform index for the messages, then the highest tech level, then the target top score, then the staff count |
+| `z` | a platform genre weight for the messages, then the score: `l / topScore`, then that times ten, then the final value |
 | `n` | the original game when this one is a sequel or an expansion |
+
+Loop counters are left out of that table: `r`, `t` and `B` each serve as one. So are the
+short-lived values a message or a flag needs. `v` and `A` hold a mission object while a
+message is built, `q` holds one of the message strings, and `u` carries the re-anchor flag
+at the end.
 
 ## Where things live
 
 | What | Line | Name in the file |
 | --- | --- | --- |
 | Tuning constants | 10 | `GameFlags={...}` |
-| Golden ratios, genre weights | 247 | `GameGenre.getGoldenRatio`, `GameGenre.getGenreWeighting` |
-| Trend factor | 249 | `GameTrends.getCurrentTrendFactor` |
+| Golden ratios, genre weights | 247, 248 | `GameGenre.getGoldenRatio`, `GameGenre.getGenreWeighting` |
+| Trend factor | 250 | `GameTrends.getCurrentTrendFactor` |
 | Duration of a mission | 326 | `General.getDuration` |
-| Size factors | 328, 327 | `General.getGameSizePointsFactor`, `getGameSizeDurationFactor` |
+| Size factors | 328, 326 | `General.getGameSizePointsFactor`, `getGameSizeDurationFactor` |
 | Multi-platform duration | 327 | `General.getMultiPlatformDurationFactor` |
 | Topic to audience weight | 331 | `General.getAudienceWeighting` |
 | Optimal team size | 334 | `General.getOptimalTeamSize` |
@@ -341,7 +346,7 @@ then blends across platforms with a running `d *= 0.7`:
 The share is negative from the third platform on, and it lands on whichever platform is
 last in `g.platforms`. A third platform that fits the genre well therefore lowers the
 score. That is in the game. The in-game screen offers three platform slots and no more:
-`UI._updatePickPlatformButtonStates` at line 865 loops `for(...,f=0;3>f;f++)`.
+`UI._updatePickPlatformButtonStates` at line 869 loops `for(...,f=0;3>f;f++)`.
 
 **Topic to audience** is the raw table value, not normalised.
 
@@ -686,7 +691,8 @@ A fourth demand lands on the same three shares and never touches the review.
 effect only once its share reaches `5 * sum(v)` percent, where `v` is each feature's own
 value, scaled by 0.7 for a large game and 0.4 for an AAA one and left alone below those.
 Short of that the feature still works, at `share / (5 * sum(v) * sizeCoefficient)` of its
-effect. The graphics parts carry `v` at twice their tech level, so 3D Graphics V3, V4 and V5
+effect. The 3D graphics parts carry `v` at twice their tech level, while the 2D line runs ahead of
+it from V3 up and Text Based sits at 1 against a level of 0. So 3D Graphics V3, V4 and V5
 want 30, 40 and 50 percent of their stage on a small or medium game, 21, 28 and 35 on a
 large one, and 12, 16 and 20 on an AAA. Adding the part whose id is `Stereoscopic 3D` and
 whose name on screen is Advanced Stereoscopic 3D, `v` 4, to V5 raises those three to 70, 49

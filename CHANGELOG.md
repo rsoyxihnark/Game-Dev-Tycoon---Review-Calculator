@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.9
+
+- Fixed the Perfect Combos T↔A column not saying a fit of 0.7 or below halves the score above 0.6, which the T↔G column already said
+- Fixed the Perfect Combos note saying fits of 0.0 are left out, when no fit in the game is ever below 0.6
+- Fixed the Perfect Combos P↔G and P↔A tooltip giving the range as 0.0 to 1.0, when it is 0.6 to 1.0
+- The verified badge now carries the date of the latest check against the game's own code
+
 ## 1.0.8
 
 - Fixed "Where does the score come from?" saying only a poor Topic/Genre fit halves the score above 0.6, when a poor Topic/Audience fit does it too
