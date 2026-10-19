@@ -257,6 +257,33 @@ try {
   }
 
   {
+    const { ctx, p, errs } = await freshPage(null, ALL_UNLOCKED);
+    const gr = await p.evaluate(async () => {
+      const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+      const read = () => {
+        const fill = document.querySelector("#o_gra .chainbar > span");
+        return { width: fill ? fill.style.width : null, color: fill ? fill.style.background : null };
+      };
+      const set = (id, v) => {
+        const el = document.querySelector(id);
+        el.value = v;
+        el.dispatchEvent(new Event("input", { bubbles: true }));
+      };
+      set("#i_genre", "Action");
+      await wait(1000);
+      const unscored = read();
+      set("#i_D", "20");
+      set("#i_T", "36");
+      await wait(1000);
+      return { unscored, onTarget: read() };
+    });
+    check("the golden ratio row claims no balance until the game scores one",
+      errs.length === 0 && gr.unscored.width === "0%" && gr.onTarget.width === "100%",
+      JSON.stringify({ errs: errs.slice(0, 3), gr }));
+    await ctx.close();
+  }
+
+  {
     const { ctx, p, errs } = await freshPage(null, { topics: [], genres: ["Casual"], audiences: ["young", "mature"] });
     const seen = await p.evaluate(async () => {
       const wait = (ms) => new Promise((r) => setTimeout(r, ms));

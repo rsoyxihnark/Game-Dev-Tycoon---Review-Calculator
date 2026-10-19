@@ -412,8 +412,8 @@
       </summary>
       <p class="text-xs text-[#7d8294] mt-3 leading-relaxed">
         Mark which topics &amp; genres you've already <b>researched in your save</b>. Locked items are <b>excluded</b>
-        from <i>🎯 Pick a Perfect Game</i> AND from the <i>Perfect Combos</i> tab. Locks don't restrict manual
-        calculation, you can still type any topic / genre into the inputs above.
+        from <i>🎯 Pick a Perfect Game</i>, from the <i>Perfect Combos</i> tab and from the <i>Game Setup</i>
+        dropdowns above, so the calculator only ever offers you a game your save can actually start.
         <br><span class="text-[#e0af68]">Casual</span> in particular usually starts locked because it requires research.
       </p>
       <div class="text-xs text-[#7aa2f7] font-bold mt-3 mb-1 flex items-center gap-2 flex-wrap">
@@ -858,7 +858,7 @@
 (function(){
 "use strict";
 
-const APP_VERSION = "1.0.17";
+const APP_VERSION = "1.0.18";
 
 const TOPSCORE_MAX = 10000;
 
@@ -3088,7 +3088,7 @@ function renderSimpleLockGrid(gridId, items, lockedSet, dataAttr, labelFn){
       : "bg-[#1f3a2d] border-[#3a5a45] text-[#b6e08c] hover:border-[#9ece6a]";
     return `<button type="button" ${dataAttr}="${id}"
               class="text-left px-2 py-1 rounded text-xs border transition ${cls}"
-              title="${locked ? "Locked, excluded from Pick-a-Perfect-Game and Perfect Combos" : "Unlocked, eligible everywhere"}">
+              title="${locked ? "Locked, excluded from Pick a Perfect Game, Perfect Combos and the Game Setup dropdowns" : "Unlocked, eligible everywhere"}">
               ${locked ? "🔒" : "✓"} ${labelFn ? labelFn(id) : id}
             </button>`;
   }).join("");
@@ -3158,7 +3158,7 @@ function renderTopicLockGrid(){
     const safeId = escapeHtml(t.id);
     return `<button type="button" data-topiclock="${safeId}"
               class="text-left px-2 py-1 rounded text-xs border transition ${cls}"
-              title="${locked ? "Locked, excluded from 'Pick a game for me'" : "Unlocked, available for 'Pick a game for me'"}">
+              title="${locked ? "Locked, excluded from Pick a Perfect Game and the Topic dropdown" : "Unlocked, available in Pick a Perfect Game and the Topic dropdown"}">
               <span class="truncate">${locked ? "🔒" : "✓"} ${safeId}</span>
               <span class="text-[10px] font-bold px-1.5 py-0.5 rounded border ${opCls} shrink-0" title="${escapeHtml(opTitle)}">OP: ${op}</span>
             </button>`;
@@ -3596,10 +3596,12 @@ function _recalcCore(){
   O("o_gr").textContent = out.gr.toFixed(3);
 
   {
-    const off = out.grPct ?? 0;
-    const closeness = 1 - Math.min(1, off/100);
-    const color = off <= 25 ? "#9ece6a" : off <= 50 ? "#e0af68" : "#f7768e";
-    O("o_gra").innerHTML = `<span class="chainbar"><span style="width:${(closeness*100).toFixed(1)}%; background:${color};"></span></span>${out.grActual.toFixed(3)}`;
+    const off = out.grPct;
+    const scored = off !== null;
+    const closeness = scored ? 1 - Math.min(1, off/100) : 0;
+    const color = !scored ? "#3d4256" : off <= 25 ? "#9ece6a" : off <= 50 ? "#e0af68" : "#f7768e";
+    const tip = scored ? "" : ` title="Not scored yet: the game only weighs the Design to Technology balance once the two together pass 30 points."`;
+    O("o_gra").innerHTML = `<span class="chainbar"${tip}><span style="width:${(closeness*100).toFixed(1)}%; background:${color};"></span></span>${out.grActual.toFixed(3)}`;
   }
   O("o_ltot").textContent = out.l_total.toFixed(2);
   O("o_topref").textContent = out.B.toFixed(1);

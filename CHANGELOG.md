@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.18
+
+- Fixed the golden ratio row claiming a perfect balance while your Design and Technology points are still under 30
+- Fixed the Topic & Genre Library saying you can still pick a locked topic or genre in Game Setup, where locking takes it out of the dropdown
+- Fixed the topic, genre and audience chips naming a Pick a game for me button the calculator does not have
+
 ## 1.0.17
 
 - Fixed Perfect Combos applying a different game than the row you clicked, whenever a filter narrowed the table below the best tier
