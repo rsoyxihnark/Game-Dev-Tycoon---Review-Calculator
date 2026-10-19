@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.14
+
+- The calculator now warns when a trend is set on a garage company, because Game Dev Tycoon only starts a trend from office level 2 up
+- The calculator now warns when the strangeCombos trend row does not match the topic and genre you picked, since the game reads that fit itself
+
 ## 1.0.13
 
 - The calculator now warns when a large or AAA game is set on Gameling, Vena Gear, grPhone, PPS or GS, which Game Dev Tycoon refuses in Game Setup

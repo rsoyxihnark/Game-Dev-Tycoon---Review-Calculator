@@ -858,7 +858,7 @@
 (function(){
 "use strict";
 
-const APP_VERSION = "1.0.13";
+const APP_VERSION = "1.0.14";
 
 const TOPSCORE_MAX = 10000;
 
@@ -3782,6 +3782,34 @@ function renderSlowPanels(params, out, colorFor){
       The MMO doubling below is applied the way the game's formula would, but it is not a score the game can hand you.<br>
       <span class="text-[#7d8294]">Fix:</span> set the game size to <b>large</b> or <b>aaa</b>, or untick MMO.
     `});
+  }
+
+  if(params.companyLevel === 1 && params.trend !== 1){
+    sug.push({sev:"warn", html:`
+      ⚠ <b>No trend runs in the garage</b>: Game Dev Tycoon only starts a trend from office level 2 up,
+      so a company at level 1 always scores on a trend factor of 1.00.<br>
+      The score below applies the <b>${params.trend.toFixed(2)}</b> you picked, but it is not a score the game can hand you.<br>
+      <span class="text-[#7d8294]">Fix:</span> set the trend to <b>1.00</b>, or raise Company office level to 2 or more.
+    `});
+  }
+
+  {
+    const STRANGE_ROW = { "0.85": 1.0, "1.1": 0.9, "1.2_strange": 0.8, "1.4": 0.7 };
+    const trendKey = $("#i_trend").value;
+    const trendTopic = TOPICS_BY_ID.get(params.topic);
+    if(Object.prototype.hasOwnProperty.call(STRANGE_ROW, trendKey) && trendTopic){
+      const fit = trendTopic.g[gi(params.genre)];
+      const band = fit >= 1 ? 1.0 : fit === 0.9 ? 0.9 : fit === 0.8 ? 0.8 : 0.7;
+      if(band !== STRANGE_ROW[trendKey]){
+        const right = band === 1.0 ? "0.85" : band === 0.9 ? "1.10" : band === 0.8 ? "1.20" : "1.40";
+        sug.push({sev:"warn", html:`
+          ⚠ <b>That strangeCombos row does not match this topic and genre</b>: ${params.topic} with ${params.genre}
+          is a main-genre fit of <b>${fit.toFixed(2)}</b>, so the trend would pay <b>${right}</b>, not ${params.trend.toFixed(2)}.<br>
+          The game reads the fit itself and ignores a second genre here, so the row is not a separate choice.<br>
+          <span class="text-[#7d8294]">Fix:</span> pick the <b>${right}</b> row, or set the trend to <b>1.00</b>.
+        `});
+      }
+    }
   }
   {
     const workingTeam = params.teamSize > 0 ? params.teamSize : (OPT_TEAM_SIZE[params.size] ?? 1);

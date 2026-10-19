@@ -408,6 +408,13 @@ a strange-combinations trend it is 0.85 for a perfect topic-genre pair, 1.1 for 
 0.8, and 1.4 for anything lower. That lookup passes only the first genre, so a second genre
 can never produce a value in between. Any other trend, or none, leaves it at 1.
 
+Only one trend runs at a time, and none runs in the garage: the whole setter sits inside
+`if(1 != a.currentLevel)`, so a company at office level 1 always scores on a factor of 1.
+A trend starts on a coin flip once the last one has expired, after `24 + 12*rand` weeks, and
+the type is drawn from the same number: genre up to 0.5, new topics to 0.7, audience to 0.95
+and only above 0.96 strange combinations, so that one is the rarest by a wide margin. The
+audience trend also needs the target audience research.
+
 ### 3. Against the top score
 
 ```
