@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.20
+
+- REPORT ISSUE now copies the Average critic score and its range, the number to compare with the game's own average of the four reviews
+
 ## 1.0.19
 
 - Fixed the trend row in Chain multipliers marking a score loss when no trend is running, which is the normal state

@@ -258,6 +258,44 @@ try {
 
   {
     const { ctx, p, errs } = await freshPage(null, ALL_UNLOCKED);
+    const pairs = await p.evaluate(async () => {
+      const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+      const copies = [];
+      Object.defineProperty(navigator, "clipboard", {
+        configurable: true,
+        value: { writeText: async (t) => { copies.push(t); } },
+      });
+      const set = (id, v) => {
+        const el = document.querySelector(id);
+        el.value = v;
+        el.dispatchEvent(new Event("input", { bubbles: true }));
+      };
+      const sample = async () => {
+        await wait(1000);
+        document.querySelector("#btn_report").click();
+        await wait(2000);
+        const line = (copies.at(-1) || "").split("\n").find((l) => l.startsWith("Average critic score")) || "";
+        const r = line.match(/: ([\d.]+) \/ 10 .* between ([\d.]+) and ([\d.]+)$/);
+        const s = document.querySelector("#o_reviewers_line").textContent.match(/^([\d.]+) \/ 10\s+\(range ([\d.]+)-([\d.]+)\)/);
+        return { report: r ? [r[1], r[2], r[3]] : line, panel: s ? [s[1], s[2], s[3]] : null };
+      };
+      const out = [await sample()];
+      set("#i_D", "13");
+      set("#i_T", "11");
+      out.push(await sample());
+      set("#i_D", "60");
+      set("#i_T", "45");
+      out.push(await sample());
+      return out;
+    });
+    check("the report carries the Average critic score and range the panel shows",
+      errs.length === 0 && pairs.every((x) => x.panel && JSON.stringify(x.report) === JSON.stringify(x.panel)),
+      JSON.stringify({ errs: errs.slice(0, 3), pairs }));
+    await ctx.close();
+  }
+
+  {
+    const { ctx, p, errs } = await freshPage(null, ALL_UNLOCKED);
     const gr = await p.evaluate(async () => {
       const wait = (ms) => new Promise((r) => setTimeout(r, ms));
       const read = () => {

@@ -859,7 +859,7 @@
 (function(){
 "use strict";
 
-const APP_VERSION = "1.0.19";
+const APP_VERSION = "1.0.20";
 
 const TOPSCORE_MAX = 10000;
 
@@ -1774,6 +1774,23 @@ const _runMonteCarlo = debounceDelay(function(zFinal, psEnabled, colorFor, seed,
   }
 }, 150);
 
+function reviewerRange(out){
+  const key = `${out.z_final.toFixed(4)}|${out.psEnabled ? 1 : 0}|${out.displayed}|${out.ceilingDemoted ? 1 : 0}|${out.earlyCapApplied ? 1 : 0}|${out.rescueApplied ? 1 : 0}`;
+  const { sumHist, n } = simulateReviewers(out.z_final, out.psEnabled, MONTE_RUNS, hashSeed(key));
+  const i5 = Math.floor(n*0.05), i50 = Math.floor(n*0.50), i95 = Math.floor(n*0.95);
+  let cum = 0, p5 = 1, p50 = 1, p95 = 1, gotP5 = false, gotP50 = false, gotP95 = false;
+  for(let s = 4; s < sumHist.length; s++){
+    const c = sumHist[s];
+    if(!c) continue;
+    const avg = s/4;
+    if(!gotP5  && cum + c > i5 ){ p5  = avg; gotP5  = true; }
+    if(!gotP50 && cum + c > i50){ p50 = avg; gotP50 = true; }
+    if(!gotP95 && cum + c > i95){ p95 = avg; gotP95 = true; }
+    cum += c;
+  }
+  return { p5, p50, p95 };
+}
+
 const scheduleSaveState = debounceDelay(saveState, 250);
 
 const TREND_VALUES = Object.freeze({
@@ -2534,6 +2551,7 @@ function initUI(){
       const params = gatherParams();
       const out    = applyCapExpectedValue(params, calcReview(params, mulberry32(0)));
       const scored = !!out && !out.error;
+      const critics = scored ? reviewerRange(out) : null;
       const trendLabel = $("#i_trend").options[$("#i_trend").selectedIndex]?.text || params.trend;
       const flags = [
         params.fatigue   && "fatigue (same topic+genre+second as previous)",
@@ -2570,6 +2588,9 @@ function initUI(){
         scored
           ? `Displayed: ${out.displayed}/10   |  z_final: ${out.z_final.toFixed(3)}${out.capRange ? ` (RNG-capped, expected value; range ${out.capRange.min.toFixed(2)}-${out.capRange.max.toFixed(2)} over ${out.capRange.n} draws)` : ""}   |  z_raw (pre-cap): ${out.z_raw.toFixed(3)}`
           : `(invalid, calculator could not produce a result: ${out && out.error ? out.error : "unknown"})`,
+        critics
+          ? `Average critic score (4 reviewers): ${critics.p50.toFixed(1)} / 10   |  90 % of in-game runs land between ${critics.p5.toFixed(1)} and ${critics.p95.toFixed(1)}`
+          : "",
         scored
           ? `Chain: p=${out.p_val.toFixed(2)}  q=${out.q_val.toFixed(3)}  v=${out.v_val.toFixed(2)}  A=${out.A_val.toFixed(3)}  r=${out.r_val.toFixed(3)}  u=${out.u_factor.toFixed(3)}  s=${out.s.toFixed(3)}  trend=${params.trend}  experts=${params.experts}`
           : "",
