@@ -8,8 +8,8 @@ function installedBrowsers() {
   const found = [];
   for (const name of readdirSync(root)) {
     if (!name.startsWith("chromium")) continue;
-    for (const leaf of ["chrome", "headless_shell"]) {
-      const candidate = join(root, name, "chrome-linux", leaf);
+    for (const leaf of ["chrome-linux64/chrome", "chrome-headless-shell-linux64/chrome-headless-shell"]) {
+      const candidate = join(root, name, leaf);
       if (existsSync(candidate)) found.push(candidate);
     }
   }
