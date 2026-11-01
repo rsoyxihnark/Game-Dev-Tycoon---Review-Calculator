@@ -100,6 +100,19 @@ try {
   check("the back-solve dialog opens on its button and closes on Cancel",
     modalFlow.opened && modalFlow.closed, JSON.stringify(modalFlow));
 
+  const solved = await page.evaluate(async () => {
+    document.querySelector("#btn_calibrate").click();
+    await new Promise((r) => setTimeout(r, 120));
+    document.querySelector("#calib_obs").value = "7";
+    document.querySelector("#calib_ok").click();
+    const msg = document.querySelector("#calib_msg");
+    const seen = { painted: getComputedStyle(msg).color, asked: msg.style.color };
+    document.querySelector("#calib_cancel").click();
+    return seen;
+  });
+  check("the back-solve result is painted in the colour its fit was given",
+    solved.asked !== "" && solved.painted === solved.asked, JSON.stringify(solved));
+
   heading("it survives states a player can actually put it in");
 
   const freshPage = async (seed, locks) => {

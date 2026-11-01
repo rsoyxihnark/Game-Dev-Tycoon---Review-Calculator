@@ -12,269 +12,8 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%237aa2f7'/%3E%3Ctext x='16' y='23' font-size='17' font-family='monospace' font-weight='bold' text-anchor='middle' fill='%230e1016'%3E10%3C/text%3E%3C/svg%3E">
 <title>Game Dev Tycoon: Review Calculator</title>
 
-<style>
-  :root { --c-muted:#9ba0b3; }
-
-  html { scrollbar-color: #2d3142 #0e1016; scrollbar-width: thin; }
-  body { font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; }
-
-  body { background-image: radial-gradient(1100px 520px at 50% -8%, rgba(122,162,247,0.05), transparent 62%); background-attachment: fixed; }
-  input[type="range"] { accent-color:#7aa2f7; }
-  input[type="range"]::-webkit-slider-thumb { background:#7aa2f7; }
-  select, input[type="number"], input[type="text"] {
-    background:#1f2230; border:1px solid #2d3142; color:#e4e6eb; border-radius:6px; padding:6px 8px;
-  }
-  select option { background:#1f2230; color:#e4e6eb; }
-  .pill { padding:4px 10px; border-radius:999px; font-size:12px; font-weight:600; }
-  .ok { background:#1f3a2d; color:#b6e08c; }
-  .warn { background:#3a2d1f; color:#f0c177; }
-  .bad { background:#3a1f24; color:#ff8da3; }
-  .card { background:#161922; border:1px solid #232733; border-radius:12px; }
-
-  @media (hover:hover) {
-    .card-hover { transition: transform 0.15s ease, box-shadow 0.15s ease; }
-    .card-hover:hover { transform: translateY(-2px); box-shadow: 0 8px 22px rgba(0,0,0,0.30); }
-  }
-  .tab { position:relative; color:#a9b1d6; transition:background 0.15s, color 0.15s; }
-  .tab:hover { background:#1a1d27; color:#9ec1ff; }
-  .tab::after {
-    content:""; position:absolute; left:6px; right:6px; bottom:0; height:3px;
-    background:#7aa2f7; border-radius:2px 2px 0 0;
-    transform:scaleX(0); transform-origin:center; transition:transform 0.2s ease;
-  }
-  .tab.active, .tab[aria-selected="true"] { background:#1f2230; color:#7aa2f7; border-radius:6px 6px 2px 2px; }
-  .tab.active::after, .tab[aria-selected="true"]::after { transform:scaleX(1); }
-
-  button { transition: transform 0.08s ease; }
-  button:not(:disabled):active { transform: scale(0.97); }
-  details > summary { list-style: none; cursor:pointer; }
-  details > summary::-webkit-details-marker { display: none; }
-  details > summary::before {
-    content:"▸"; display:inline-block; margin-right:6px;
-    transition: transform 0.15s; color:#7aa2f7; font-size:12px;
-  }
-  details[open] > summary::before { transform: rotate(90deg); }
-  .sr-only {
-    position:absolute; width:1px; height:1px; padding:0; margin:-1px;
-    overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0;
-  }
-  .text-subtle { color:var(--c-muted); }
-  .text-\[\#7d8294\], .text-\[\#9ba0b3\] { color:var(--c-muted) !important; }
-  .chainbar { display:inline-block; vertical-align:middle; width:64px; height:6px; background:#1f2230; border-radius:3px; overflow:hidden; margin-right:6px; }
-  .chainbar > span { display:block; height:100%; border-radius:3px; transition: width 0.18s; }
-  .stage-badge { padding:1px 6px; border-radius:8px; font-size:10px; font-weight:600; }
-  .stage-card { border-left-width:3px; border-left-style:solid; }
-  .stage-card.stage-1 { border-left-color:#7aa2f7; }
-  .stage-card.stage-2 { border-left-color:#9ece6a; }
-  .stage-card.stage-3 { border-left-color:#e0af68; }
-  .ovr-badge {
-    display:inline-block; margin-left:4px; padding:0 5px;
-    border-radius:999px; font-size:9px; line-height:1.4;
-    border:1px solid #5e4b1e; color:#f0c177; background:rgba(74,58,34,0.35);
-    letter-spacing:0.02em; font-weight:700;
-  }
-  .ovr-badge.hidden { display:none; }
-
-  #o_score, #o_displayed_big { transition: color 0.18s ease, transform 0.18s ease, text-shadow 0.18s ease; }
-  .score-pulse { animation: scorePulse 0.28s ease; }
-  @keyframes scorePulse { 0%{transform:scale(1.0);} 35%{transform:scale(1.06);} 100%{transform:scale(1.0);} }
-  .placeholder-dim { animation: placeholderPulse 1.6s ease-in-out infinite; }
-  @keyframes placeholderPulse { 0%,100%{opacity:0.35;} 50%{opacity:0.6;} }
-  .dist-wrap { position:relative; }
-  .dist-wrap .dist-median {
-    position:absolute; top:0; bottom:18px; width:0;
-    border-left:2px dashed #e0af68; pointer-events:none;
-    transition: left 0.18s ease; opacity:0;
-  }
-  .dist-wrap .dist-median.shown { opacity:0.8; }
-
-  #o_dist { border-bottom:1px solid #2a2f3d; }
-  #o_dist .dist-bar {
-    border-radius:4px 4px 0 0;
-    transform-origin:bottom;
-    animation: distGrow 0.22s ease both;
-    transition: filter 0.14s ease;
-  }
-  #o_dist .dist-bar:hover { filter: brightness(1.18); }
-  @keyframes distGrow { from { transform: scaleY(0); } to { transform: scaleY(1); } }
-  .dist-wrap .dist-median::after {
-    content:"median"; position:absolute; top:-2px; left:3px;
-    font-size:8px; color:#e0af68; opacity:0.7; letter-spacing:0.02em;
-    text-transform:lowercase; white-space:nowrap;
-  }
-
-  [data-allocseg] { transition: width 0.18s ease; }
-  .tab:focus-visible { outline:2px solid #7aa2f7; outline-offset:-2px; }
-  .modal-bg [role=dialog] { outline:none; }
-
-  #toast_host { position:fixed; bottom:1rem; right:1rem; display:flex; flex-direction:column; gap:0.5rem; z-index:60; pointer-events:none; }
-  #toast_host .toast { position:relative; overflow:hidden; pointer-events:auto; padding:8px 12px; border-radius:6px; font-size:12px; font-weight:600; box-shadow:0 4px 12px rgba(0,0,0,0.4); animation: toastIn 0.18s ease; }
-  #toast_host .toast.warn { background:#3a2d1f; color:#f0c177; border:1px solid #e0af68; }
-  #toast_host .toast.bad  { background:#3a1f24; color:#ff8da3; border:1px solid #f7768e; }
-
-  #toast_host .toast::after { content:""; position:absolute; left:0; bottom:0; height:2px; width:100%;
-    background:currentColor; opacity:0.5; transform-origin:left; }
-  #toast_host .toast.ticking::after { animation: toastShrink var(--toast-ms,3000ms) linear forwards; }
-  @keyframes toastIn { from{transform:translateY(8px); opacity:0;} to{transform:translateY(0); opacity:1;} }
-  @keyframes toastShrink { from{transform:scaleX(1);} to{transform:scaleX(0);} }
-
-  @keyframes fadeSlideIn { from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);} }
-  .warn-banner {
-    border-radius:6px; padding:8px 10px;
-    animation: fadeSlideIn 150ms ease both;
-  }
-  .warn-banner.bad  { background:rgba(58,31,36,0.25); border:1px solid #f7768e; }
-  .warn-banner.warn { background:rgba(58,45,31,0.25); border:1px solid #e0af68; }
-  .advice-item {
-    animation: fadeSlideIn 150ms ease both;
-    transition: border-color 140ms ease, background-color 140ms ease;
-  }
-  .chain-fadein { animation: fadeSlideIn 180ms ease both; }
-  .chain-table td:first-child { color:#b7bdd2; font-weight:500; }
-  .chain-table td:last-child  { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-variant-numeric: tabular-nums; }
-
-  @media (max-width: 640px) {
-    [data-stage-mission] { min-width:64px !important; }
-    [data-stage-mission] .relative { width:36px !important; height:96px !important; }
-    [data-stage-mission] input[type=range] { width:60px !important; }
-  }
-
-  #score_badge {
-    position: fixed; bottom: 8px; left: 8px; z-index: 30;
-    display: inline-flex; align-items: center; gap: 6px;
-    cursor: pointer;
-    padding: 4px 10px; border-radius: 999px;
-    background:#161922; border:1px solid #232733;
-    font-size: 12px; font-weight: 700; line-height: 1;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.35);
-    transition: color 0.18s ease, background 0.18s ease;
-  }
-  #score_badge:focus-visible { outline:2px solid #7aa2f7; outline-offset:2px; }
-  #score_badge .badge-num { font-size: 16px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
-  ::-webkit-scrollbar { width: 10px; height: 10px; }
-  ::-webkit-scrollbar-track { background:#0e1016; }
-  ::-webkit-scrollbar-thumb { background:#2d3142; border-radius: 6px; }
-  ::-webkit-scrollbar-thumb:hover { background:#3d4256; }
-  .modal-bg { position:fixed; inset:0; background:rgba(0,0,0,0.7); display:flex; align-items:center; justify-content:center; z-index:50; }
-  .log-plus { color:#9ece6a; }
-  .log-minus { color:#f7768e; }
-  .log-line:nth-child(odd) { background:#0e10168a; }
-  @media (min-width: 1280px) {
-    #score_badge { display:none; }
-    .sticky-output { position: sticky; top: 1rem; align-self: start; max-height: calc(100vh - 2rem); overflow-y: auto; }
-  }
-
-  #plat_grid > label { display: flex; break-inside: avoid; -webkit-column-break-inside: avoid; page-break-inside: avoid; }
-  @media (min-width: 640px)  { #plat_grid { columns: 2 !important; } }
-  @media (min-width: 768px)  { #plat_grid { columns: 3 !important; } }
-
-  #topic_lock_grid > button {
-    display: flex; align-items: center; justify-content: space-between; gap: 0.5rem;
-    width: 100%; min-width: 14ch; break-inside: avoid;
-    -webkit-column-break-inside: avoid; page-break-inside: avoid;
-    margin-bottom: 0.375rem;
-  }
-
-  #topic_lock_grid > button > span:first-child {
-    min-width: 0; overflow: hidden;
-  }
-  #topic_lock_grid { columns: 1; column-gap: 0.375rem; }
-  @media (min-width: 640px)  { #topic_lock_grid { columns: 2 !important; } }
-  @media (min-width: 768px)  { #topic_lock_grid { columns: 3 !important; } }
-  .no-spin { appearance: textfield; -moz-appearance: textfield; }
-  .no-spin::-webkit-outer-spin-button,
-  .no-spin::-webkit-inner-spin-button { appearance: none; -webkit-appearance: none; margin: 0; }
-
-  input[type="number"] { appearance: textfield; -moz-appearance: textfield; }
-  input[type="number"]::-webkit-outer-spin-button,
-  input[type="number"]::-webkit-inner-spin-button { appearance: none; -webkit-appearance: none; margin: 0; }
-  .input-flash-ok { background:#1f3a2d !important; transition: background 0.4s ease; }
-  .input-flash-warn { background:#3a2d1f !important; transition: background 0.4s ease; }
-  .btn-flash-ok  { background:#1f3a2d !important; color:#b6e08c !important; }
-  .btn-flash-bad { background:#3a1f24 !important; color:#ff8da3 !important; }
-  .fit-perfect { color:#9ece6a; }
-  .fit-near    { color:#e0af68; }
-  .fit-bad     { color:#f7768e; }
-  .fit-none    { color:#7d8294; }
-  td.fitcell.fit-perfect { background:rgba(158,206,106,0.12); }
-  td.fitcell.fit-near    { background:rgba(224,175,104,0.12); }
-  td.fitcell.fit-bad     { background:rgba(247,118,142,0.12); }
-  .cmb-arrow {
-    background:none; border:none; cursor:pointer; font:inherit;
-    color:#3d4256; font-weight:700; margin-right:4px; padding:0 2px;
-    transition: color .12s ease, transform .12s ease;
-  }
-  .cmb-arrow:hover, .cmb-arrow:focus-visible { color:#9ece6a; transform:translateX(2px); }
-  .cmb-arrow.picked { color:#9ece6a; }
-  .cmb-chip {
-    background:none; font:inherit; text-align:left; cursor:pointer;
-    border:1px solid transparent; border-radius:4px; padding:1px 4px;
-    transition: border-color .12s ease, background .12s ease;
-  }
-  .cmb-chip:hover, .cmb-chip:focus-visible {
-    border-color:#3a5a45; background:rgba(158,206,106,0.08);
-  }
-  .cap-chip {
-    display:inline-flex; align-items:center; gap:2px;
-    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-    font-size:11px; font-weight:600; line-height:1;
-    padding:3px 7px; border-radius:999px; cursor:help;
-    color:#e0af68; background:rgba(224,175,104,0.12); border:1px solid rgba(224,175,104,0.35);
-  }
-
-  @keyframes tabFade { from { opacity:0; transform:translateY(4px); } to { opacity:1; transform:translateY(0); } }
-  .tab-pane:not(.hidden) { animation: tabFade 0.18s ease both; }
-  .chain-table tr { transition: background-color 0.14s ease; }
-  .chain-table tbody tr:hover td, .chain-table tr:hover td { background: rgba(122,162,247,0.05); }
-
-  @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after {
-      animation-duration: 0.001ms !important;
-      animation-iteration-count: 1 !important;
-      transition-duration: 0.001ms !important;
-      scroll-behavior: auto !important;
-    }
-  }
-
-  select:focus-visible,
-  input[type="number"]:focus-visible,
-  input[type="text"]:focus-visible,
-  input[type="range"]:focus-visible,
-  input[type="checkbox"]:focus-visible,
-  button:focus-visible,
-  [role="button"]:focus-visible,
-  details > summary:focus-visible {
-    outline: 2px solid #7aa2f7;
-    outline-offset: 2px;
-    border-radius: 6px;
-  }
-
-  #tooltip_host {
-    position: fixed; z-index: 70; max-width: 320px;
-    background:#0b0d13; color:#cdd2e4; border:1px solid #2d3142;
-    border-radius:8px; padding:8px 10px;
-    font-size:12px; line-height:1.45; white-space:normal;
-    box-shadow:0 6px 22px rgba(0,0,0,0.55);
-    pointer-events:none; opacity:0; transform:translateY(4px);
-    transition:opacity 0.12s ease, transform 0.12s ease;
-  }
-  #tooltip_host.shown { opacity:1; transform:translateY(0); }
-
-  @media print {
-    html, body { background:#fff !important; color:#000 !important; }
-    .card { border:1px solid #ccc !important; background:#fff !important; box-shadow:none !important; }
-    nav, #score_badge, #toast_host, #tooltip_host, button, [role="button"],
-    .modal-bg, input[type="range"] { display:none !important; }
-    select, input[type="number"], input[type="text"] {
-      background:#fff !important; color:#000 !important; border:1px solid #999 !important;
-    }
-    a[href]::after { content:""; }
-    .text-subtle, .text-\[\#7d8294\], .text-\[\#9ba0b3\] { color:#333 !important; }
-    details { break-inside: avoid; }
-  }
-</style>
 <style id="generated-utilities">/*! tailwindcss v4.3.3 | MIT License | https://tailwindcss.com */
-@layer properties{@supports (((-webkit-hyphens:none)) and (not (margin-trim:inline))) or ((-moz-orient:inline) and (not (color:rgb(from red r g b)))){*,:before,:after,::backdrop{--tw-translate-x:0;--tw-translate-y:0;--tw-translate-z:0;--tw-rotate-x:initial;--tw-rotate-y:initial;--tw-rotate-z:initial;--tw-skew-x:initial;--tw-skew-y:initial;--tw-space-y-reverse:0;--tw-border-style:solid;--tw-leading:initial;--tw-font-weight:initial;--tw-tracking:initial;--tw-ordinal:initial;--tw-slashed-zero:initial;--tw-numeric-figure:initial;--tw-numeric-spacing:initial;--tw-numeric-fraction:initial;--tw-shadow:0 0 #0000;--tw-shadow-color:initial;--tw-shadow-alpha:100%;--tw-inset-shadow:0 0 #0000;--tw-inset-shadow-color:initial;--tw-inset-shadow-alpha:100%;--tw-ring-color:initial;--tw-ring-shadow:0 0 #0000;--tw-inset-ring-color:initial;--tw-inset-ring-shadow:0 0 #0000;--tw-ring-inset:initial;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-offset-shadow:0 0 #0000;--tw-outline-style:solid;--tw-blur:initial;--tw-brightness:initial;--tw-contrast:initial;--tw-grayscale:initial;--tw-hue-rotate:initial;--tw-invert:initial;--tw-opacity:initial;--tw-saturate:initial;--tw-sepia:initial;--tw-drop-shadow:initial;--tw-drop-shadow-color:initial;--tw-drop-shadow-alpha:100%;--tw-drop-shadow-size:initial;--tw-ease:initial}}}@layer base{*,:after,:before,::backdrop{box-sizing:border-box;border:0 solid;margin:0;padding:0}::file-selector-button{box-sizing:border-box;border:0 solid;margin:0;padding:0}html,:host{-webkit-text-size-adjust:100%;tab-size:4;line-height:1.5;font-family:var(--default-font-family,-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji");font-feature-settings:var(--default-font-feature-settings,normal);font-variation-settings:var(--default-font-variation-settings,normal);-webkit-tap-highlight-color:transparent}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;-webkit-text-decoration:inherit;-webkit-text-decoration:inherit;-webkit-text-decoration:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,samp,pre{font-family:var(--default-mono-font-family,ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace);font-feature-settings:var(--default-mono-font-feature-settings,normal);font-variation-settings:var(--default-mono-font-variation-settings,normal);font-size:1em}small{font-size:80%}sub,sup{vertical-align:baseline;font-size:75%;line-height:0;position:relative}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}:-moz-focusring:where(:not(iframe)){outline:auto}progress{vertical-align:baseline}summary{display:list-item}ol,ul,menu{list-style:none}img,svg,video,canvas,audio,iframe,embed,object{vertical-align:middle;display:block}img,video{max-width:100%;height:auto}button,input,select,optgroup,textarea{font:inherit;font-feature-settings:inherit;font-variation-settings:inherit;letter-spacing:inherit;color:inherit;opacity:1;background-color:#0000;border-radius:0}::file-selector-button{font:inherit;font-feature-settings:inherit;font-variation-settings:inherit;letter-spacing:inherit;color:inherit;opacity:1;background-color:#0000;border-radius:0}:where(select:is([multiple],[size])) optgroup{font-weight:bolder}:where(select:is([multiple],[size])) optgroup option{padding-inline-start:20px}::file-selector-button{margin-inline-end:4px}::placeholder{opacity:1}@supports (not ((-webkit-appearance:-apple-pay-button))) or (contain-intrinsic-size:1px){::placeholder{color:currentColor}@supports (color:color-mix(in lab, red, red)){::placeholder{color:color-mix(in oklab, currentcolor 50%, transparent)}}}textarea{resize:vertical}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-date-and-time-value{min-height:1lh;text-align:inherit}::-webkit-datetime-edit{display:inline-flex}::-webkit-datetime-edit-fields-wrapper{padding:0}::-webkit-datetime-edit{padding-block:0}::-webkit-datetime-edit-year-field{padding-block:0}::-webkit-datetime-edit-month-field{padding-block:0}::-webkit-datetime-edit-day-field{padding-block:0}::-webkit-datetime-edit-hour-field{padding-block:0}::-webkit-datetime-edit-minute-field{padding-block:0}::-webkit-datetime-edit-second-field{padding-block:0}::-webkit-datetime-edit-millisecond-field{padding-block:0}::-webkit-datetime-edit-meridiem-field{padding-block:0}::-webkit-calendar-picker-indicator{line-height:1}:-moz-ui-invalid{box-shadow:none}button,input:where([type=button],[type=reset],[type=submit]){appearance:button}::file-selector-button{appearance:button}::-webkit-inner-spin-button{height:auto}::-webkit-outer-spin-button{height:auto}[hidden]:where(:not([hidden=until-found])){display:none!important}*,:after,:before,::backdrop{border-color:#e5e7eb}::file-selector-button{border-color:#e5e7eb}input::placeholder,textarea::placeholder{color:#9ca3af}button,[role=button]{cursor:pointer}:disabled{cursor:default}td,th{padding:1px}option{padding:revert}input,select,optgroup,textarea{background-color:revert;border-radius:revert}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}}:root,:host{--font-sans:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";--font-mono:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;--spacing:.25rem;--container-md:28rem;--container-4xl:56rem;--text-xs:.75rem;--text-xs--line-height:1rem;--text-sm:.875rem;--text-sm--line-height:1.25rem;--text-base:1rem;--text-base--line-height:1.5rem;--text-lg:1.125rem;--text-lg--line-height:1.75rem;--text-xl:1.25rem;--text-xl--line-height:1.75rem;--text-2xl:1.5rem;--text-2xl--line-height:2rem;--text-4xl:2.25rem;--text-4xl--line-height:2.5rem;--text-5xl:3rem;--text-5xl--line-height:1;--font-weight-normal:400;--font-weight-semibold:600;--font-weight-bold:700;--tracking-tight:-.025em;--leading-tight:1.25;--leading-snug:1.375;--leading-relaxed:1.625;--radius-md:.375rem;--radius-lg:.5rem;--ease-in-out:cubic-bezier(.4, 0, .2, 1);--default-transition-duration:.15s;--default-transition-timing-function:cubic-bezier(.4, 0, .2, 1);--default-font-family:var(--font-sans);--default-mono-font-family:var(--font-mono)}.visible{visibility:visible}.sr-only{clip-path:inset(50%);white-space:nowrap;border-width:0;width:1px;height:1px;margin:-1px;padding:0;position:absolute;overflow:hidden}.absolute{position:absolute}.fixed{position:fixed}.relative{position:relative}.sticky{position:sticky}.top-0{top:0}.top-1{top:var(--spacing)}.right-0{right:0}.bottom-0{bottom:0}.left-0{left:0}.left-1\/2{left:50%}.col-span-1{grid-column:span 1/span 1}.col-span-2{grid-column:span 2/span 2}.col-span-10{grid-column:span 10/span 10}.col-span-12{grid-column:span 12/span 12}.mx-4{margin-inline:calc(var(--spacing) * 4)}.my-2{margin-block:calc(var(--spacing) * 2)}.mt-0\.5{margin-top:calc(var(--spacing) * .5)}.mt-1{margin-top:var(--spacing)}.mt-2{margin-top:calc(var(--spacing) * 2)}.mt-3{margin-top:calc(var(--spacing) * 3)}.mt-4{margin-top:calc(var(--spacing) * 4)}.mr-3{margin-right:calc(var(--spacing) * 3)}.mb-1{margin-bottom:var(--spacing)}.mb-2{margin-bottom:calc(var(--spacing) * 2)}.mb-3{margin-bottom:calc(var(--spacing) * 3)}.mb-4{margin-bottom:calc(var(--spacing) * 4)}.mb-5{margin-bottom:calc(var(--spacing) * 5)}.ml-1{margin-left:var(--spacing)}.ml-2{margin-left:calc(var(--spacing) * 2)}.ml-auto{margin-left:auto}.block{display:block}.flex{display:flex}.grid{display:grid}.inline-block{display:inline-block}.inline-flex{display:inline-flex}.table{display:table}.h-7{height:calc(var(--spacing) * 7)}.h-32{height:calc(var(--spacing) * 32)}.max-h-\[68vh\]{max-height:68vh}.min-h-\[1\.25rem\]{min-height:1.25rem}.min-h-screen{min-height:100vh}.w-8{width:calc(var(--spacing) * 8)}.w-10{width:calc(var(--spacing) * 10)}.w-20{width:calc(var(--spacing) * 20)}.w-full{width:100%}.max-w-4xl{max-width:var(--container-4xl)}.max-w-\[260px\]{max-width:260px}.max-w-md{max-width:var(--container-md)}.min-w-0{min-width:0}.min-w-\[200px\]{min-width:200px}.flex-1{flex:1}.shrink-0{flex-shrink:0}.grow{flex-grow:1}.-translate-x-1\/2{--tw-translate-x:calc(calc(1 / 2 * 100%) * -1);translate:var(--tw-translate-x) var(--tw-translate-y)}.transform{transform:var(--tw-rotate-x,) var(--tw-rotate-y,) var(--tw-rotate-z,) var(--tw-skew-x,) var(--tw-skew-y,)}.cursor-pointer{cursor:pointer}.resize{resize:both}.list-inside{list-style-position:inside}.list-decimal{list-style-type:decimal}.grid-cols-1{grid-template-columns:repeat(1,minmax(0,1fr))}.grid-cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}.grid-cols-3{grid-template-columns:repeat(3,minmax(0,1fr))}.grid-cols-10{grid-template-columns:repeat(10,minmax(0,1fr))}.grid-cols-12{grid-template-columns:repeat(12,minmax(0,1fr))}.flex-col{flex-direction:column}.flex-wrap{flex-wrap:wrap}.items-baseline{align-items:baseline}.items-center{align-items:center}.items-end{align-items:flex-end}.items-start{align-items:flex-start}.justify-around{justify-content:space-around}.justify-between{justify-content:space-between}.justify-center{justify-content:center}.justify-end{justify-content:flex-end}.gap-0\.5{gap:calc(var(--spacing) * .5)}.gap-1{gap:var(--spacing)}.gap-1\.5{gap:calc(var(--spacing) * 1.5)}.gap-2{gap:calc(var(--spacing) * 2)}.gap-3{gap:calc(var(--spacing) * 3)}.gap-4{gap:calc(var(--spacing) * 4)}.gap-6{gap:calc(var(--spacing) * 6)}:where(.space-y-1>:not(:last-child)){--tw-space-y-reverse:0;margin-block-start:calc(var(--spacing) * var(--tw-space-y-reverse));margin-block-end:calc(var(--spacing) * calc(1 - var(--tw-space-y-reverse)))}:where(.space-y-2\.5>:not(:last-child)){--tw-space-y-reverse:0;margin-block-start:calc(calc(var(--spacing) * 2.5) * var(--tw-space-y-reverse));margin-block-end:calc(calc(var(--spacing) * 2.5) * calc(1 - var(--tw-space-y-reverse)))}:where(.space-y-3>:not(:last-child)){--tw-space-y-reverse:0;margin-block-start:calc(calc(var(--spacing) * 3) * var(--tw-space-y-reverse));margin-block-end:calc(calc(var(--spacing) * 3) * calc(1 - var(--tw-space-y-reverse)))}:where(.space-y-4>:not(:last-child)){--tw-space-y-reverse:0;margin-block-start:calc(calc(var(--spacing) * 4) * var(--tw-space-y-reverse));margin-block-end:calc(calc(var(--spacing) * 4) * calc(1 - var(--tw-space-y-reverse)))}.gap-y-1{row-gap:var(--spacing)}.self-center{align-self:center}.self-start{align-self:flex-start}.truncate{text-overflow:ellipsis;white-space:nowrap;overflow:hidden}.overflow-auto{overflow:auto}.overflow-hidden{overflow:hidden}.rounded{border-radius:.25rem}.rounded-lg{border-radius:var(--radius-lg)}.rounded-md{border-radius:var(--radius-md)}.rounded-t{border-top-left-radius:.25rem;border-top-right-radius:.25rem}.rounded-b-md{border-bottom-right-radius:var(--radius-md);border-bottom-left-radius:var(--radius-md)}.border{border-style:var(--tw-border-style);border-width:1px}.border-2{border-style:var(--tw-border-style);border-width:2px}.border-t{border-top-style:var(--tw-border-style);border-top-width:1px}.border-b{border-bottom-style:var(--tw-border-style);border-bottom-width:1px}.border-dashed{--tw-border-style:dashed;border-style:dashed}.border-\[\#2a5a3a\]{border-color:#2a5a3a}.border-\[\#2d3142\]{border-color:#2d3142}.border-\[\#3a5a45\]{border-color:#3a5a45}.border-\[\#3d3550\]{border-color:#3d3550}.border-\[\#3d4256\]{border-color:#3d4256}.border-\[\#5a2a30\]{border-color:#5a2a30}.border-\[\#5a4a2a\]{border-color:#5a4a2a}.border-\[\#7aa2f7\]{border-color:#7aa2f7}.border-\[\#232733\]{border-color:#232733}.border-\[\#e0af68\]{border-color:#e0af68}.bg-\[\#0e1016\]{background-color:#0e1016}.bg-\[\#1a1d27\]{background-color:#1a1d27}.bg-\[\#1f3a2d\]{background-color:#1f3a2d}.bg-\[\#1f2230\]{background-color:#1f2230}.bg-\[\#1f2533\]{background-color:#1f2533}.bg-\[\#2a2530\]{background-color:#2a2530}.bg-\[\#3a1f24\]{background-color:#3a1f24}.bg-\[\#3a2d1f\]{background-color:#3a2d1f}.bg-\[\#3a341f\]{background-color:#3a341f}.bg-\[\#7aa2f7\]{background-color:#7aa2f7}.bg-\[\#13151c\]{background-color:#13151c}.bg-\[\#161922\]{background-color:#161922}.bg-transparent{background-color:#0000}.p-2{padding:calc(var(--spacing) * 2)}.p-3{padding:calc(var(--spacing) * 3)}.p-4{padding:calc(var(--spacing) * 4)}.p-5{padding:calc(var(--spacing) * 5)}.p-6{padding:calc(var(--spacing) * 6)}.\!px-1{padding-inline:var(--spacing)!important}.px-1{padding-inline:var(--spacing)}.px-1\.5{padding-inline:calc(var(--spacing) * 1.5)}.px-2{padding-inline:calc(var(--spacing) * 2)}.px-3{padding-inline:calc(var(--spacing) * 3)}.px-4{padding-inline:calc(var(--spacing) * 4)}.px-6{padding-inline:calc(var(--spacing) * 6)}.\!py-0\.5{padding-block:calc(var(--spacing) * .5)!important}.py-0\.5{padding-block:calc(var(--spacing) * .5)}.py-1{padding-block:var(--spacing)}.py-1\.5{padding-block:calc(var(--spacing) * 1.5)}.py-2{padding-block:calc(var(--spacing) * 2)}.py-4{padding-block:calc(var(--spacing) * 4)}.pt-1{padding-top:var(--spacing)}.pt-3{padding-top:calc(var(--spacing) * 3)}.text-center{text-align:center}.text-left{text-align:left}.text-right{text-align:right}.align-middle{vertical-align:middle}.align-top{vertical-align:top}.font-mono{font-family:var(--font-mono)}.text-2xl{font-size:var(--text-2xl);line-height:var(--tw-leading,var(--text-2xl--line-height))}.text-4xl{font-size:var(--text-4xl);line-height:var(--tw-leading,var(--text-4xl--line-height))}.text-5xl{font-size:var(--text-5xl);line-height:var(--tw-leading,var(--text-5xl--line-height))}.text-base{font-size:var(--text-base);line-height:var(--tw-leading,var(--text-base--line-height))}.text-lg{font-size:var(--text-lg);line-height:var(--tw-leading,var(--text-lg--line-height))}.text-sm{font-size:var(--text-sm);line-height:var(--tw-leading,var(--text-sm--line-height))}.text-xl{font-size:var(--text-xl);line-height:var(--tw-leading,var(--text-xl--line-height))}.text-xs{font-size:var(--text-xs);line-height:var(--tw-leading,var(--text-xs--line-height))}.text-\[9px\]{font-size:9px}.text-\[10px\]{font-size:10px}.text-\[11px\]{font-size:11px}.text-\[13px\]{font-size:13px}.leading-7{--tw-leading:calc(var(--spacing) * 7);line-height:calc(var(--spacing) * 7)}.leading-none{--tw-leading:1;line-height:1}.leading-relaxed{--tw-leading:var(--leading-relaxed);line-height:var(--leading-relaxed)}.leading-snug{--tw-leading:var(--leading-snug);line-height:var(--leading-snug)}.leading-tight{--tw-leading:var(--leading-tight);line-height:var(--leading-tight)}.font-bold{--tw-font-weight:var(--font-weight-bold);font-weight:var(--font-weight-bold)}.font-normal{--tw-font-weight:var(--font-weight-normal);font-weight:var(--font-weight-normal)}.font-semibold{--tw-font-weight:var(--font-weight-semibold);font-weight:var(--font-weight-semibold)}.tracking-tight{--tw-tracking:var(--tracking-tight);letter-spacing:var(--tracking-tight)}.whitespace-nowrap{white-space:nowrap}.text-\[\#0e1016\]{color:#0e1016}.text-\[\#3d4256\]{color:#3d4256}.text-\[\#5a5f72\]{color:#5a5f72}.text-\[\#7aa2f7\]{color:#7aa2f7}.text-\[\#7d8294\]{color:#7d8294}.text-\[\#9ba0b3\]{color:#9ba0b3}.text-\[\#9ec1ff\]{color:#9ec1ff}.text-\[\#9ece6a\]{color:#9ece6a}.text-\[\#a9b1d6\]{color:#a9b1d6}.text-\[\#b6e08c\]{color:#b6e08c}.text-\[\#bb9af7\]{color:#bb9af7}.text-\[\#e0af68\]{color:#e0af68}.text-\[\#e4e6eb\]{color:#e4e6eb}.text-\[\#f0c177\]{color:#f0c177}.text-\[\#f7768e\]{color:#f7768e}.text-\[\#ff8da3\]{color:#ff8da3}.italic{font-style:italic}.tabular-nums{--tw-numeric-spacing:tabular-nums;font-variant-numeric:var(--tw-ordinal,) var(--tw-slashed-zero,) var(--tw-numeric-figure,) var(--tw-numeric-spacing,) var(--tw-numeric-fraction,)}.underline{text-decoration-line:underline}.decoration-\[\#3d4256\]{text-decoration-color:#3d4256}.decoration-dotted{text-decoration-style:dotted}.opacity-80{opacity:.8}.shadow{--tw-shadow:0 1px 3px 0 var(--tw-shadow-color,#0000001a), 0 1px 2px -1px var(--tw-shadow-color,#0000001a);box-shadow:var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow)}.shadow-md{--tw-shadow:0 4px 6px -1px var(--tw-shadow-color,#0000001a), 0 2px 4px -2px var(--tw-shadow-color,#0000001a);box-shadow:var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow)}.outline{outline-style:var(--tw-outline-style);outline-width:1px}.blur{--tw-blur:blur(8px);filter:var(--tw-blur,) var(--tw-brightness,) var(--tw-contrast,) var(--tw-grayscale,) var(--tw-hue-rotate,) var(--tw-invert,) var(--tw-saturate,) var(--tw-sepia,) var(--tw-drop-shadow,)}.filter{filter:var(--tw-blur,) var(--tw-brightness,) var(--tw-contrast,) var(--tw-grayscale,) var(--tw-hue-rotate,) var(--tw-invert,) var(--tw-saturate,) var(--tw-sepia,) var(--tw-drop-shadow,)}.transition{transition-property:color,background-color,border-color,outline-color,text-decoration-color,fill,stroke,--tw-gradient-from,--tw-gradient-via,--tw-gradient-to,opacity,box-shadow,transform,translate,scale,rotate,filter,-webkit-backdrop-filter,backdrop-filter,display,content-visibility,overlay,pointer-events;transition-timing-function:var(--tw-ease,var(--default-transition-timing-function));transition-duration:var(--tw-duration,var(--default-transition-duration))}.transition-all{transition-property:all;transition-timing-function:var(--tw-ease,var(--default-transition-timing-function));transition-duration:var(--tw-duration,var(--default-transition-duration))}.transition-opacity{transition-property:opacity;transition-timing-function:var(--tw-ease,var(--default-transition-timing-function));transition-duration:var(--tw-duration,var(--default-transition-duration))}.ease-in-out{--tw-ease:var(--ease-in-out);transition-timing-function:var(--ease-in-out)}.select-none{-webkit-user-select:none;user-select:none}@media (hover:hover){.hover\:border-\[\#7aa2f7\]:hover{border-color:#7aa2f7}.hover\:border-\[\#9ece6a\]:hover{border-color:#9ece6a}.hover\:border-\[\#ff8da3\]:hover{border-color:#ff8da3}.hover\:bg-\[\#1a1d27\]:hover{background-color:#1a1d27}.hover\:bg-\[\#1f3a2d\]:hover{background-color:#1f3a2d}.hover\:bg-\[\#1f2230\]:hover{background-color:#1f2230}.hover\:bg-\[\#2a2f3f\]:hover{background-color:#2a2f3f}.hover\:bg-\[\#2d3142\]:hover{background-color:#2d3142}.hover\:bg-\[\#3a1f24\]:hover{background-color:#3a1f24}.hover\:bg-\[\#4a3a25\]:hover{background-color:#4a3a25}.hover\:bg-\[\#4a2530\]:hover{background-color:#4a2530}.hover\:bg-\[\#7a2230\]:hover{background-color:#7a2230}.hover\:bg-\[\#9ec1ff\]:hover{background-color:#9ec1ff}.hover\:bg-\[\#262d3f\]:hover{background-color:#262d3f}.hover\:bg-\[\#25492f\]:hover{background-color:#25492f}.hover\:text-\[\#e4e6eb\]:hover{color:#e4e6eb}.hover\:text-\[\#ffd0da\]:hover{color:#ffd0da}}@media (min-width:40rem){.sm\:col-span-2{grid-column:span 2/span 2}.sm\:grid-cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}.sm\:grid-cols-3{grid-template-columns:repeat(3,minmax(0,1fr))}}@media (min-width:48rem){.md\:grid-cols-6{grid-template-columns:repeat(6,minmax(0,1fr))}}@media (min-width:80rem){.xl\:col-span-5{grid-column:span 5/span 5}.xl\:col-span-7{grid-column:span 7/span 7}}select{color:inherit;padding:0}.hidden{display:none}.transition{transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,-webkit-backdrop-filter,backdrop-filter}@property --tw-translate-x{syntax:"*";inherits:false;initial-value:0}@property --tw-translate-y{syntax:"*";inherits:false;initial-value:0}@property --tw-translate-z{syntax:"*";inherits:false;initial-value:0}@property --tw-rotate-x{syntax:"*";inherits:false}@property --tw-rotate-y{syntax:"*";inherits:false}@property --tw-rotate-z{syntax:"*";inherits:false}@property --tw-skew-x{syntax:"*";inherits:false}@property --tw-skew-y{syntax:"*";inherits:false}@property --tw-space-y-reverse{syntax:"*";inherits:false;initial-value:0}@property --tw-border-style{syntax:"*";inherits:false;initial-value:solid}@property --tw-leading{syntax:"*";inherits:false}@property --tw-font-weight{syntax:"*";inherits:false}@property --tw-tracking{syntax:"*";inherits:false}@property --tw-ordinal{syntax:"*";inherits:false}@property --tw-slashed-zero{syntax:"*";inherits:false}@property --tw-numeric-figure{syntax:"*";inherits:false}@property --tw-numeric-spacing{syntax:"*";inherits:false}@property --tw-numeric-fraction{syntax:"*";inherits:false}@property --tw-shadow{syntax:"*";inherits:false;initial-value:0 0 #0000}@property --tw-shadow-color{syntax:"*";inherits:false}@property --tw-shadow-alpha{syntax:"<percentage>";inherits:false;initial-value:100%}@property --tw-inset-shadow{syntax:"*";inherits:false;initial-value:0 0 #0000}@property --tw-inset-shadow-color{syntax:"*";inherits:false}@property --tw-inset-shadow-alpha{syntax:"<percentage>";inherits:false;initial-value:100%}@property --tw-ring-color{syntax:"*";inherits:false}@property --tw-ring-shadow{syntax:"*";inherits:false;initial-value:0 0 #0000}@property --tw-inset-ring-color{syntax:"*";inherits:false}@property --tw-inset-ring-shadow{syntax:"*";inherits:false;initial-value:0 0 #0000}@property --tw-ring-inset{syntax:"*";inherits:false}@property --tw-ring-offset-width{syntax:"<length>";inherits:false;initial-value:0}@property --tw-ring-offset-color{syntax:"*";inherits:false;initial-value:#fff}@property --tw-ring-offset-shadow{syntax:"*";inherits:false;initial-value:0 0 #0000}@property --tw-outline-style{syntax:"*";inherits:false;initial-value:solid}@property --tw-blur{syntax:"*";inherits:false}@property --tw-brightness{syntax:"*";inherits:false}@property --tw-contrast{syntax:"*";inherits:false}@property --tw-grayscale{syntax:"*";inherits:false}@property --tw-hue-rotate{syntax:"*";inherits:false}@property --tw-invert{syntax:"*";inherits:false}@property --tw-opacity{syntax:"*";inherits:false}@property --tw-saturate{syntax:"*";inherits:false}@property --tw-sepia{syntax:"*";inherits:false}@property --tw-drop-shadow{syntax:"*";inherits:false}@property --tw-drop-shadow-color{syntax:"*";inherits:false}@property --tw-drop-shadow-alpha{syntax:"<percentage>";inherits:false;initial-value:100%}@property --tw-drop-shadow-size{syntax:"*";inherits:false}@property --tw-ease{syntax:"*";inherits:false}</style>
+@layer properties{@supports (((-webkit-hyphens:none)) and (not (margin-trim:inline))) or ((-moz-orient:inline) and (not (color:rgb(from red r g b)))){*,:before,:after,::backdrop{--tw-translate-x:0;--tw-translate-y:0;--tw-translate-z:0;--tw-space-y-reverse:0;--tw-border-style:solid;--tw-leading:initial;--tw-font-weight:initial;--tw-tracking:initial;--tw-ordinal:initial;--tw-slashed-zero:initial;--tw-numeric-figure:initial;--tw-numeric-spacing:initial;--tw-numeric-fraction:initial;--tw-shadow:0 0 #0000;--tw-shadow-color:initial;--tw-shadow-alpha:100%;--tw-inset-shadow:0 0 #0000;--tw-inset-shadow-color:initial;--tw-inset-shadow-alpha:100%;--tw-ring-color:initial;--tw-ring-shadow:0 0 #0000;--tw-inset-ring-color:initial;--tw-inset-ring-shadow:0 0 #0000;--tw-ring-inset:initial;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-offset-shadow:0 0 #0000;--tw-outline-style:solid;--tw-blur:initial;--tw-brightness:initial;--tw-contrast:initial;--tw-grayscale:initial;--tw-hue-rotate:initial;--tw-invert:initial;--tw-opacity:initial;--tw-saturate:initial;--tw-sepia:initial;--tw-drop-shadow:initial;--tw-drop-shadow-color:initial;--tw-drop-shadow-alpha:100%;--tw-drop-shadow-size:initial}}}@layer theme{:root,:host{--font-sans:system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;--font-mono:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;--spacing:.25rem;--container-md:28rem;--container-4xl:56rem;--text-xs:.75rem;--text-xs--line-height:1rem;--text-sm:.875rem;--text-sm--line-height:1.25rem;--text-base:1rem;--text-base--line-height:1.5rem;--text-lg:1.125rem;--text-lg--line-height:1.75rem;--text-xl:1.25rem;--text-xl--line-height:1.75rem;--text-2xl:1.5rem;--text-2xl--line-height:2rem;--text-4xl:2.25rem;--text-4xl--line-height:2.5rem;--text-5xl:3rem;--text-5xl--line-height:1;--font-weight-normal:400;--font-weight-semibold:600;--font-weight-bold:700;--tracking-tight:-.025em;--leading-tight:1.25;--leading-snug:1.375;--leading-relaxed:1.625;--radius-md:.375rem;--radius-lg:.5rem;--default-transition-duration:.15s;--default-transition-timing-function:cubic-bezier(.4, 0, .2, 1);--default-font-family:var(--font-sans);--default-mono-font-family:var(--font-mono);--color-subtle:#9ba0b3}}@layer base{*,:after,:before,::backdrop{box-sizing:border-box;border:0 solid;margin:0;padding:0}::file-selector-button{box-sizing:border-box;border:0 solid;margin:0;padding:0}html,:host{-webkit-text-size-adjust:100%;tab-size:4;line-height:1.5;font-family:var(--default-font-family,-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji");font-feature-settings:var(--default-font-feature-settings,normal);font-variation-settings:var(--default-font-variation-settings,normal);-webkit-tap-highlight-color:transparent}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;-webkit-text-decoration:inherit;-webkit-text-decoration:inherit;-webkit-text-decoration:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,samp,pre{font-family:var(--default-mono-font-family,ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace);font-feature-settings:var(--default-mono-font-feature-settings,normal);font-variation-settings:var(--default-mono-font-variation-settings,normal);font-size:1em}small{font-size:80%}sub,sup{vertical-align:baseline;font-size:75%;line-height:0;position:relative}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}:-moz-focusring:where(:not(iframe)){outline:auto}progress{vertical-align:baseline}summary{display:list-item}ol,ul,menu{list-style:none}img,svg,video,canvas,audio,iframe,embed,object{vertical-align:middle;display:block}img,video{max-width:100%;height:auto}button,input,select,optgroup,textarea{font:inherit;font-feature-settings:inherit;font-variation-settings:inherit;letter-spacing:inherit;color:inherit;opacity:1;background-color:#0000;border-radius:0}::file-selector-button{font:inherit;font-feature-settings:inherit;font-variation-settings:inherit;letter-spacing:inherit;color:inherit;opacity:1;background-color:#0000;border-radius:0}:where(select:is([multiple],[size])) optgroup{font-weight:bolder}:where(select:is([multiple],[size])) optgroup option{padding-inline-start:20px}::file-selector-button{margin-inline-end:4px}::placeholder{opacity:1}@supports (not ((-webkit-appearance:-apple-pay-button))) or (contain-intrinsic-size:1px){::placeholder{color:currentColor}@supports (color:color-mix(in lab, red, red)){::placeholder{color:color-mix(in oklab, currentcolor 50%, transparent)}}}textarea{resize:vertical}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-date-and-time-value{min-height:1lh;text-align:inherit}::-webkit-datetime-edit{display:inline-flex}::-webkit-datetime-edit-fields-wrapper{padding:0}::-webkit-datetime-edit{padding-block:0}::-webkit-datetime-edit-year-field{padding-block:0}::-webkit-datetime-edit-month-field{padding-block:0}::-webkit-datetime-edit-day-field{padding-block:0}::-webkit-datetime-edit-hour-field{padding-block:0}::-webkit-datetime-edit-minute-field{padding-block:0}::-webkit-datetime-edit-second-field{padding-block:0}::-webkit-datetime-edit-millisecond-field{padding-block:0}::-webkit-datetime-edit-meridiem-field{padding-block:0}::-webkit-calendar-picker-indicator{line-height:1}:-moz-ui-invalid{box-shadow:none}button,input:where([type=button],[type=reset],[type=submit]){appearance:button}::file-selector-button{appearance:button}::-webkit-inner-spin-button{height:auto}::-webkit-outer-spin-button{height:auto}[hidden]:where(:not([hidden=until-found])){display:none!important}html{scrollbar-color:#2d3142 #0e1016;scrollbar-width:thin}body{background-image:radial-gradient(1100px 520px at 50% -8%,#7aa2f70d,#0000 62%);background-attachment:fixed}::-webkit-scrollbar{width:10px;height:10px}::-webkit-scrollbar-track{background:#0e1016}::-webkit-scrollbar-thumb{background:#2d3142;border-radius:6px}::-webkit-scrollbar-thumb:hover{background:#3d4256}button:not(:disabled),[role=button]:not(:disabled){cursor:pointer}button{transition:transform 80ms}button:not(:disabled):active{transform:scale(.97)}::placeholder{color:#9ca3af}select,input[type=number],input[type=text]{background:#1f2230;border:1px solid #2d3142;border-radius:6px}input[type=number],input[type=text]{color:#e4e6eb;padding:6px 8px}input[type=number]{appearance:textfield}input[type=number]::-webkit-outer-spin-button{appearance:none;margin:0}input[type=number]::-webkit-inner-spin-button{appearance:none;margin:0}input[type=search]{appearance:textfield;outline-offset:-2px;background-color:field}input[type=range]{accent-color:#7aa2f7;background-color:field}input[type=range]::-webkit-slider-thumb{background:#7aa2f7}option{padding:0 2px 1px}select option{color:#e4e6eb;background:#1f2230}details>summary{cursor:pointer;list-style:none}details>summary::-webkit-details-marker{display:none}details>summary:before{content:"▸";color:#7aa2f7;margin-right:6px;font-size:12px;transition:transform .15s;display:inline-block}details[open]>summary:before{transform:rotate(90deg)}select:focus-visible,input[type=number]:focus-visible,input[type=text]:focus-visible,input[type=range]:focus-visible,input[type=checkbox]:focus-visible,button:focus-visible,[role=button]:focus-visible,details>summary:focus-visible{outline-offset:2px;border-radius:6px;outline:2px solid #7aa2f7}@media (prefers-reduced-motion:reduce){*,:before,:after{scroll-behavior:auto!important;transition-duration:.001ms!important;animation-duration:.001ms!important;animation-iteration-count:1!important}}@media print{:root{--color-subtle:#333}html,body{color:#000!important;background:#fff!important}.card{box-shadow:none!important;background:#fff!important;border:1px solid #ccc!important}nav,#score_badge,#toast_host,#tooltip_host,button,[role=button],.modal-bg,input[type=range]{display:none!important}select,input[type=number],input[type=text]{color:#000!important;background:#fff!important;border:1px solid #999!important}details{break-inside:avoid}}}@layer components{.pill{border-radius:999px;padding:4px 10px;font-size:12px;font-weight:600}.ok{color:#b6e08c;background:#1f3a2d}.warn{color:#f0c177;background:#3a2d1f}.bad{color:#ff8da3;background:#3a1f24}.card{background:#161922;border:1px solid #232733;border-radius:12px}@media (hover:hover){.card-hover{transition:transform .15s,box-shadow .15s}.card-hover:hover{transform:translateY(-2px);box-shadow:0 8px 22px #0000004d}}.tab{color:#a9b1d6;border-radius:.25rem .25rem 0 0;transition:background .15s,color .15s;position:relative}.tab:hover{color:#9ec1ff;background:#1a1d27}.tab:after{content:"";transform-origin:50%;background:#7aa2f7;border-radius:2px 2px 0 0;height:3px;transition:transform .2s;position:absolute;bottom:0;left:6px;right:6px;transform:scaleX(0)}.tab.active,.tab[aria-selected=true]{color:#7aa2f7;background:#1f2230;border-radius:6px 6px 2px 2px}.tab.active:after,.tab[aria-selected=true]:after{transform:scaleX(1)}.tab:focus-visible{outline-offset:-2px;outline:2px solid #7aa2f7}.tab-pane:not(.hidden){animation:.18s both tabFade}.chainbar{vertical-align:middle;background:#1f2230;border-radius:3px;width:64px;height:6px;margin-right:6px;display:inline-block;overflow:hidden}.chainbar>span{border-radius:3px;height:100%;transition:width .18s;display:block}.chain-fadein{animation:.18s both fadeSlideIn}.chain-table td{padding:1px}.chain-table td:first-child{color:#b7bdd2;font-weight:500}.chain-table td:last-child{font-variant-numeric:tabular-nums;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}.chain-table tr{transition:background-color .14s}.chain-table tr:hover td{background:#7aa2f70d}.ovr-badge{color:#f0c177;letter-spacing:.02em;background:#4a3a2259;border:1px solid #5e4b1e;border-radius:999px;margin-left:4px;padding:0 5px;font-size:9px;font-weight:700;line-height:1.4;display:inline-block}#o_score,#o_displayed_big{transition:color .18s,transform .18s,text-shadow .18s}.score-pulse{animation:.28s scorePulse}.placeholder-dim{animation:1.6s ease-in-out infinite placeholderPulse}.dist-wrap{position:relative}.dist-wrap .dist-median{pointer-events:none;opacity:0;border-left:2px dashed #e0af68;width:0;transition:left .18s;position:absolute;top:0;bottom:18px}.dist-wrap .dist-median.shown{opacity:.8}.dist-wrap .dist-median:after{content:"median";color:#e0af68;opacity:.7;letter-spacing:.02em;text-transform:lowercase;white-space:nowrap;font-size:8px;position:absolute;top:-2px;left:3px}#o_dist{border-bottom:1px solid #2a2f3d}#o_dist .dist-bar{transform-origin:bottom;border-radius:4px 4px 0 0;transition:filter .14s;animation:.22s both distGrow}#o_dist .dist-bar:hover{filter:brightness(1.18)}[data-allocseg]{transition:width .18s}.modal-bg{z-index:50;background:#000000b3;justify-content:center;align-items:center;display:flex;position:fixed;inset:0}.modal-bg [role=dialog]{outline:none}#toast_host{z-index:60;pointer-events:none;flex-direction:column;gap:.5rem;display:flex;position:fixed;bottom:1rem;right:1rem}#toast_host .toast{pointer-events:auto;border-radius:6px;padding:8px 12px;font-size:12px;font-weight:600;animation:.18s toastIn;position:relative;overflow:hidden;box-shadow:0 4px 12px #0006}#toast_host .toast.warn{color:#f0c177;background:#3a2d1f;border:1px solid #e0af68}#toast_host .toast.bad{color:#ff8da3;background:#3a1f24;border:1px solid #f7768e}#toast_host .toast:after{content:"";opacity:.5;transform-origin:0;background:currentColor;width:100%;height:2px;position:absolute;bottom:0;left:0}#toast_host .toast.ticking:after{animation:toastShrink var(--toast-ms,3s) linear forwards}.warn-banner{border-radius:6px;padding:8px 10px;animation:.15s both fadeSlideIn}.warn-banner.bad{background:#3a1f2440;border:1px solid #f7768e}.warn-banner.warn{background:#3a2d1f40;border:1px solid #e0af68}.advice-item{transition:border-color .14s,background-color .14s;animation:.15s both fadeSlideIn}#score_badge{z-index:30;cursor:pointer;background:#161922;border:1px solid #232733;border-radius:999px;align-items:center;gap:6px;padding:4px 10px;font-size:12px;font-weight:700;line-height:1;transition:color .18s,background .18s;display:inline-flex;position:fixed;bottom:8px;left:8px;box-shadow:0 2px 8px #00000059}#score_badge:focus-visible{outline-offset:2px;outline:2px solid #7aa2f7}#score_badge .badge-num{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:16px}.log-plus{color:#9ece6a}.log-minus{color:#f7768e}.log-line:nth-child(odd){background:#0e10168a}.input-flash-ok{transition:background .4s;background:#1f3a2d!important}.input-flash-warn{transition:background .4s;background:#3a2d1f!important}.btn-flash-ok{color:#b6e08c!important;background:#1f3a2d!important}.btn-flash-bad{color:#ff8da3!important;background:#3a1f24!important}.fit-perfect{color:#9ece6a}.fit-near{color:#e0af68}.fit-bad{color:#f7768e}.fit-none{color:#7d8294}td.fitcell.fit-perfect{background:#9ece6a1f}td.fitcell.fit-near{background:#e0af681f}td.fitcell.fit-bad{background:#f7768e1f}.cmb-arrow{cursor:pointer;font:inherit;color:#3d4256;background:0 0;border:none;margin-right:4px;padding:0 2px;font-weight:700;transition:color .12s,transform .12s}.cmb-arrow:hover,.cmb-arrow:focus-visible{color:#9ece6a;transform:translate(2px)}.cmb-arrow.picked{color:#9ece6a}.cmb-chip{font:inherit;text-align:left;cursor:pointer;background:0 0;border:1px solid #0000;border-radius:4px;padding:1px 4px;transition:border-color .12s,background .12s}.cmb-chip:hover,.cmb-chip:focus-visible{background:#9ece6a14;border-color:#3a5a45}.cap-chip{cursor:help;color:#e0af68;background:#e0af681f;border:1px solid #e0af6859;border-radius:999px;align-items:center;gap:2px;padding:3px 7px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;font-weight:600;line-height:1;display:inline-flex}#tooltip_host{z-index:70;color:#cdd2e4;white-space:normal;pointer-events:none;opacity:0;background:#0b0d13;border:1px solid #2d3142;border-radius:8px;max-width:320px;padding:8px 10px;font-size:12px;line-height:1.45;transition:opacity .12s,transform .12s;position:fixed;transform:translateY(4px);box-shadow:0 6px 22px #0000008c}#tooltip_host.shown{opacity:1;transform:translateY(0)}}@layer utilities{.visible{visibility:visible}.sr-only{clip-path:inset(50%);white-space:nowrap;border-width:0;width:1px;height:1px;margin:-1px;padding:0;position:absolute;overflow:hidden}.absolute{position:absolute}.fixed{position:fixed}.relative{position:relative}.sticky{position:sticky}.inset-y-0{inset-block:0}.top-0{top:0}.top-1{top:var(--spacing)}.right-0{right:0}.bottom-0{bottom:0}.left-0{left:0}.left-1\/2{left:50%}.col-span-1{grid-column:span 1/span 1}.col-span-2{grid-column:span 2/span 2}.col-span-10{grid-column:span 10/span 10}.col-span-12{grid-column:span 12/span 12}.mx-4{margin-inline:calc(var(--spacing) * 4)}.my-2{margin-block:calc(var(--spacing) * 2)}.mt-0\.5{margin-top:calc(var(--spacing) * .5)}.mt-1{margin-top:var(--spacing)}.mt-2{margin-top:calc(var(--spacing) * 2)}.mt-3{margin-top:calc(var(--spacing) * 3)}.mt-4{margin-top:calc(var(--spacing) * 4)}.mr-3{margin-right:calc(var(--spacing) * 3)}.mb-1{margin-bottom:var(--spacing)}.mb-1\.5{margin-bottom:calc(var(--spacing) * 1.5)}.mb-2{margin-bottom:calc(var(--spacing) * 2)}.mb-3{margin-bottom:calc(var(--spacing) * 3)}.mb-4{margin-bottom:calc(var(--spacing) * 4)}.mb-5{margin-bottom:calc(var(--spacing) * 5)}.ml-1{margin-left:var(--spacing)}.ml-2{margin-left:calc(var(--spacing) * 2)}.ml-auto{margin-left:auto}.ml-px{margin-left:1px}.block{display:block}.flex{display:flex}.grid{display:grid}.hidden{display:none}.inline-block{display:inline-block}.inline-flex{display:inline-flex}.table{display:table}.h-7{height:calc(var(--spacing) * 7)}.h-24{height:calc(var(--spacing) * 24)}.h-32{height:calc(var(--spacing) * 32)}.max-h-\[68vh\]{max-height:68vh}.min-h-\[1\.25rem\]{min-height:1.25rem}.min-h-screen{min-height:100vh}.w-8{width:calc(var(--spacing) * 8)}.w-9{width:calc(var(--spacing) * 9)}.w-10{width:calc(var(--spacing) * 10)}.w-14{width:calc(var(--spacing) * 14)}.w-15{width:calc(var(--spacing) * 15)}.w-20{width:calc(var(--spacing) * 20)}.w-\[60px\]{width:60px}.w-full{width:100%}.w-px{width:1px}.max-w-4xl{max-width:var(--container-4xl)}.max-w-\[90px\]{max-width:90px}.max-w-\[260px\]{max-width:260px}.max-w-md{max-width:var(--container-md)}.min-w-0{min-width:0}.min-w-16{min-width:calc(var(--spacing) * 16)}.min-w-\[5ch\]{min-width:5ch}.min-w-\[14ch\]{min-width:14ch}.min-w-\[200px\]{min-width:200px}.flex-1{flex:1}.shrink-0{flex-shrink:0}.grow{flex-grow:1}.-translate-x-1\/2{--tw-translate-x:calc(calc(1 / 2 * 100%) * -1);translate:var(--tw-translate-x) var(--tw-translate-y)}.cursor-help{cursor:help}.cursor-pointer{cursor:pointer}.resize{resize:both}.list-inside{list-style-position:inside}.list-decimal{list-style-type:decimal}.columns-1{columns:1}.break-inside-avoid{break-inside:avoid}.grid-cols-1{grid-template-columns:repeat(1,minmax(0,1fr))}.grid-cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}.grid-cols-3{grid-template-columns:repeat(3,minmax(0,1fr))}.grid-cols-10{grid-template-columns:repeat(10,minmax(0,1fr))}.grid-cols-12{grid-template-columns:repeat(12,minmax(0,1fr))}.flex-col{flex-direction:column}.flex-wrap{flex-wrap:wrap}.items-baseline{align-items:baseline}.items-center{align-items:center}.items-end{align-items:flex-end}.items-start{align-items:flex-start}.justify-around{justify-content:space-around}.justify-between{justify-content:space-between}.justify-center{justify-content:center}.justify-end{justify-content:flex-end}.gap-0\.5{gap:calc(var(--spacing) * .5)}.gap-1{gap:var(--spacing)}.gap-1\.5{gap:calc(var(--spacing) * 1.5)}.gap-2{gap:calc(var(--spacing) * 2)}.gap-3{gap:calc(var(--spacing) * 3)}.gap-4{gap:calc(var(--spacing) * 4)}.gap-6{gap:calc(var(--spacing) * 6)}:where(.space-y-1>:not(:last-child)){--tw-space-y-reverse:0;margin-block-start:calc(var(--spacing) * var(--tw-space-y-reverse));margin-block-end:calc(var(--spacing) * calc(1 - var(--tw-space-y-reverse)))}:where(.space-y-2\.5>:not(:last-child)){--tw-space-y-reverse:0;margin-block-start:calc(calc(var(--spacing) * 2.5) * var(--tw-space-y-reverse));margin-block-end:calc(calc(var(--spacing) * 2.5) * calc(1 - var(--tw-space-y-reverse)))}:where(.space-y-3>:not(:last-child)){--tw-space-y-reverse:0;margin-block-start:calc(calc(var(--spacing) * 3) * var(--tw-space-y-reverse));margin-block-end:calc(calc(var(--spacing) * 3) * calc(1 - var(--tw-space-y-reverse)))}:where(.space-y-4>:not(:last-child)){--tw-space-y-reverse:0;margin-block-start:calc(calc(var(--spacing) * 4) * var(--tw-space-y-reverse));margin-block-end:calc(calc(var(--spacing) * 4) * calc(1 - var(--tw-space-y-reverse)))}.gap-x-1\.5{column-gap:calc(var(--spacing) * 1.5)}.gap-x-3{column-gap:calc(var(--spacing) * 3)}.gap-y-1{row-gap:var(--spacing)}.self-center{align-self:center}.self-start{align-self:flex-start}.truncate{text-overflow:ellipsis;white-space:nowrap;overflow:hidden}.overflow-auto{overflow:auto}.overflow-hidden{overflow:hidden}.rounded{border-radius:.25rem}.rounded-lg{border-radius:var(--radius-lg)}.rounded-md{border-radius:var(--radius-md)}.rounded-b-md{border-bottom-right-radius:var(--radius-md);border-bottom-left-radius:var(--radius-md)}.border{border-style:var(--tw-border-style);border-width:1px}.border-2{border-style:var(--tw-border-style);border-width:2px}.border-t{border-top-style:var(--tw-border-style);border-top-width:1px}.border-b{border-bottom-style:var(--tw-border-style);border-bottom-width:1px}.border-dashed{--tw-border-style:dashed;border-style:dashed}.border-\[\#2a5a3a\]{border-color:#2a5a3a}.border-\[\#2d3142\]{border-color:#2d3142}.border-\[\#3a5a45\]{border-color:#3a5a45}.border-\[\#3d3550\]{border-color:#3d3550}.border-\[\#3d4256\]{border-color:#3d4256}.border-\[\#5a2a30\]{border-color:#5a2a30}.border-\[\#5a4a2a\]{border-color:#5a4a2a}.border-\[\#7aa2f7\]{border-color:#7aa2f7}.border-\[\#9ece6a\]{border-color:#9ece6a}.border-\[\#232733\]{border-color:#232733}.border-\[\#e0af68\]{border-color:#e0af68}.border-l-\[\#7aa2f7\]{border-left-color:#7aa2f7}.border-l-\[\#9ece6a\]{border-left-color:#9ece6a}.border-l-\[\#e0af68\]{border-left-color:#e0af68}.bg-\[\#0e1016\]{background-color:#0e1016}.bg-\[\#1a1d27\]{background-color:#1a1d27}.bg-\[\#1f3a2d\]{background-color:#1f3a2d}.bg-\[\#1f2230\]{background-color:#1f2230}.bg-\[\#1f2533\]{background-color:#1f2533}.bg-\[\#2a2530\]{background-color:#2a2530}.bg-\[\#3a1f24\]{background-color:#3a1f24}.bg-\[\#3a2d1f\]{background-color:#3a2d1f}.bg-\[\#3a341f\]{background-color:#3a341f}.bg-\[\#3d4256\]{background-color:#3d4256}.bg-\[\#7aa2f7\]{background-color:#7aa2f7}.bg-\[\#13151c\]{background-color:#13151c}.bg-\[\#161922\]{background-color:#161922}.bg-\[rgba\(31\,58\,45\,0\.15\)\]{background-color:#1f3a2d26}.bg-\[rgba\(158\,206\,106\,0\.10\)\]{background-color:#9ece6a1a}.bg-\[rgba\(158\,206\,106\,0\.18\)\]{background-color:#9ece6a2e}.bg-transparent{background-color:#0000}.p-2{padding:calc(var(--spacing) * 2)}.p-3{padding:calc(var(--spacing) * 3)}.p-4{padding:calc(var(--spacing) * 4)}.p-5{padding:calc(var(--spacing) * 5)}.p-6{padding:calc(var(--spacing) * 6)}.\!px-1{padding-inline:var(--spacing)!important}.px-1{padding-inline:var(--spacing)}.px-1\.5{padding-inline:calc(var(--spacing) * 1.5)}.px-2{padding-inline:calc(var(--spacing) * 2)}.px-3{padding-inline:calc(var(--spacing) * 3)}.px-4{padding-inline:calc(var(--spacing) * 4)}.px-6{padding-inline:calc(var(--spacing) * 6)}.\!py-0\.5{padding-block:calc(var(--spacing) * .5)!important}.py-0\.5{padding-block:calc(var(--spacing) * .5)}.py-1{padding-block:var(--spacing)}.py-1\.5{padding-block:calc(var(--spacing) * 1.5)}.py-2{padding-block:calc(var(--spacing) * 2)}.py-4{padding-block:calc(var(--spacing) * 4)}.py-px{padding-block:1px}.pt-1{padding-top:var(--spacing)}.pt-3{padding-top:calc(var(--spacing) * 3)}.text-center{text-align:center}.text-left{text-align:left}.text-right{text-align:right}.align-middle{vertical-align:middle}.align-top{vertical-align:top}.font-mono{font-family:var(--font-mono)}.text-2xl{font-size:var(--text-2xl);line-height:var(--tw-leading,var(--text-2xl--line-height))}.text-4xl{font-size:var(--text-4xl);line-height:var(--tw-leading,var(--text-4xl--line-height))}.text-5xl{font-size:var(--text-5xl);line-height:var(--tw-leading,var(--text-5xl--line-height))}.text-base{font-size:var(--text-base);line-height:var(--tw-leading,var(--text-base--line-height))}.text-lg{font-size:var(--text-lg);line-height:var(--tw-leading,var(--text-lg--line-height))}.text-sm{font-size:var(--text-sm);line-height:var(--tw-leading,var(--text-sm--line-height))}.text-xl{font-size:var(--text-xl);line-height:var(--tw-leading,var(--text-xl--line-height))}.text-xs{font-size:var(--text-xs);line-height:var(--tw-leading,var(--text-xs--line-height))}.text-\[9px\]{font-size:9px}.text-\[10px\]{font-size:10px}.text-\[11px\]{font-size:11px}.text-\[13px\]{font-size:13px}.leading-7{--tw-leading:calc(var(--spacing) * 7);line-height:calc(var(--spacing) * 7)}.leading-none{--tw-leading:1;line-height:1}.leading-relaxed{--tw-leading:var(--leading-relaxed);line-height:var(--leading-relaxed)}.leading-snug{--tw-leading:var(--leading-snug);line-height:var(--leading-snug)}.leading-tight{--tw-leading:var(--leading-tight);line-height:var(--leading-tight)}.font-bold{--tw-font-weight:var(--font-weight-bold);font-weight:var(--font-weight-bold)}.font-normal{--tw-font-weight:var(--font-weight-normal);font-weight:var(--font-weight-normal)}.font-semibold{--tw-font-weight:var(--font-weight-semibold);font-weight:var(--font-weight-semibold)}.tracking-tight{--tw-tracking:var(--tracking-tight);letter-spacing:var(--tracking-tight)}.whitespace-nowrap{white-space:nowrap}.text-\[\#0e1016\]{color:#0e1016}.text-\[\#3d4256\]{color:#3d4256}.text-\[\#5a5f72\]{color:#5a5f72}.text-\[\#7aa2f7\]{color:#7aa2f7}.text-\[\#9ec1ff\]{color:#9ec1ff}.text-\[\#9ece6a\]{color:#9ece6a}.text-\[\#a9b1d6\]{color:#a9b1d6}.text-\[\#b6e08c\]{color:#b6e08c}.text-\[\#bb9af7\]{color:#bb9af7}.text-\[\#e0af68\]{color:#e0af68}.text-\[\#e4e6eb\]{color:#e4e6eb}.text-\[\#f0c177\]{color:#f0c177}.text-\[\#f7768e\]{color:#f7768e}.text-\[\#ff8da3\]{color:#ff8da3}.text-subtle{color:var(--color-subtle)}.italic{font-style:italic}.tabular-nums{--tw-numeric-spacing:tabular-nums;font-variant-numeric:var(--tw-ordinal,) var(--tw-slashed-zero,) var(--tw-numeric-figure,) var(--tw-numeric-spacing,) var(--tw-numeric-fraction,)}.underline{text-decoration-line:underline}.decoration-\[\#3d4256\]{text-decoration-color:#3d4256}.decoration-dotted{text-decoration-style:dotted}.opacity-65{opacity:.65}.opacity-80{opacity:.8}.shadow{--tw-shadow:0 1px 3px 0 var(--tw-shadow-color,#0000001a), 0 1px 2px -1px var(--tw-shadow-color,#0000001a);box-shadow:var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow)}.shadow-md{--tw-shadow:0 4px 6px -1px var(--tw-shadow-color,#0000001a), 0 2px 4px -2px var(--tw-shadow-color,#0000001a);box-shadow:var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow)}.outline{outline-style:var(--tw-outline-style);outline-width:1px}.outline-\[\#9ece6a\]{outline-color:#9ece6a}.blur{--tw-blur:blur(8px);filter:var(--tw-blur,) var(--tw-brightness,) var(--tw-contrast,) var(--tw-grayscale,) var(--tw-hue-rotate,) var(--tw-invert,) var(--tw-saturate,) var(--tw-sepia,) var(--tw-drop-shadow,)}.filter{filter:var(--tw-blur,) var(--tw-brightness,) var(--tw-contrast,) var(--tw-grayscale,) var(--tw-hue-rotate,) var(--tw-invert,) var(--tw-saturate,) var(--tw-sepia,) var(--tw-drop-shadow,)}.transition{transition-property:color,background-color,border-color,outline-color,text-decoration-color,fill,stroke,--tw-gradient-from,--tw-gradient-via,--tw-gradient-to,opacity,box-shadow,transform,translate,scale,rotate,filter,-webkit-backdrop-filter,backdrop-filter,display,content-visibility,overlay,pointer-events;transition-timing-function:var(--tw-ease,var(--default-transition-timing-function));transition-duration:var(--tw-duration,var(--default-transition-duration))}.transition-all{transition-property:all;transition-timing-function:var(--tw-ease,var(--default-transition-timing-function));transition-duration:var(--tw-duration,var(--default-transition-duration))}.transition-opacity{transition-property:opacity;transition-timing-function:var(--tw-ease,var(--default-transition-timing-function));transition-duration:var(--tw-duration,var(--default-transition-duration))}.select-none{-webkit-user-select:none;user-select:none}@media (hover:hover){.hover\:border-\[\#7aa2f7\]:hover{border-color:#7aa2f7}.hover\:border-\[\#9ece6a\]:hover{border-color:#9ece6a}.hover\:border-\[\#ff8da3\]:hover{border-color:#ff8da3}.hover\:bg-\[\#1a1d27\]:hover{background-color:#1a1d27}.hover\:bg-\[\#1f3a2d\]:hover{background-color:#1f3a2d}.hover\:bg-\[\#1f2230\]:hover{background-color:#1f2230}.hover\:bg-\[\#2a2f3f\]:hover{background-color:#2a2f3f}.hover\:bg-\[\#2d3142\]:hover{background-color:#2d3142}.hover\:bg-\[\#3a1f24\]:hover{background-color:#3a1f24}.hover\:bg-\[\#4a3a25\]:hover{background-color:#4a3a25}.hover\:bg-\[\#4a2530\]:hover{background-color:#4a2530}.hover\:bg-\[\#7a2230\]:hover{background-color:#7a2230}.hover\:bg-\[\#9ec1ff\]:hover{background-color:#9ec1ff}.hover\:bg-\[\#262d3f\]:hover{background-color:#262d3f}.hover\:bg-\[\#25492f\]:hover{background-color:#25492f}.hover\:text-\[\#e4e6eb\]:hover{color:#e4e6eb}.hover\:text-\[\#ffd0da\]:hover{color:#ffd0da}}@media (min-width:40rem){.sm\:col-span-2{grid-column:span 2/span 2}.sm\:h-\[140px\]{height:140px}.sm\:w-12{width:calc(var(--spacing) * 12)}.sm\:w-20{width:calc(var(--spacing) * 20)}.sm\:min-w-\[90px\]{min-width:90px}.sm\:columns-2{columns:2}.sm\:grid-cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}.sm\:grid-cols-3{grid-template-columns:repeat(3,minmax(0,1fr))}}@media (min-width:48rem){.md\:columns-3{columns:3}.md\:grid-cols-6{grid-template-columns:repeat(6,minmax(0,1fr))}}@media (min-width:80rem){.xl\:sticky{position:sticky}.xl\:top-4{top:calc(var(--spacing) * 4)}.xl\:col-span-5{grid-column:span 5/span 5}.xl\:col-span-7{grid-column:span 7/span 7}.xl\:hidden{display:none}.xl\:max-h-\[calc\(100vh-2rem\)\]{max-height:calc(100vh - 2rem)}.xl\:self-start{align-self:flex-start}.xl\:overflow-y-auto{overflow-y:auto}}}@keyframes scorePulse{0%{transform:scale(1)}35%{transform:scale(1.06)}to{transform:scale(1)}}@keyframes placeholderPulse{0%,to{opacity:.35}50%{opacity:.6}}@keyframes distGrow{0%{transform:scaleY(0)}to{transform:scaleY(1)}}@keyframes toastIn{0%{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}@keyframes toastShrink{0%{transform:scaleX(1)}to{transform:scaleX(0)}}@keyframes fadeSlideIn{0%{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}@keyframes tabFade{0%{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}@property --tw-translate-x{syntax:"*";inherits:false;initial-value:0}@property --tw-translate-y{syntax:"*";inherits:false;initial-value:0}@property --tw-translate-z{syntax:"*";inherits:false;initial-value:0}@property --tw-space-y-reverse{syntax:"*";inherits:false;initial-value:0}@property --tw-border-style{syntax:"*";inherits:false;initial-value:solid}@property --tw-leading{syntax:"*";inherits:false}@property --tw-font-weight{syntax:"*";inherits:false}@property --tw-tracking{syntax:"*";inherits:false}@property --tw-ordinal{syntax:"*";inherits:false}@property --tw-slashed-zero{syntax:"*";inherits:false}@property --tw-numeric-figure{syntax:"*";inherits:false}@property --tw-numeric-spacing{syntax:"*";inherits:false}@property --tw-numeric-fraction{syntax:"*";inherits:false}@property --tw-shadow{syntax:"*";inherits:false;initial-value:0 0 #0000}@property --tw-shadow-color{syntax:"*";inherits:false}@property --tw-shadow-alpha{syntax:"<percentage>";inherits:false;initial-value:100%}@property --tw-inset-shadow{syntax:"*";inherits:false;initial-value:0 0 #0000}@property --tw-inset-shadow-color{syntax:"*";inherits:false}@property --tw-inset-shadow-alpha{syntax:"<percentage>";inherits:false;initial-value:100%}@property --tw-ring-color{syntax:"*";inherits:false}@property --tw-ring-shadow{syntax:"*";inherits:false;initial-value:0 0 #0000}@property --tw-inset-ring-color{syntax:"*";inherits:false}@property --tw-inset-ring-shadow{syntax:"*";inherits:false;initial-value:0 0 #0000}@property --tw-ring-inset{syntax:"*";inherits:false}@property --tw-ring-offset-width{syntax:"<length>";inherits:false;initial-value:0}@property --tw-ring-offset-color{syntax:"*";inherits:false;initial-value:#fff}@property --tw-ring-offset-shadow{syntax:"*";inherits:false;initial-value:0 0 #0000}@property --tw-outline-style{syntax:"*";inherits:false;initial-value:solid}@property --tw-blur{syntax:"*";inherits:false}@property --tw-brightness{syntax:"*";inherits:false}@property --tw-contrast{syntax:"*";inherits:false}@property --tw-grayscale{syntax:"*";inherits:false}@property --tw-hue-rotate{syntax:"*";inherits:false}@property --tw-invert{syntax:"*";inherits:false}@property --tw-opacity{syntax:"*";inherits:false}@property --tw-saturate{syntax:"*";inherits:false}@property --tw-sepia{syntax:"*";inherits:false}@property --tw-drop-shadow{syntax:"*";inherits:false}@property --tw-drop-shadow-color{syntax:"*";inherits:false}@property --tw-drop-shadow-alpha{syntax:"<percentage>";inherits:false;initial-value:100%}@property --tw-drop-shadow-size{syntax:"*";inherits:false}</style>
 </head>
 <body class="bg-[#0e1016] text-[#e4e6eb] min-h-screen">
 
@@ -288,18 +27,18 @@
 
 <div id="sr_live" class="sr-only" aria-live="polite" aria-atomic="true"></div>
 
-<div id="score_badge" role="button" tabindex="0" title="Live predicted score, click to jump to the full output panel">
+<div id="score_badge" class="xl:hidden" role="button" tabindex="0" title="Live predicted score, click to jump to the full output panel">
   <span class="text-subtle">score</span>
   <span class="badge-num" id="score_badge_num">-</span>
   <span class="text-subtle">/</span>
-  <span class="badge-num" id="score_badge_disp" style="color:#7aa2f7">-</span>
+  <span class="badge-num text-[#7aa2f7]" id="score_badge_disp">-</span>
 </div>
 
 <header class="px-6 py-4 border-b border-[#232733] flex flex-wrap items-center gap-3">
   <div class="flex flex-wrap items-center gap-3 min-w-0">
     <div class="min-w-0">
       <h1 class="text-xl font-bold text-[#7aa2f7]">Game Dev Tycoon: Review Calculator</h1>
-      <p class="text-xs text-[#7d8294]">
+      <p class="text-xs text-subtle">
         Faithful re-implementation of <code class="text-[#e0af68]">Reviews.rateGame</code> from
         <code class="text-[#e0af68]">codeNw.js</code>
         <span class="ml-2 pill ok" title="Full formula chain, all 66 topics + mission overrides, the 9 dev-mission weight tables, platform data, trend factors, reviewer noise model and tech-fit gating verified line-by-line against the codeNw.js source on this date.">verified ✓ <span class="font-normal opacity-80">· audited 2026-10-19</span></span>
@@ -310,24 +49,24 @@
          title="Mirrors the in-game corner display. Date (Y/M/W) drives platform availability + the early-game score cap; fans drive the medium-size tech-fit penalty.">
       <label class="flex items-center gap-1 text-xs">
         <input type="number" id="i_fans" value="0" min="0" max="1000000000" step="1000"
-               class="w-20 text-right text-sm no-spin" style="padding:2px 6px;">
+               class="w-20 text-right text-sm px-1.5 py-0.5">
         <span class="text-[#e0af68] text-xs">Fans</span>
       </label>
       <span class="text-[#3d4256]">·</span>
       <label class="flex items-center gap-0.5 text-xs" title="In-game year (1-40). Drives platform availability and the early-game score cap.">
         <span class="text-[#9ec1ff] text-xs">Y</span>
         <input type="number" id="i_year" value="1" min="1" max="40"
-               class="w-10 text-right text-sm no-spin" style="padding:2px 4px;">
+               class="w-10 text-right text-sm px-1 py-0.5">
       </label>
       <label class="flex items-center gap-0.5 text-xs" title="In-game month (1-12). Used for fractional-year platform availability.">
         <span class="text-[#9ec1ff] text-xs">M</span>
         <input type="number" id="i_month" value="1" min="1" max="12"
-               class="w-10 text-right text-sm no-spin" style="padding:2px 4px;">
+               class="w-10 text-right text-sm px-1 py-0.5">
       </label>
       <label class="flex items-center gap-0.5 text-xs" title="In-game week of the month (1-4). Used for fractional-year platform availability.">
         <span class="text-[#9ec1ff] text-xs">W</span>
         <input type="number" id="i_week" value="1" min="1" max="4"
-               class="w-8 text-right text-sm no-spin" style="padding:2px 4px;">
+               class="w-8 text-right text-sm px-1 py-0.5">
       </label>
     </div>
   </div>
@@ -345,10 +84,10 @@
       <span>REPORT ISSUE</span>
     </button>
     <nav class="flex gap-1 flex-wrap" role="tablist" aria-label="Calculator views">
-      <button id="tabbtn-calc"  data-tab="calc"   class="tab active px-4 py-2 text-sm rounded-t" role="tab" aria-selected="true"  aria-controls="tab-calc"  title="Score a single game configuration and see the full review breakdown.">Calculator</button>
-      <button id="tabbtn-combo" data-tab="combo"  class="tab px-4 py-2 text-sm rounded-t"        role="tab" aria-selected="false" aria-controls="tab-combo" title="Browse topic + genre + audience combinations rated great/perfect.">Perfect Combos</button>
-      <button id="tabbtn-sug"   data-tab="sug"    class="tab px-4 py-2 text-sm rounded-t"        role="tab" aria-selected="false" aria-controls="tab-sug"   title="Get the optimal development-slider allocation for a chosen genre.">Slider Suggester</button>
-      <button id="tabbtn-notes" data-tab="notes"  class="tab px-4 py-2 text-sm rounded-t"        role="tab" aria-selected="false" aria-controls="tab-notes" title="How the score is calculated and where each number comes from.">Notes</button>
+      <button id="tabbtn-calc"  data-tab="calc"   class="tab active px-4 py-2 text-sm" role="tab" aria-selected="true"  aria-controls="tab-calc"  title="Score a single game configuration and see the full review breakdown.">Calculator</button>
+      <button id="tabbtn-combo" data-tab="combo"  class="tab px-4 py-2 text-sm"        role="tab" aria-selected="false" aria-controls="tab-combo" title="Browse topic + genre + audience combinations rated great/perfect.">Perfect Combos</button>
+      <button id="tabbtn-sug"   data-tab="sug"    class="tab px-4 py-2 text-sm"        role="tab" aria-selected="false" aria-controls="tab-sug"   title="Get the optimal development-slider allocation for a chosen genre.">Slider Suggester</button>
+      <button id="tabbtn-notes" data-tab="notes"  class="tab px-4 py-2 text-sm"        role="tab" aria-selected="false" aria-controls="tab-notes" title="How the score is calculated and where each number comes from.">Notes</button>
     </nav>
   </div>
 </header>
@@ -363,12 +102,12 @@
         <label class="flex flex-col text-xs gap-1" title="Topic of the game. 66 topics; type to filter the list (the dropdown supports type-ahead).">
           <span class="flex items-center justify-between gap-2">
             <span>Topic</span>
-            <input type="search" id="i_topic_filter" placeholder="filter…" class="text-[10px]" style="width:80px;padding:1px 6px;">
+            <input type="search" id="i_topic_filter" placeholder="filter…" class="text-[10px] w-20 px-1.5 py-px">
           </span>
           <select id="i_topic"></select>
         </label>
         <label class="flex flex-col text-xs gap-1" title="Main genre + optional second genre. Combined weight = (2·main + second) / 3. Leave the right side blank for a single-genre game.">
-          <span>Genre <span class="text-[#7d8294]">/ 2nd genre (opt.)</span></span>
+          <span>Genre <span class="text-subtle">/ 2nd genre (opt.)</span></span>
           <div class="flex gap-1">
             <select id="i_genre"  class="flex-1 min-w-0"></select>
             <select id="i_genre2" class="flex-1 min-w-0" title="Second genre, optional. Combined weight = (2·main + second)/3."></select>
@@ -387,7 +126,7 @@
         <label class="flex flex-col text-xs gap-1 col-span-2" title="The dynamic target your next game must beat. Grows EVERY time you ship a top-rated game. By year 35 with several 10/10s under your belt, this is typically 1500-3000+, NOT 500.">
           <span>Reference topScore <span class="text-[#f7768e]">★ critical: most-mispredictions come from this field</span></span>
           <input type="number" id="i_top" min="20" max="10000" value="20" step="5">
-          <span class="text-[10px] text-[#7d8294] leading-snug">
+          <span class="text-[10px] text-subtle leading-snug">
             Rough scale: <b>start = 20</b> &middot; <b>yr 5 ≈ 50-150</b> &middot; <b>yr 10 ≈ 200-600</b> &middot; <b>yr 20 ≈ 600-1500</b> &middot; <b>yr 30+ ≈ 1500-3000+</b>.
             If you typed 500 but the game is in year 35, your prediction will be wildly optimistic.
           </span>
@@ -401,7 +140,7 @@
         <label class="col-span-2 flex items-start gap-2 text-[11px] text-[#a9b1d6]" title="codeNw.js opens the low-score pity floor on lastTopScore > 0, which is not the topScore field above. A game knocked down from 9 records a top score without raising your achievement count, and under 20 the divisor still reads 20.">
           <input type="checkbox" id="i_hadtop" class="mt-0.5">
           <span>A past game set a top score the numbers above do not show.
-            <span class="text-[#7d8294]">Tick this only if a game of yours was knocked down from 9 or more while topScore stayed at 20 and achievements stayed at 0. It opens the low-score pity floor.</span>
+            <span class="text-subtle">Tick this only if a game of yours was knocked down from 9 or more while topScore stayed at 20 and achievements stayed at 0. It opens the low-score pity floor.</span>
           </span>
         </label>
       </div>
@@ -410,9 +149,9 @@
     <details class="card card-hover p-5" id="topic_lib_card">
       <summary class="cursor-pointer flex items-center justify-between flex-wrap gap-2">
         <h2 class="text-[#7aa2f7] font-bold inline-block">Topic &amp; Genre Library</h2>
-        <span class="text-xs text-[#7d8294]" id="topic_lock_status">- unlocked</span>
+        <span class="text-xs text-subtle" id="topic_lock_status">- unlocked</span>
       </summary>
-      <p class="text-xs text-[#7d8294] mt-3 leading-relaxed">
+      <p class="text-xs text-subtle mt-3 leading-relaxed">
         Mark which topics &amp; genres you've already <b>researched in your save</b>. Locked items are <b>excluded</b>
         from <i>🎯 Pick a Perfect Game</i>, from the <i>Perfect Combos</i> tab and from the <i>Game Setup</i>
         dropdowns above, so the calculator only ever offers you a game your save can actually start.
@@ -444,16 +183,16 @@
                 class="px-3 py-1.5 rounded bg-[#3a1f24] hover:bg-[#4a2530] text-[#ff8da3] text-xs font-bold border border-[#5a2a30]">🔒 Lock all topics</button>
         <button id="btn_unlock_all" type="button"
                 class="px-3 py-1.5 rounded bg-[#1f3a2d] hover:bg-[#25492f] text-[#b6e08c] text-xs font-bold border border-[#2a5a3a]">✓ Unlock all topics</button>
-        <span class="text-[10px] text-[#7d8294] self-center">Click a chip to toggle its lock state.</span>
+        <span class="text-[10px] text-subtle self-center">Click a chip to toggle its lock state.</span>
       </div>
-      <div id="topic_lock_grid"></div>
+      <div id="topic_lock_grid" class="columns-1 gap-x-1.5 sm:columns-2 md:columns-3"></div>
     </details>
 
     <div class="card card-hover p-5 border-2 border-[#7aa2f7]">
       <div class="flex items-start justify-between gap-3 flex-wrap">
         <div class="flex-1 min-w-[200px]">
           <h2 class="text-[#7aa2f7] font-bold">🎯 Pick a Perfect Game</h2>
-          <p class="text-xs text-[#7d8294] mt-1 leading-snug">
+          <p class="text-xs text-subtle mt-1 leading-snug">
             Searches every <b>unlocked</b> topic × genre × audience × <b>currently-available</b> platform
             (filtered by Year/Month/Week) and picks a <b>perfect 1.0</b> combo (T↔G = T↔A = P↔G = P↔A = 1.0).
             Auto-fills the inputs above. Each click <b>advances by 1</b> through the candidate list,
@@ -467,8 +206,8 @@
         <button id="btn_pick_perfect" type="button"
                 class="px-4 py-2 rounded-lg bg-[#7aa2f7] hover:bg-[#9ec1ff] text-[#0e1016] font-bold text-sm shadow-md whitespace-nowrap">
           🎲 Pick a Perfect Game
-          <span id="pick_idx_badge"
-                class="ml-1 inline-block px-1.5 py-0.5 rounded bg-[#0e1016] text-[#9ec1ff] font-mono text-[11px] align-middle hidden"
+          <span id="pick_idx_badge" hidden
+                class="ml-1 inline-block px-1.5 py-0.5 rounded bg-[#0e1016] text-[#9ec1ff] font-mono text-[11px] align-middle"
                 title="Cursor position in the deterministic candidate list, clicking advances by 1, wrapping at the end."></span>
         </button>
       </div>
@@ -480,7 +219,7 @@
         <h2 class="text-[#7aa2f7] font-bold">Development sliders (3 stages × 3 missions)</h2>
         <button id="btn_autofill" class="bg-[#7aa2f7] hover:bg-[#9ec1ff] text-[#0e1016] font-semibold text-xs px-3 py-1.5 rounded">Auto-suggest optimal</button>
       </div>
-      <p class="text-xs text-[#7d8294] mb-3">
+      <p class="text-xs text-subtle mb-3">
         Bars = in-game slider positions (0-100, independent). Move the slider <i>or</i> type a number. Both update.
         Mission weights respect topic <code class="text-[#e0af68]">missionOverrides</code> when they apply.
       </p>
@@ -495,10 +234,10 @@
              title="Most games release on a single platform. With this OFF, clicking a platform automatically unselects the others, which prevents accidental multi-selection.">
         <input type="checkbox" id="i_multiplat" class="mt-0.5">
         <span><b class="text-[#e4e6eb]">Multi-Platform mode</b>: allow selecting more than one platform at once.
-          <span class="text-[#7d8294]">Off by default: clicking a platform deselects the others, to prevent accidents.</span>
+          <span class="text-subtle">Off by default: clicking a platform deselects the others, to prevent accidents.</span>
         </span>
       </label>
-      <details class="text-xs text-[#7d8294] mb-3 bg-[#13151c] border border-[#232733] rounded p-2">
+      <details class="text-xs text-subtle mb-3 bg-[#13151c] border border-[#232733] rounded p-2">
         <summary class="cursor-pointer text-[#9ec1ff]">What does "0.7^n weighting fall-off" mean? (click)</summary>
         <div class="mt-2 leading-relaxed">
           When you ship on multiple platforms, the contribution of each is blended by <code>d *= 0.7</code> per step (per <code>Platforms.getGenreWeighting</code>):<br>
@@ -509,7 +248,7 @@
         </div>
       </details>
 
-      <div id="plat_grid" class="text-sm" style="columns: 1; column-gap: 0.75rem;"></div>
+      <div id="plat_grid" class="text-sm columns-1 gap-x-3 sm:columns-2 md:columns-3"></div>
     </div>
 
     <div class="card p-5">
@@ -525,7 +264,7 @@
           <input type="number" id="i_bugs" value="0" min="0" max="1000000">
         </label>
         <label class="flex flex-col text-xs gap-1" title="game.flags.techLevel in codeNw.js: the tech level of the graphics engine picked for this game. Only Large and AAA tech-fit read it. The small-game penalty uses Company office level, which is the next input.">
-          <span>Graphics engine tech level <span class="text-[#7d8294]" title="the tech level of the one graphics engine this game uses">ⓘ</span></span>
+          <span>Graphics engine tech level <span class="text-subtle" title="the tech level of the one graphics engine this game uses">ⓘ</span></span>
           <select id="i_tl">
             <option value="0" selected>0 &middot; Text Based</option>
             <option value="1">1 &middot; 2D Graphics V1 / 3D Graphics V1</option>
@@ -536,15 +275,15 @@
             <option value="6">6 &middot; 3D Graphics V6</option>
             <option value="7">7 &middot; 3D Graphics V7</option>
           </select>
-          <span class="text-[10px] text-[#7d8294] leading-snug">
+          <span class="text-[10px] text-subtle leading-snug">
             Pick the <b>graphics engine</b> this game uses. The game lets you tick only one, so this is a single level, not a count of features.<br>
             <b class="text-[#e0af68]">Large</b> games want ≥ <b>3</b> and <b class="text-[#e0af68]">AAA</b> games want ≥ <b>5</b>, or the score takes a hidden cut of 0.1 per level short, up to 0.3.
           </span>
         </label>
         <label class="flex flex-col text-xs gap-1" title="Company.currentLevel in codeNw.js: the office tier you are in. Reviews.f(d,g) reads it for the small-game tech-fit branch. It is a different field from engine techLevel, which has its own input below.">
-          <span>Company office level <span class="text-[#7d8294]" title="1=garage, 2=small, 3=big, 4=corporate">ⓘ</span></span>
+          <span>Company office level <span class="text-subtle" title="1=garage, 2=small, 3=big, 4=corporate">ⓘ</span></span>
           <input type="number" id="i_clevel" value="1" min="1" max="4">
-          <span class="text-[10px] text-[#7d8294] leading-snug">
+          <span class="text-[10px] text-subtle leading-snug">
             Which <b>office tier</b> you're in: <b>1</b>=garage, <b>2</b>=small office, <b>3</b>=big office, <b>4</b>=corporate.<br>
             <b class="text-[#e0af68]">Small</b> games released in office level ≥ <b>2</b> get a hidden <b>0.9×</b> tech-fit penalty (the game considers small projects beneath a real studio).
           </span>
@@ -560,15 +299,15 @@
             <option value="1.2_strange">1.20  strangeCombos · main-genre fit 0.8</option>
             <option value="1.4">1.40  strangeCombos · main-genre fit 0.7 or less</option>
           </select>
-          <span class="text-[10px] text-[#7d8294] leading-snug">
+          <span class="text-[10px] text-subtle leading-snug">
             During a strange-combinations trend the game reads the topic fit of your <b>main genre only</b>.
             A second genre does not count here, so do not use the blended p value from the breakdown panel.
           </span>
         </label>
         <label class="flex flex-col text-xs gap-1" title="Number of staff hired recently (within the last ~2 game releases) who worked on this game. Your own character never counts, whatever it has shipped. Fresh hires drag the 9→10 ceiling down.">
-          <span>Recently-hired staff <span class="text-[#7d8294]">ⓘ</span></span>
+          <span>Recently-hired staff <span class="text-subtle">ⓘ</span></span>
           <input type="number" id="i_newstaff" value="0" min="0" max="100">
-          <span class="text-[10px] text-[#7d8294] leading-snug">
+          <span class="text-[10px] text-subtle leading-snug">
             How many staff did you hire <b>during the last ~2 games</b> (count people who joined recently, fresh employees the game still considers "new").<br>
             If &gt; 0, the score has a hard time reaching <b>9.0+</b> (the game randomly drags 9s down to ~8.15-9.10). Set to <b>0</b> if you haven't hired anyone in the last 2 releases.
           </span>
@@ -576,7 +315,7 @@
         <label class="flex flex-col text-xs gap-1 col-span-2" title="Number of staff who actually contributed to this game. Below roughly 5.2 the game runs a rescue branch that deducts 1 point for every staffer past the optimal team size plus one.">
           <span>Team size on this game <span class="text-[#f7768e]">★ critical for low-score rescue</span></span>
           <input type="number" id="i_team" value="1" min="0" max="20" placeholder="auto = optimal">
-          <span class="text-[10px] text-[#7d8294] leading-snug">
+          <span class="text-[10px] text-subtle leading-snug">
             How many staff actually worked on the game (had non-zero contribution).
             Leave at <b>0</b> for "auto = optimal" (no penalty).
             <br>Optimal sizes: <b>small=1</b>, <b>medium=3</b>, <b>large=5</b>, <b>aaa=6</b>.
@@ -587,7 +326,7 @@
         <label class="flex flex-col text-xs gap-1 col-span-2" title="Average ratio of staff time spent on this game. <0.8 = rescue branch never fires; your raw z*u stands.">
           <span>Team contribution ratio</span>
           <input type="number" id="i_teamcontrib" value="1.0" min="0" max="1" step="0.05">
-          <span class="text-[10px] text-[#7d8294] leading-snug">
+          <span class="text-[10px] text-subtle leading-snug">
             Roughly: what fraction of total dev-time did your staff put into THIS game (vs. training/research/idle)?
             For small games where everyone works on the same project, this is ≈ <b>1.0</b>.
             If &lt; <b>0.8</b>, the rescue branch is skipped entirely (score stays at raw z·u, usually very low).
@@ -610,7 +349,7 @@
             <span>Expert-matched weight≥0.9 missions:</span>
             <span class="text-[10px] text-subtle font-normal">count of dev-MISSIONS w/ matched expert (not raw staff)</span>
           </span>
-          <input type="number" id="i_experts" min="0" max="4" value="0" style="width:60px;">
+          <input type="number" id="i_experts" min="0" max="4" value="0" class="w-15">
           <span class="text-[10px] text-subtle">≥2 → <i>psEnabled</i> (any size; helps 10-streak reviewer). AAA also wants ≥3 to avoid the tech-fit gap.</span>
         </label>
       </div>
@@ -618,7 +357,7 @@
 
   </div>
 
-  <div id="live_output_panel" class="col-span-12 xl:col-span-5 space-y-4 sticky-output">
+  <div id="live_output_panel" class="col-span-12 xl:col-span-5 space-y-4 xl:sticky xl:top-4 xl:self-start xl:max-h-[calc(100vh-2rem)] xl:overflow-y-auto">
 
     <div class="card p-5">
       <div class="flex items-baseline justify-between flex-wrap gap-2">
@@ -626,16 +365,16 @@
           <div>
             <div class="text-xs text-subtle">Internal final score</div>
             <div class="flex items-center gap-2 flex-wrap">
-              <div id="o_score" class="text-5xl font-bold text-[#9ece6a] tabular-nums placeholder-dim" style="min-width:5ch;">-</div>
+              <div id="o_score" class="text-5xl font-bold text-[#9ece6a] tabular-nums placeholder-dim min-w-[5ch]">-</div>
 
               <span id="o_cap_chip" class="cap-chip hidden" title="This score is RNG-capped in-game (ceiling demotion and/or early-game cap). The big number is the expected (average) value; the chip shows the range observed across simulated draws.">~ range</span>
             </div>
           </div>
           <div>
-            <div class="text-xs text-subtle" style="cursor:help"
+            <div class="text-xs text-subtle cursor-help"
                  title="Base critic score = floor(internal final score), with 9.5 and up rounding to 10 (Reviews.getReviews). The 4 reviewers each vary ±1 around it, so the median below can sit a point either side and is not meant to match.">Displayed in-game</div>
 
-            <div id="o_displayed_big" class="text-5xl font-bold text-[#7aa2f7] tabular-nums placeholder-dim">-<span class="text-2xl text-[#7d8294]">/10</span></div>
+            <div id="o_displayed_big" class="text-5xl font-bold text-[#7aa2f7] tabular-nums placeholder-dim">-<span class="text-2xl text-subtle">/10</span></div>
           </div>
         </div>
         <div id="o_pill" class="pill warn">Calculating…</div>
@@ -648,7 +387,7 @@
       <div class="mt-4 pt-3 border-t border-[#232733]">
         <div class="text-xs text-subtle">Average critic score (4 reviewers, RNG-simulated)</div>
         <div id="o_reviewers_line" class="text-2xl font-bold text-[#7aa2f7] mt-1">- / 10</div>
-        <div id="o_reviewers_detail" class="text-xs text-[#7d8294] mt-1"></div>
+        <div id="o_reviewers_detail" class="text-xs text-subtle mt-1"></div>
       </div>
       <div id="o_capwarn" class="mt-3 text-xs hidden"></div>
     </div>
@@ -690,7 +429,7 @@
           <tr><td class="py-0.5">golden ratio actual (T/D)</td>  <td class="text-right" id="o_gra">-</td></tr>
           <tr class="border-t border-[#232733]"><td class="py-0.5 pt-1">l_total (effective points)</td><td class="text-right pt-1" id="o_ltot">-</td></tr>
           <tr><td class="py-0.5">÷ topScore</td>                 <td class="text-right" id="o_topref">-</td></tr>
-          <tr><td class="py-0.5 text-[#7aa2f7]">= z (×10 = pre-cap)</td><td class="text-right text-[#7aa2f7]" id="o_z">-</td></tr>
+          <tr><td class="py-0.5">= z (×10 = pre-cap)</td><td class="text-right text-[#7aa2f7]" id="o_z">-</td></tr>
         </tbody>
       </table>
     </div>
@@ -759,7 +498,7 @@
     </div>
     <div class="overflow-auto max-h-[68vh]">
       <table class="w-full text-sm">
-        <thead class="text-[#7d8294] text-xs sticky top-0 bg-[#161922]">
+        <thead class="text-subtle text-xs sticky top-0 bg-[#161922]">
           <tr id="cmb_thead_row">
             <th class="text-left p-2 cmb-sort cursor-pointer select-none hover:bg-[#1f2230]" data-sort="topic" title="Click to sort by Topic. Click again to reverse.">Topic <span class="cmb-sort-ind text-[#3d4256]"></span></th>
             <th class="text-left p-2 cmb-sort cursor-pointer select-none hover:bg-[#1f2230]" data-sort="genre" title="Click to sort by Genre. Click again to reverse.">Genre <span class="cmb-sort-ind text-[#3d4256]"></span></th>
@@ -818,7 +557,7 @@
       <li>9→10 ceiling: <code>s ≥ 0.1</code> with nobody hired recently keeps z≥9 outright; under that <code>s</code> it survives one roll in five, and a fresh hire knocks it down every time. Early-game cap drags any 8.5+ down by 0.4..1.5 until you've achieved a top score twice or year ≥ 4.</li>
       <li>Reviewer noise: 4 reviewers each pick <code>floor(z) ± {0,1}</code> (occasionally ±2 for 5/6). When the first 3 are all 10 and avg=10, the 4th is biased <i>down</i> by default; with <code>psEnabled</code> (≥2 expert staff matched to weight≥0.9 missions, ANY game size) the 4th is never demoted, and at <code>floor(z)=10</code> it has a 40% chance of being <i>promoted</i> to 11.</li>
     </ol>
-    <p class="text-[#7d8294] text-xs mt-3">See <code>reference/codeNw-review-algorithm.md</code> for the full source dive. <span class="text-[#9ece6a]">All formulas verified against codeNw.js.</span></p>
+    <p class="text-subtle text-xs mt-3">See <code>reference/codeNw-review-algorithm.md</code> for the full source dive. <span class="text-[#9ece6a]">All formulas verified against codeNw.js.</span></p>
   </div>
 </section>
 
@@ -847,7 +586,7 @@
     </p>
     <input type="number" id="calib_obs" min="1" max="10" step="0.1" placeholder="observed score, e.g. 8.5"
            class="w-full mb-3">
-    <div id="calib_msg" class="text-xs text-[#7d8294] mb-2 hidden"></div>
+    <div id="calib_msg" class="text-xs text-subtle mb-2 hidden"></div>
     <div class="flex gap-2 justify-end">
       <button id="calib_cancel" class="px-3 py-1.5 text-sm rounded bg-[#1f2230] hover:bg-[#2d3142] text-[#a9b1d6]">Cancel</button>
       <button id="calib_ok" class="px-3 py-1.5 text-sm rounded bg-[#7aa2f7] hover:bg-[#9ec1ff] text-[#0e1016] font-semibold">Solve</button>
@@ -860,7 +599,7 @@
 (function(){
 "use strict";
 
-const APP_VERSION = "1.0.22";
+const APP_VERSION = "1.0.23";
 
 const TOPSCORE_MAX = 10000;
 
@@ -1746,7 +1485,7 @@ const _runMonteCarlo = debounceDelay(function(out, colorFor){
     <div class="flex flex-col items-center gap-1 justify-end" title="${tip}">
       <div class="text-[10px] font-mono ${c?'text-[#a9b1d6]':'text-[#3d4256]'}">${pctTxt}%</div>
       <div class="dist-bar" style="height:${Math.round(110*c/maxB)}px; background:${colorFor(score)}; width:100%; animation-delay:${i*22}ms;"></div>
-      <div class="text-[10px] text-[#7d8294]">${score}<span aria-hidden="true" style="margin-left:1px;opacity:0.65;">${bandGlyph}</span></div>
+      <div class="text-[10px] text-subtle">${score}<span aria-hidden="true" class="ml-px opacity-65">${bandGlyph}</span></div>
     </div>`;
   }).join("");
 
@@ -1936,11 +1675,11 @@ function initUI(){
     const dateStr = d
       ? `y${d.pub[0]}-${d.ret[0] >= 100 ? "∞" : "y"+d.ret[0]}`
       : "";
-    return `<label class="flex items-center gap-1.5 text-[13px] hover:bg-[#1a1d27] rounded px-1 py-0.5 cursor-pointer transition-opacity" data-platrow="${p.id}">
+    return `<label class="flex items-center gap-1.5 text-[13px] hover:bg-[#1a1d27] rounded px-1 py-0.5 cursor-pointer transition-opacity break-inside-avoid" data-platrow="${p.id}">
        <input type="checkbox" data-plat="${p.id}" ${p.id==="PC"?"checked":""}>
        <span class="flex-1">${p.id}</span>
-       <span class="text-[9px] font-mono text-[#7d8294]" title="Released year ${d?d.pub[0]:"?"}, retired ${d?(d.ret[0]>=100?"never":"year "+d.ret[0]):"?"}.">${dateStr}</span>
-       <span class="text-[10px] font-mono text-[#7d8294]" title="techLevel">tl${p.tl}</span>
+       <span class="text-[9px] font-mono text-subtle" title="Released year ${d?d.pub[0]:"?"}, retired ${d?(d.ret[0]>=100?"never":"year "+d.ret[0]):"?"}.">${dateStr}</span>
+       <span class="text-[10px] font-mono text-subtle" title="techLevel">tl${p.tl}</span>
        <span class="text-[10px] font-mono" data-platinfo="${p.id}"></span>
      </label>`;
   }).join("");
@@ -2085,13 +1824,14 @@ function initUI(){
 
   const mg = $("#missions_grid");
   const ALLOC_COLORS = ["#f7768e", "#9ece6a", "#7aa2f7"];
+  const STAGE_ACCENT = {1: "border-l-[#7aa2f7]", 2: "border-l-[#9ece6a]", 3: "border-l-[#e0af68]"};
   mg.innerHTML = [1,2,3].map(stage => {
     const ms = MISSIONS_BY_STAGE[stage];
     const bars = ms.map((m, idx) => `
-      <div class="flex flex-col items-center" data-stage-mission="${m.id}" style="min-width:90px;">
-        <div class="text-[11px] text-[#7d8294] mb-1" data-w="${m.id}">w -</div>
+      <div class="flex flex-col items-center min-w-16 sm:min-w-[90px]" data-stage-mission="${m.id}">
+        <div class="text-[11px] text-subtle mb-1" data-w="${m.id}">w -</div>
         <span class="ovr-badge hidden" data-ov="${m.id}" title="Mission weighting overridden by selected topic">OVR</span>
-        <div class="relative bg-[#1f2230] rounded-md border border-[#2d3142]" style="width:48px;height:140px;">
+        <div class="relative w-9 h-24 sm:w-12 sm:h-[140px] bg-[#1f2230] rounded-md border border-[#2d3142]">
           <div class="absolute bottom-0 left-0 right-0 rounded-b-md transition-all"
                data-bar="${m.id}"
                style="height:0%; background:${ALLOC_COLORS[idx]};"></div>
@@ -2100,15 +1840,15 @@ function initUI(){
         </div>
         <input type="range" min="0" max="100" step="1" value="0"
                data-mission-range="${m.id}" aria-label="${m.id} slider position (0-100)"
-               class="mt-2" style="width:80px;">
+               class="mt-2 w-[60px] sm:w-20">
         <input type="number" min="0" max="100" step="1" value="0"
                data-mission="${m.id}" aria-label="${m.id} slider value (0-100)"
-               class="mt-1 text-center text-xs" style="width:56px;">
-        <div class="text-[11px] text-[#e4e6eb] mt-1 text-center leading-tight" style="max-width:90px;">${m.id}</div>
+               class="mt-1 text-center text-xs w-14">
+        <div class="text-[11px] text-[#e4e6eb] mt-1 text-center leading-tight max-w-[90px]">${m.id}</div>
         <div class="text-[10px] font-mono" data-emph="${m.id}">·</div>
       </div>`).join("");
 
-    return `<div class="stage-card stage-${stage} rounded-lg p-3 border border-[#232733] bg-[#13151c]">
+    return `<div class="rounded-lg p-3 border border-[#232733] ${STAGE_ACCENT[stage]} bg-[#13151c]">
       <div class="flex items-center justify-between mb-2">
         <div class="text-sm font-semibold text-[#e4e6eb]">Development Stage ${stage}</div>
         <div class="text-[11px] text-subtle" data-stagestatus="${stage}"></div>
@@ -2758,7 +2498,7 @@ function updateMissionVisuals(){
       const dom = getMissionDom(m.id);
       const wEl = dom.wEl;
       if(wEl){
-        let cls = "text-[#7d8294]";
+        let cls = "text-subtle";
         if(w >= 0.9) cls = "text-[#9ece6a]";
         else if(w < 0.8) cls = "text-[#f7768e]";
         wEl.className = cls + " font-mono text-[11px] mb-1";
@@ -2807,7 +2547,7 @@ function updateMissionVisuals(){
       const parts = [];
       if(stageGood) parts.push(`<span class="text-[#9ece6a]" title="Preview only, actual focus bonus is computed across all 9 missions.">★ ${stageGood} focus</span>`);
       if(stageBad)  parts.push(`<span class="text-[#f7768e]" title="Preview only, actual penalties are computed across all 9 missions.">⚠ ${stageBad} risk</span>`);
-      stat.innerHTML = parts.join("  ") + (parts.length ? ' <span class="text-[#9ba0b3]" style="font-size:10px;">(stage preview)</span>' : "");
+      stat.innerHTML = parts.join("  ") + (parts.length ? ' <span class="text-subtle text-[10px]">(stage preview)</span>' : "");
     }
   }
 }
@@ -2940,7 +2680,7 @@ function pickPerfectGame(arg, forceApply){
   const result = $("#pick_result");
   const badge = $("#pick_idx_badge");
   if(allTuples.length === 0){
-    if(badge) badge.classList.add("hidden");
+    if(badge) badge.hidden = true;
     PICKER_STATE.lastKey = null;
     rerenderCombosIfActive();
 
@@ -2969,8 +2709,8 @@ function pickPerfectGame(arg, forceApply){
     : null;
   if(!shouldAdvance && !forceApply && (prevIdx >= 0 || outside)){
     if(badge){
-      if(prevIdx < 0) badge.classList.add("hidden");
-      else { badge.textContent = `${prevIdx + 1}/${combos.length}`; badge.classList.remove("hidden"); }
+      if(prevIdx < 0) badge.hidden = true;
+      else { badge.textContent = `${prevIdx + 1}/${combos.length}`; badge.hidden = false; }
     }
     rerenderCombosIfActive();
     return;
@@ -2986,8 +2726,8 @@ function pickPerfectGame(arg, forceApply){
   const outsidePool = idx < 0;
   PICKER_STATE.lastKey = `${pick.topic}|${pick.genre}|${pick.aud}|${pick.plat}`;
   if(badge){
-    if(outsidePool) badge.classList.add("hidden");
-    else { badge.textContent = `${idx + 1}/${combos.length}`; badge.classList.remove("hidden"); }
+    if(outsidePool) badge.hidden = true;
+    else { badge.textContent = `${idx + 1}/${combos.length}`; badge.hidden = false; }
   }
 
   $("#i_topic").value  = pick.topic;
@@ -3011,7 +2751,7 @@ function pickPerfectGame(arg, forceApply){
     : `(${combos.length} perfect 4/4 combo${combos.length===1?"":"s"} available)`) + balanceNote;
   result.innerHTML = `✓ Picked <b>${pick.topic} / ${pick.genre} / ${pick.aud}</b> on <b>${pick.plat}</b>
                       ${outsidePool ? "" : `<span class="text-[#a9b1d6] font-mono">[${idx+1}/${combos.length}]</span>`}
-                      <span class="text-[#7d8294]">${tag}</span>`;
+                      <span class="text-subtle">${tag}</span>`;
 
   $("#tab-calc").dispatchEvent(new Event("input", {bubbles:true}));
 
@@ -3046,13 +2786,13 @@ function syncPickerToManualSetup(){
   const idx = key ? combos.findIndex(c => `${c.topic}|${c.genre}|${c.aud}|${c.plat}` === key) : -1;
   if(idx >= 0){
     PICKER_STATE.lastKey = key;
-    if(badge){ badge.textContent = `${idx + 1}/${combos.length}`; badge.classList.remove("hidden"); }
+    if(badge){ badge.textContent = `${idx + 1}/${combos.length}`; badge.hidden = false; }
     result.className = "text-xs text-[#9ece6a] mt-2 min-h-[1.25rem]";
     result.innerHTML = `✓ Manual setup <b>${topicId} / ${genre} / ${aud}</b> on <b>${single}</b> is in the
       perfect pool <span class="text-[#a9b1d6] font-mono">[${idx + 1}/${combos.length}]</span>: picker synced.`;
   } else {
     PICKER_STATE.lastKey = null;
-    if(badge) badge.classList.add("hidden");
+    if(badge) badge.hidden = true;
 
     const reasons = [];
     if(plats.length !== 1) reasons.push(`${plats.length} platforms selected (pool combos are single-platform)`);
@@ -3158,9 +2898,9 @@ function renderTopicLockGrid(){
 
     const safeId = escapeHtml(t.id);
     return `<button type="button" data-topiclock="${safeId}"
-              class="text-left px-2 py-1 rounded text-xs border transition ${cls}"
+              class="flex items-center justify-between gap-2 w-full min-w-[14ch] break-inside-avoid mb-1.5 text-left px-2 py-1 rounded text-xs border transition ${cls}"
               title="${locked ? "Locked, excluded from Pick a Perfect Game and the Topic dropdown" : "Unlocked, available in Pick a Perfect Game and the Topic dropdown"}">
-              <span class="truncate">${locked ? "🔒" : "✓"} ${safeId}</span>
+              <span class="truncate min-w-0">${locked ? "🔒" : "✓"} ${safeId}</span>
               <span class="text-[10px] font-bold px-1.5 py-0.5 rounded border ${opCls} shrink-0" title="${escapeHtml(opTitle)}">OP: ${op}</span>
             </button>`;
   }).join("");
@@ -3308,7 +3048,7 @@ function clearOutputs(reason){
   N.score.textContent = "-";
   N.score.style.color = "";
   N.score.style.textShadow = "";
-  N.dispBig.innerHTML = "-<span class='text-2xl text-[#7d8294]'>/10</span>";
+  N.dispBig.innerHTML = "-<span class='text-2xl text-subtle'>/10</span>";
   N.dispBig.style.color = "";
   N.dispBig.style.textShadow = "";
 
@@ -3462,7 +3202,7 @@ function _recalcCore(){
     N.dispBig.style.textShadow = scoreGlow(c);
 
     tweenScore(N.dispBig, out.displayed, (el, v) => {
-      el.innerHTML = `${Math.round(v)}<span class='text-2xl text-[#7d8294]'>/10</span>`;
+      el.innerHTML = `${Math.round(v)}<span class='text-2xl text-subtle'>/10</span>`;
     });
     recalc._lastDisp = newDispTxt;
 
@@ -3589,8 +3329,8 @@ function _recalcCore(){
     const tGlyph = tr > 1 ? "✓" : tr < 1 ? "✗" : "·";
     const tTip = tr > 1 ? "trend bonus" : tr < 1 ? "trend penalty" : "no trend running, which is the normal state";
     O("o_trend").innerHTML =
-      `<span class="chainbar" style="position:relative">` +
-        `<span style="position:absolute;left:50%;top:0;bottom:0;width:1px;background:#3d4256"></span>` +
+      `<span class="chainbar relative">` +
+        `<span class="absolute left-1/2 inset-y-0 w-px bg-[#3d4256]"></span>` +
         `<span style="position:absolute;left:${fillLeft.toFixed(1)}%;top:0;bottom:0;width:${fillPct.toFixed(1)}%;background:${tColor};border-radius:2px"></span>` +
       `</span>` +
       `<span style="color:${tColor};font-weight:600"><span title="${tTip}">${tGlyph}</span> ${tr.toFixed(2)}</span>`;
@@ -3603,8 +3343,8 @@ function _recalcCore(){
     const sColor = out.s >= 0.1 ? '#9ece6a' : out.s >= 0 ? '#7aa2f7' : '#f7768e';
     const sText  = (out.s >= 0 ? "+" : "") + out.s.toFixed(3);
     O("o_s").innerHTML =
-      `<span class="chainbar" style="position:relative">` +
-        `<span style="position:absolute;left:50%;top:0;bottom:0;width:1px;background:#3d4256"></span>` +
+      `<span class="chainbar relative">` +
+        `<span class="absolute left-1/2 inset-y-0 w-px bg-[#3d4256]"></span>` +
         `<span style="position:absolute;left:${fillLeft.toFixed(1)}%;top:0;bottom:0;width:${fillPct.toFixed(1)}%;background:${sColor};border-radius:2px"></span>` +
       `</span>` +
       `<span style="color:${sColor};font-weight:600">${sText}</span>`;
@@ -3640,7 +3380,7 @@ function renderSlowPanels(params, out, colorFor){
   O("o_log").innerHTML = out.log.map(line => {
     const cls = line.includes(" +") || line.startsWith("  +") ? "log-plus"
               : line.includes(" -0.") || line.startsWith("  -") ? "log-minus" : "";
-    return `<div class="log-line ${cls}" style="padding:1px 4px;">${escapeHtml(line)}</div>`;
+    return `<div class="log-line px-1 py-px ${cls}">${escapeHtml(line)}</div>`;
   }).join("");
   applyLogFilter();
 
@@ -3657,7 +3397,7 @@ function renderSlowPanels(params, out, colorFor){
       : `no topic you have unlocked reaches 1.00 here`;
     sug.push({sev:severity, html:`
       ${tag} (weight ${out.p_val.toFixed(2)}, target 1.00).${extra}<br>
-      <span class="text-[#7d8294]">Fix:</span>
+      <span class="text-subtle">Fix:</span>
       Keep <b>${params.genre}</b> and ${topicFix}.
       Or keep <b>${params.topic}</b> and pick a genre with weight 1.0 for it (see <i>Perfect Combos</i>).
     `});
@@ -3675,7 +3415,7 @@ function renderSlowPanels(params, out, colorFor){
     sug.push({sev, html:`
       ${sev==="bad"?"⛔":"⚠"} <b>Audience doesn't love this topic</b>
       (weight ${out.v_val.toFixed(2)}, target 1.00).${extra}<br>
-      <span class="text-[#7d8294]">Fix:</span> ${fix}.
+      <span class="text-subtle">Fix:</span> ${fix}.
     `});
   }
   if(out.q_val < 1.1){
@@ -3692,7 +3432,7 @@ function renderSlowPanels(params, out, colorFor){
     sug.push({sev:"warn", html:`
       ⚠ <b>Platform isn't ideal for ${params.genre}</b>
       (q = ${out.q_val.toFixed(2)}, max ≈ 1.10).<br>
-      <span class="text-[#7d8294]">Fix:</span> ${platFix}
+      <span class="text-subtle">Fix:</span> ${platFix}
       Adding extra platforms <i>dilutes</i> q via 0.7^n falloff.
     `});
   }
@@ -3705,7 +3445,7 @@ function renderSlowPanels(params, out, colorFor){
       ${breaker ? "⛔" : "⚠"} <b>${breaker ? "GOLDEN-RATIO BREAKER" : "Design ↔ Technology balance is off"}</b>
       ${breaker ? "(this triggers the game's −0.1 unbalanced penalty)" : ""}
       <br>Target T = D × ${out.gr.toFixed(2)} (i.e. T ≈ <b>${grIdeal.toFixed(0)}</b>), you have T/D = ${out.grActual.toFixed(2)} (T = ${params.T}). <b>${ratioPctOff.toFixed(0)}% off</b>, and the +0.1 needs 25% or less.<br>
-      <span class="text-[#7d8294]">Fix:</span> push for ${dir}.
+      <span class="text-subtle">Fix:</span> push for ${dir}.
       ${breaker ? `<br><span class="text-[#a9b1d6]">⚡ Note: the auto-suggester optimises mission <i>weights</i>, not the T/D ratio. For tech-heavy genres (Action 1.8, Simulation 1.6), you must <b>manually skew sliders toward Tech missions</b> (Engine, AI, Level Design) after auto-suggesting.</span>` : ""}
     `});
   } else if(params.D + params.T >= 30){
@@ -3717,17 +3457,17 @@ function renderSlowPanels(params, out, colorFor){
     sug.push({sev:"bad", html:`
       ⛔ <b>AAA game with engine techLevel ${params.tl}</b>:
       the graphics engine needs level <b>5</b>, and every level short costs 0.1 off the tech-fit factor.<br>
-      <span class="text-[#7d8294]">Fix:</span> research 3D Graphics V5 or better before the next AAA project.
+      <span class="text-subtle">Fix:</span> research 3D Graphics V5 or better before the next AAA project.
     `});
   if(params.size==="large" && params.tl < 3)
     sug.push({sev:"bad", html:`
       ⛔ <b>Large game with engine techLevel ${params.tl}</b>: need at least <b>3</b>.<br>
-      <span class="text-[#7d8294]">Fix:</span> upgrade the engine before releasing this size.
+      <span class="text-subtle">Fix:</span> upgrade the engine before releasing this size.
     `});
   if(params.size==="small" && params.companyLevel >= 2)
     sug.push({sev:"warn", html:`
       ⚠ <b>Small game in office level ${params.companyLevel}</b> applies a hidden <b>0.9×</b> tech-fit penalty.<br>
-      <span class="text-[#7d8294]">Fix:</span> upsize the game (medium+) or release small projects only while still in the garage (office level 1).
+      <span class="text-subtle">Fix:</span> upsize the game (medium+) or release small projects only while still in the garage (office level 1).
     `});
   {
     const OPT_TEAM = OPT_TEAM_SIZE[params.size] ?? 1;
@@ -3740,7 +3480,7 @@ function renderSlowPanels(params, out, colorFor){
         ${severe ? "⛔" : "⚠"} <b>Team-size mismatch</b> for <b>${params.size}</b> game:
         optimal is <b>${OPT_TEAM}</b>, you have <b>${actualTeam}</b> staff working on this game.<br>
         If the rescue branch fires (raw score &lt; ~5), it loses <b>${penalty} points</b> off the recovery ceiling.
-        <br><span class="text-[#7d8294]">Fix:</span> for late-game small/medium projects, only assign ${OPT_TEAM} staff
+        <br><span class="text-subtle">Fix:</span> for late-game small/medium projects, only assign ${OPT_TEAM} staff
         to the game (set the others to training/research/idle), or do bigger games to match your team.
       `});
     }
@@ -3748,40 +3488,40 @@ function renderSlowPanels(params, out, colorFor){
   if(params.teamContrib < 0.8){
     sug.push({sev:"warn", html:`
       ⚠ <b>Team contribution ${(params.teamContrib*100).toFixed(0)}%</b> &lt; 80% threshold, the rescue branch will NOT fire.<br>
-      <span class="text-[#7d8294]">Fix:</span> ensure most of your staff are actually working on this game (not on side activities), or accept the un-rescued low score.
+      <span class="text-subtle">Fix:</span> ensure most of your staff are actually working on this game (not on side activities), or accept the un-rescued low score.
     `});
   }
   if(params.size==="medium" && params.fans <= 100000)
     sug.push({sev:"warn", html:`
       ⚠ <b>Medium game at ≤100k fans</b> applies a hidden <b>0.9×</b> tech-fit penalty.<br>
-      <span class="text-[#7d8294]">Fix:</span> grow your fan base before releasing medium-sized titles.
+      <span class="text-subtle">Fix:</span> grow your fan base before releasing medium-sized titles.
     `});
   if(params.size==="aaa"){
     if(params.experts < 2){
       sug.push({sev:"bad", html:`
         ⛔ <b>AAA with only ${params.experts} expert staff</b> on weight≥0.9 missions:
         need <b>≥2</b> for <i>psEnabled</i>, and each missing expert takes another <b>0.06</b> off the tech-fit factor, up to 0.18.<br>
-        <span class="text-[#7d8294]">Fix:</span> assign 2-3 specialists whose <code>flags.expert</code> matches a high-weight dev mission this game uses.
+        <span class="text-subtle">Fix:</span> assign 2-3 specialists whose <code>flags.expert</code> matches a high-weight dev mission this game uses.
       `});
     } else if(params.experts < 3){
       sug.push({sev:"warn", html:`
         ⚠ <b>AAA with ${params.experts} experts</b>: <i>psEnabled</i> active, but you're still losing
         <b>${(0.06*(3-params.experts)).toFixed(2)}</b> off the tech-fit factor for the missing 3rd expert.<br>
-        <span class="text-[#7d8294]">Fix:</span> add one more specialist on a weight≥0.9 mission to remove the gap.
+        <span class="text-subtle">Fix:</span> add one more specialist on a weight≥0.9 mission to remove the gap.
       `});
     }
   }
   if(out.A_val < 0.95){
     sug.push({sev:"warn", html:`
       ⚠ <b>Released with ${params.bugs} bugs</b>: multiplier ${out.A_val.toFixed(2)}.
-      <span class="text-[#7d8294]">Fix:</span> spend more weeks bug-fixing before release.
+      <span class="text-subtle">Fix:</span> spend more weeks bug-fixing before release.
     `});
   }
 
   if(params.year >= 4 && params.fans === 0){
     sug.push({sev:"warn", html:`
       ⚠ <b>Year ${params.year} with 0 fans</b> is implausible, by year 4+ a real save has thousands of fans from prior releases.<br>
-      <span class="text-[#7d8294]">Fix:</span> set Fans to a realistic value (the in-game corner display shows your current count).
+      <span class="text-subtle">Fix:</span> set Fans to a realistic value (the in-game corner display shows your current count).
     `});
   }
   if(params.platforms.length > 3){
@@ -3789,7 +3529,7 @@ function renderSlowPanels(params, out, colorFor){
       ⚠ <b>${params.platforms.length} platforms selected</b>: Game Dev Tycoon gives a game three platform slots,
       so no real release reaches this many.<br>
       The score below follows the game's own formula for this count, but it is not a score the game can hand you.<br>
-      <span class="text-[#7d8294]">Fix:</span> drop down to <b>3</b> or fewer to model a release you can actually ship.
+      <span class="text-subtle">Fix:</span> drop down to <b>3</b> or fewer to model a release you can actually ship.
     `});
   }
 
@@ -3801,7 +3541,7 @@ function renderSlowPanels(params, out, colorFor){
         ⚠ <b>${blocked.join(", ")} ${blocked.length > 1 ? "do" : "does"} not support ${params.size} games</b>:
         Game Dev Tycoon refuses that pairing in Game Setup, so no real release reaches it.<br>
         The score below follows the game's own formula, but it is not a score the game can hand you.<br>
-        <span class="text-[#7d8294]">Fix:</span> drop ${blocked.length > 1 ? "them" : "it"}, or build a small or medium game, which every platform takes.
+        <span class="text-subtle">Fix:</span> drop ${blocked.length > 1 ? "them" : "it"}, or build a small or medium game, which every platform takes.
       `});
     }
   }
@@ -3811,7 +3551,7 @@ function renderSlowPanels(params, out, colorFor){
       ⚠ <b>MMO's cannot be small or medium</b>: Game Dev Tycoon refuses an MMO at this size in Game Setup,
       so no real release reaches it.<br>
       The MMO doubling below is applied the way the game's formula would, but it is not a score the game can hand you.<br>
-      <span class="text-[#7d8294]">Fix:</span> set the game size to <b>large</b> or <b>aaa</b>, or untick MMO.
+      <span class="text-subtle">Fix:</span> set the game size to <b>large</b> or <b>aaa</b>, or untick MMO.
     `});
   }
 
@@ -3820,7 +3560,7 @@ function renderSlowPanels(params, out, colorFor){
       ⚠ <b>No trend runs in the garage</b>: Game Dev Tycoon only starts a trend from office level 2 up,
       so a company at level 1 always scores on a trend factor of 1.00.<br>
       The score below applies the <b>${params.trend.toFixed(2)}</b> you picked, but it is not a score the game can hand you.<br>
-      <span class="text-[#7d8294]">Fix:</span> set the trend to <b>1.00</b>, or raise Company office level to 2 or more.
+      <span class="text-subtle">Fix:</span> set the trend to <b>1.00</b>, or raise Company office level to 2 or more.
     `});
   }
 
@@ -3837,7 +3577,7 @@ function renderSlowPanels(params, out, colorFor){
           ⚠ <b>That strangeCombos row does not match this topic and genre</b>: ${params.topic} with ${params.genre}
           is a main-genre fit of <b>${fit.toFixed(2)}</b>, so the trend would pay <b>${right}</b>, not ${params.trend.toFixed(2)}.<br>
           The game reads the fit itself and ignores a second genre here, so the row is not a separate choice.<br>
-          <span class="text-[#7d8294]">Fix:</span> pick the <b>${right}</b> row, or set the trend to <b>1.00</b>.
+          <span class="text-subtle">Fix:</span> pick the <b>${right}</b> row, or set the trend to <b>1.00</b>.
         `});
       }
     }
@@ -3851,14 +3591,14 @@ function renderSlowPanels(params, out, colorFor){
       sug.push({sev:"warn", html:`
         ⚠ <b>A second genre is not available yet</b>: Multi Genre only becomes researchable from <b>year 12, month 9</b>,
         and you are on year ${params.year}, month ${mo}.<br>
-        <span class="text-[#7d8294]">Fix:</span> clear the second genre, or set the date to year 12 month 9 or later.
+        <span class="text-subtle">Fix:</span> clear the second genre, or set the date to year 12 month 9 or later.
       `});
     }
     if(params.platforms.length > 1 && beforeY17M3){
       sug.push({sev:"warn", html:`
         ⚠ <b>More than one platform is not available yet</b>: Multi Platform only becomes researchable from
         <b>year 17, month 3</b>, and you are on year ${params.year}, month ${mo}.<br>
-        <span class="text-[#7d8294]">Fix:</span> drop to one platform, or set the date to year 17 month 3 or later.
+        <span class="text-subtle">Fix:</span> drop to one platform, or set the date to year 17 month 3 or later.
       `});
     }
   }
@@ -3869,32 +3609,32 @@ function renderSlowPanels(params, out, colorFor){
         ⚠ <b>${params.newStaff} recent hires on a team of ${workingTeam}</b>: the game counts new staff among the
         people working on the game, so it can never be more than the team size.<br>
         The rescue branch subtracts <b>half a point per new hire</b>, so this takes off more than the game ever would.<br>
-        <span class="text-[#7d8294]">Fix:</span> lower Recently-hired staff to <b>${workingTeam}</b> or less, or raise Team size.
+        <span class="text-subtle">Fix:</span> lower Recently-hired staff to <b>${workingTeam}</b> or less, or raise Team size.
       `});
     }
   }
   if(params.year === 1 && params.tsa > 0){
     sug.push({sev:"bad", html:`
       ⛔ <b>Year 1 with ${params.tsa} top-score achievement(s)</b>: impossible. The first top score happens at the earliest in late year 2.<br>
-      <span class="text-[#7d8294]">Fix:</span> set Top-score achievements to <b>0</b> for any year-1 game.
+      <span class="text-subtle">Fix:</span> set Top-score achievements to <b>0</b> for any year-1 game.
     `});
   }
   if(params.year >= 5 && params.companyLevel === 1){
     sug.push({sev:"warn", html:`
       ⚠ <b>Year ${params.year} still in office level 1 (garage)</b>: most players upgrade by year 3. The small-game 0.9× penalty doesn't apply, but this is an unusual playstyle.<br>
-      <span class="text-[#7d8294]">Fix:</span> if you've upgraded the office, set Company office level accordingly (2 = small office, 3 = big, 4 = corporate).
+      <span class="text-subtle">Fix:</span> if you've upgraded the office, set Company office level accordingly (2 = small office, 3 = big, 4 = corporate).
     `});
   }
   if(params.companyLevel >= 3 && params.fans < 25000){
     sug.push({sev:"warn", html:`
       ⚠ <b>Office level ${params.companyLevel} with only ${params.fans} fans</b>: typically you don't reach the big office / corporate tier without a sizable fan base from previous hits.<br>
-      <span class="text-[#7d8294]">Fix:</span> double-check Fans (in-game corner display) and Office level match your actual save.
+      <span class="text-subtle">Fix:</span> double-check Fans (in-game corner display) and Office level match your actual save.
     `});
   }
   if(params.size === "aaa" && params.year <= 2){
     sug.push({sev:"bad", html:`
       ⛔ <b>AAA game in Year ${params.year}</b>: AAA Games only unlocks once a <b>large</b> game of yours has scored a straight <b>10</b>, then costs 2000 research points.<br>
-      <span class="text-[#7d8294]">Fix:</span> use medium / large until you have that 10/10 large game behind you.
+      <span class="text-subtle">Fix:</span> use medium / large until you have that 10/10 large game behind you.
     `});
   }
   if(params.size === "large" && params.year === 1 && params.companyLevel === 1){
@@ -3905,13 +3645,13 @@ function renderSlowPanels(params, out, colorFor){
   if(params.tl >= 5 && params.year === 1){
     sug.push({sev:"warn", html:`
       ⚠ <b>Engine techLevel ${params.tl} in Year 1</b>: reaching 5+ top-tier features takes multiple research cycles, usually years of in-game progression.<br>
-      <span class="text-[#7d8294]">Fix:</span> set techLevel to match how many fancy/latest-gen features your engine actually has right now (likely 0-2 in year 1).
+      <span class="text-subtle">Fix:</span> set techLevel to match how many fancy/latest-gen features your engine actually has right now (likely 0-2 in year 1).
     `});
   }
   if(params.year === 1 && params.lastTop > 50){
     sug.push({sev:"warn", html:`
       ⚠ <b>Year 1 with reference topScore ${params.lastTop}</b>: in year 1 the topScore baseline is normally 20-40. A high baseline implies several prior hit games which contradicts year 1.<br>
-      <span class="text-[#7d8294]">Fix:</span> use the Calibrate button to back-solve topScore from a known-score game, or leave at the default 20.
+      <span class="text-subtle">Fix:</span> use the Calibrate button to back-solve topScore from a known-score game, or leave at the default 20.
     `});
   }
   const sliderIssues = out.log.filter(l => l.startsWith("  -") && (l.includes("focus") || l.includes("forgot")));
@@ -3919,18 +3659,18 @@ function renderSlowPanels(params, out, colorFor){
     sug.push({sev:"warn", html:`
       ⚠ <b>Slider focus penalties</b>:
       <span class="text-[#ff8da3]">${sliderIssues.map(x=>x.trim()).join("; ")}</span>.<br>
-      <span class="text-[#7d8294]">Fix:</span> use the <b>"Auto-suggest optimal"</b> button, put weight≥0.9 missions ≥40 %, keep weight≤0.7 missions below 40 %, never let a weight≥0.9 mission go ≤20 %.
+      <span class="text-subtle">Fix:</span> use the <b>"Auto-suggest optimal"</b> button, put weight≥0.9 missions ≥40 %, keep weight≤0.7 missions below 40 %, never let a weight≥0.9 mission go ≤20 %.
     `});
   }
   if(params.fatigue)
     sug.push({sev:"bad", html:`
       ⛔ <b>Fatigue −0.4</b>: previous game had the same topic+genre+secondGenre.<br>
-      <span class="text-[#7d8294]">Fix:</span> change either topic, genre or secondGenre at least once before reusing the triple.
+      <span class="text-subtle">Fix:</span> change either topic, genre or secondGenre at least once before reusing the triple.
     `});
   if(params.seq)
     sug.push({sev:"bad", html:`
       ⛔ <b>Sequel-too-close −0.4</b>: wait ≥40 weeks after the original.<br>
-      <span class="text-[#7d8294]">Fix:</span> delay the sequel or interleave another title.
+      <span class="text-subtle">Fix:</span> delay the sequel or interleave another title.
     `});
 
   if(out.rescueApplied){
@@ -3950,7 +3690,7 @@ function renderSlowPanels(params, out, colorFor){
       (${out.rescueThreshold.toFixed(1)}) but below the rescue ceiling (7.7).<br>
       A slightly <i>worse</i> game (raw ≤ ${out.rescueThreshold.toFixed(1)}) would trigger the pity-floor and
       likely score <b>higher</b>. This is a quirk of the game's own code, not the calculator.<br>
-      <span class="text-[#7d8294]">Fix:</span> either push the raw score past <b>7.7</b> (better combo, focus
+      <span class="text-subtle">Fix:</span> either push the raw score past <b>7.7</b> (better combo, focus
       bonuses, golden ratio), or accept the dip, it disappears once the game is genuinely good.
     `});
   }
@@ -3958,7 +3698,7 @@ function renderSlowPanels(params, out, colorFor){
     sug.push({sev:"warn", html:`
       ⚠ <b>Early-game soft cap</b>: before in-game year 4 / 2 top-score achievements
       every score above 8.5 is randomly knocked down by 0.4..1.5.<br>
-      <span class="text-[#7d8294]">Fix:</span> nothing for this game, keep producing.
+      <span class="text-subtle">Fix:</span> nothing for this game, keep producing.
     `});
 
   const advicePill = O("advice_pill");
@@ -4220,18 +3960,17 @@ function renderCombos(){
           const chipCls = tierCls(worst);
           const isPickedChip = isPicked && p.id === pickedPlat;
           const pickedExtra = isPickedChip
-            ? ` style="outline:1px solid #9ece6a;background:rgba(158,206,106,0.18);"`
+            ? ` outline outline-[#9ece6a] bg-[rgba(158,206,106,0.18)]`
             : "";
           return `<button type="button" data-ckey="${rowKeyBase}|${p.id}"
-              class="cmb-chip inline-block mr-3 whitespace-nowrap ${chipCls}"${pickedExtra}
+              class="cmb-chip inline-block mr-3 whitespace-nowrap ${chipCls}${pickedExtra}"
               title="Apply ${r.topic} / ${r.genre} / ${r.aud} on ${p.id} to the Game Setup">${p.id}
               <span class="fit-none">(<span class="${tierCls(p.pg)} font-semibold">${p.pg.toFixed(2)}</span>·<span class="${tierCls(p.pa)} font-semibold">${p.pa.toFixed(2)}</span>)</span>
               <span class="text-[#7aa2f7] font-semibold" title="Market share at the current Y/M/W (installed base among platforms on sale)">${p.share.toFixed(1)}%</span></button>`;
         }).join("")
-        + (hiddenByShare ? `<span class="text-[#7d8294] text-[11px] italic" title="Hidden by the 'top market-share platform only' toggle, untick it to list every qualifying platform.">+${hiddenByShare} more</span>` : "")
-      : `<span class="text-[#7d8294] italic">no platform meets the threshold</span>`;
-    const rowCls   = isPicked ? "align-top" : "hover:bg-[#1f2230] align-top";
-    const rowStyle = isPicked ? `background:rgba(158,206,106,0.10);` : "";
+        + (hiddenByShare ? `<span class="text-subtle text-[11px] italic" title="Hidden by the 'top market-share platform only' toggle, untick it to list every qualifying platform.">+${hiddenByShare} more</span>` : "")
+      : `<span class="text-subtle italic">no platform meets the threshold</span>`;
+    const rowCls   = isPicked ? "align-top bg-[rgba(158,206,106,0.10)]" : "hover:bg-[#1f2230] align-top";
 
     const arrow = rowApplyPlat
       ? (isPicked
@@ -4239,14 +3978,14 @@ function renderCombos(){
           : `<button type="button" data-ckey="${rowKeyBase}|${rowApplyPlat}" class="cmb-arrow" title="Apply ${r.topic} / ${r.genre} / ${r.aud} on ${rowApplyPlat} to the Game Setup">→</button>`)
       : "";
     return `
-    <tr class="${rowCls}" style="${rowStyle}">
+    <tr class="${rowCls}">
       <td class="p-2">${arrow}${r.topic}</td>
       <td class="p-2">${r.genre}</td>
       <td class="p-2">${r.aud}</td>
       ${fitCell(r.tg)}
       ${fitCell(r.ta)}
       <td class="p-2">${platsHtml}</td>
-      <td class="p-2 text-center font-bold" style="color:#a9b1d6" title="${topShareOnly && hiddenByShare ? "Full count, the toggle only hides chips from view, all these platforms qualify." : ""}">${r.plats.length}</td>
+      <td class="p-2 text-center font-bold text-[#a9b1d6]" title="${topShareOnly && hiddenByShare ? "Full count, the toggle only hides chips from view, all these platforms qualify." : ""}">${r.plats.length}</td>
     </tr>`;
   }).join("");
 
@@ -4293,14 +4032,14 @@ function renderSug(){
       if(w>=0.9 && ratio>=0.4){ tag='<span class="text-[#9ece6a] text-xs">★ focus bonus active</span>'; bg="rgba(31,58,45,0.25)"; }
       else if(w<0.8 && ratio>=0.4){ tag='<span class="text-[#f7768e] text-xs">⚠ odd-focus penalty</span>'; bg="rgba(58,31,36,0.25)"; }
       else if(w>=0.9 && ratio<=0.2){ tag='<span class="text-[#f7768e] text-xs">⚠ forgot penalty</span>'; bg="rgba(58,31,36,0.25)"; }
-      else if(w>=0.9){ tag='<span class="text-[#7d8294] text-xs">safe (no bonus)</span>'; }
-      else { tag='<span class="text-[#7d8294] text-xs">safe</span>'; }
+      else if(w>=0.9){ tag='<span class="text-subtle text-xs">safe (no bonus)</span>'; }
+      else { tag='<span class="text-subtle text-xs">safe</span>'; }
       const wTag = w>=0.9 ? '<span class="text-[#9ece6a]">★</span>' : w<0.8 ? '<span class="text-[#f7768e]">⚠</span>' : '·';
       const overridden = hasOverrides && isMissionOverriddenForSelection(t, m.id, g, g2);
       return `<div class="rounded-lg p-3 flex flex-col items-center" style="background:${bg}; border:1px solid #232733;">
-        <div class="text-xs text-[#7d8294] mb-1">${wTag} ${m.id} <span class="font-mono">w ${w.toFixed(2)}${overridden?'<span class="text-[#e0af68]" title="modified by topic missionOverrides">*</span>':''}</span></div>
+        <div class="text-xs text-subtle mb-1">${wTag} ${m.id} <span class="font-mono">w ${w.toFixed(2)}${overridden?'<span class="text-[#e0af68]" title="modified by topic missionOverrides">*</span>':''}</span></div>
         <div class="text-4xl font-bold text-[#7aa2f7] leading-none">${v}</div>
-        <div class="text-[10px] text-[#7d8294] mt-1">slider position</div>
+        <div class="text-[10px] text-subtle mt-1">slider position</div>
         <div class="mt-1">${tag}</div>
       </div>`;
     }).join("");
@@ -4308,7 +4047,7 @@ function renderSug(){
     return `<div class="card p-4">
       <div class="flex items-center justify-between mb-3">
         <div class="text-sm font-semibold text-[#e4e6eb]">Stage ${stage}</div>
-        <div class="text-xs text-[#7d8294]">Sum: ${ms.reduce((s,m)=>s+sug[m.id],0)}</div>
+        <div class="text-xs text-subtle">Sum: ${ms.reduce((s,m)=>s+sug[m.id],0)}</div>
       </div>
       <div class="grid grid-cols-3 gap-3">${cards}</div>
       <div class="mt-3 text-xs text-[#a9b1d6]">In game, set: ${setLine}</div>
@@ -4316,7 +4055,7 @@ function renderSug(){
   }).join("");
 
   $("#sug_out").innerHTML = `
-    <div class="card p-4" style="background:rgba(31,58,45,0.15); border-color:#9ece6a;">
+    <div class="card p-4 bg-[rgba(31,58,45,0.15)] border-[#9ece6a]">
       <div class="text-sm text-[#9ece6a] font-bold mb-2">📍 How to use this tab</div>
       <p class="text-sm">
         The big numbers below are <b>in-game slider positions</b> (0-100, INDEPENDENT). They are NOT percentages of total time.
@@ -4346,7 +4085,7 @@ function renderSug(){
       </p>
     </div>
     ${stageHtml}
-    <div class="card p-4 text-xs text-[#7d8294] leading-relaxed">
+    <div class="card p-4 text-xs text-subtle leading-relaxed">
       <b class="text-[#9ece6a]">★</b> weight ≥ 0.9 → keep its <b>share above 20 %</b> (never ≤20 %!), ideally one ≥ <b>40 %</b> for the focus bonus.<br>
       <b class="text-[#f7768e]">⚠</b> weight <b>under 0.8</b> → keep its <b>share below 40 %</b> to avoid the "odd focus" penalty.<br>
       Across all 9 missions, achieve <b>≥ 2 with weight ≥ 0.9 AND share ≥ 40 %</b> for the

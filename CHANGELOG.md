@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.23
+
+- Fixed the Back-solve topScore result always showing in grey instead of green, amber or red by how close the fit is
+- Fixed buttons changing their corner shape when you move to them with the keyboard
+
 ## 1.0.22
 
 - The calculator now needs Chrome or Edge 111, Firefox 128 or Safari 16.4 or newer to display correctly
