@@ -54,6 +54,9 @@ try {
   const toast = await page.evaluate(() => document.querySelector("#toast_host")?.innerText || "");
   check("no warning toast on load", toast.trim() === "", JSON.stringify(toast));
 
+  const badge = await page.evaluate(() => getComputedStyle(document.querySelector("#pick_idx_badge")).display);
+  check("the Pick a Perfect Game counter stays hidden until a game is picked", badge === "none", badge);
+
   await page.evaluate(() => {
     for (const k of ["topics", "genres", "audiences"]) localStorage.setItem("gdt_calc_locked_" + k + "_v1", "[]");
     location.reload();

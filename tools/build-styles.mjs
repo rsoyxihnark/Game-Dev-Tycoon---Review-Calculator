@@ -31,16 +31,50 @@ if (!/^\s*<\/head>/.test(after)) {
   process.exit(1);
 }
 
+const tailwind = (file) => join(ROOT, "node_modules", "tailwindcss", file).replaceAll("\\", "/");
+
+// Valuable-Run-Lesson: diffing every computed style against the Tailwind 3 build at four widths showed these rules, with preflight kept in a layer, are what makes Tailwind 4 render the page with no box moved.
+const V3_LOOK = `
+@layer base {
+  *,::after,::before,::backdrop,::file-selector-button{border-color:#e5e7eb}
+  input::placeholder,textarea::placeholder{color:#9ca3af}
+  button,[role=button]{cursor:pointer}
+  :disabled{cursor:default}
+  td,th{padding:1px}
+  option{padding:revert}
+  input,select,optgroup,textarea{background-color:revert;border-radius:revert}
+  [type=search]{-webkit-appearance:textfield;outline-offset:-2px}
+}
+select{color:inherit;padding:0}
+.hidden{display:none}
+.transition{transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,backdrop-filter}
+@theme {
+  --font-sans: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --text-xs--line-height: 1rem;
+  --text-sm--line-height: 1.25rem;
+  --text-base--line-height: 1.5rem;
+  --text-lg--line-height: 1.75rem;
+  --text-xl--line-height: 1.75rem;
+  --text-2xl--line-height: 2rem;
+  --text-3xl--line-height: 2.25rem;
+  --text-4xl--line-height: 2.5rem;
+  --text-5xl--line-height: 1;
+}
+`;
+
 const work = mkdtempSync(join(tmpdir(), "gdt-styles-"));
 try {
-  const scanned = join(work, "scan.html");
-  writeFileSync(scanned, before + after);
-  writeFileSync(join(work, "in.css"), "@tailwind base;\n@tailwind components;\n@tailwind utilities;\n");
-  writeFileSync(join(work, "tailwind.config.js"),
-    `module.exports={content:[${JSON.stringify(scanned)}],theme:{extend:{}},plugins:[]};\n`);
+  writeFileSync(join(work, "scan.html"), before + after);
+  writeFileSync(join(work, "in.css"), [
+    "@layer base;",
+    `@import "${tailwind("theme.css")}";`,
+    `@import "${tailwind("preflight.css")}" layer(base);`,
+    `@import "${tailwind("utilities.css")}" source(none);`,
+    `@source "./scan.html";`,
+    V3_LOOK,
+  ].join("\n"));
   execFileSync(process.execPath, [
-    join(ROOT, "node_modules", "tailwindcss", "lib", "cli.js"),
-    "-c", join(work, "tailwind.config.js"),
+    join(ROOT, "node_modules", "@tailwindcss", "cli", "dist", "index.mjs"),
     "-i", join(work, "in.css"),
     "-o", join(work, "out.css"),
     "--minify",

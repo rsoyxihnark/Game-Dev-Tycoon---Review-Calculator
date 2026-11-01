@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.22
+
+- The calculator now needs Chrome or Edge 111, Firefox 128 or Safari 16.4 or newer to display correctly
+
 ## 1.0.21
 
 - Fixed the Average critic score and the Reviewer score distribution staying on the previous score when you change values quickly
