@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.21
+
+- Fixed the Average critic score and the Reviewer score distribution staying on the previous score when you change values quickly
+- Fixed the Early-game cap is ACTIVE warning giving a wrong knock-down range and a final score the game never lands on
+
 ## 1.0.20
 
 - REPORT ISSUE now copies the Average critic score and its range, the number to compare with the game's own average of the four reviews

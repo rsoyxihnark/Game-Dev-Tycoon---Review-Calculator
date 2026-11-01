@@ -859,7 +859,7 @@
 (function(){
 "use strict";
 
-const APP_VERSION = "1.0.20";
+const APP_VERSION = "1.0.21";
 
 const TOPSCORE_MAX = 10000;
 
@@ -1103,27 +1103,19 @@ function platformMarketSharePct(id, week){
   }
   return _MARKET_SHARE_MEMO.map.get(id) ?? 0;
 }
-function getCurrentWeek(){
-  const y = sanitizeInt($("#i_year")?.value,  1, 40, 1);
-  const m = sanitizeInt($("#i_month")?.value, 1, 12, 1);
-  const w = sanitizeInt($("#i_week")?.value,  1,  4, 1);
-  return ymwToWeek([y, m, w]);
+function currentYMW(){
+  return [
+    sanitizeInt($("#i_year").value,  1, 40, 1),
+    sanitizeInt($("#i_month").value, 1, 12, 1),
+    sanitizeInt($("#i_week").value,  1,  4, 1),
+  ];
 }
+function getCurrentWeek(){ return ymwToWeek(currentYMW()); }
 
 function ymwToYear(ymw){ return ymw[0] + (ymw[1]-1)/12 + (ymw[2]-1)/48; }
 
-function getCurrentFractionalYear(){
-  const y = sanitizeInt($("#i_year")?.value,  1, 40, 1);
-  const m = sanitizeInt($("#i_month")?.value, 1, 12, 1);
-  const w = sanitizeInt($("#i_week")?.value,  1,  4, 1);
-  return ymwToYear([y, m, w]);
-}
-function getCurrentDateKey(){
-  const y = sanitizeInt($("#i_year")?.value, 1, 40, 1);
-  const m = sanitizeInt($("#i_month")?.value, 1, 12, 1);
-  const w = sanitizeInt($("#i_week")?.value, 1, 4, 1);
-  return `${y}-${m}-${w}`;
-}
+function getCurrentFractionalYear(){ return ymwToYear(currentYMW()); }
+function getCurrentDateKey(){ return currentYMW().join("-"); }
 function isPlatformAvailable(id, fracYear){
   const d = PLATFORM_DATES[id];
   if(!d) return true;
@@ -1132,7 +1124,7 @@ function isPlatformAvailable(id, fracYear){
 
 function saveLockSet(key, set, label){
   try { localStorage.setItem(key, JSON.stringify([...set])); }
-  catch(e){ if(typeof toast === "function") toast(`Couldn't save ${label} (storage full or disabled)`, "warn"); }
+  catch(e){ toast(`Couldn't save ${label} (storage full or disabled)`, "warn"); }
 }
 function loadLockSet(key, defaults, assign, label){
   try {
@@ -1715,24 +1707,31 @@ function debounceDelay(fn, ms){
   };
 }
 
-const _runMonteCarlo = debounceDelay(function(zFinal, psEnabled, colorFor, seed, token){
-  if(token !== recalc._slowToken) return;
-  const { sumHist, n } = simulateReviewers(zFinal, psEnabled, MONTE_RUNS, seed);
-  const buckets = new Array(10).fill(0);
+function monteKey(out){
+  return `${out.z_final.toFixed(4)}|${out.psEnabled ? 1 : 0}|${out.displayed}|${out.ceilingDemoted ? 1 : 0}|${out.earlyCapApplied ? 1 : 0}|${out.rescueApplied ? 1 : 0}`;
+}
 
+function reviewerStats(out){
+  const { sumHist, n } = simulateReviewers(out.z_final, out.psEnabled, MONTE_RUNS, hashSeed(monteKey(out)));
+  const buckets = new Array(10).fill(0);
   const i5 = Math.floor(n*0.05), i50 = Math.floor(n*0.50), i95 = Math.floor(n*0.95);
   let cum = 0, p5 = 1, p50 = 1, p95 = 1, gotP5 = false, gotP50 = false, gotP95 = false;
   for(let s = 4; s < sumHist.length; s++){
     const c = sumHist[s];
     if(!c) continue;
     const avg = s/4;
-    const b = Math.max(0, Math.min(9, Math.round(avg) - 1));
-    buckets[b] += c;
+    buckets[Math.max(0, Math.min(9, Math.round(avg) - 1))] += c;
     if(!gotP5  && cum + c > i5 ){ p5  = avg; gotP5  = true; }
     if(!gotP50 && cum + c > i50){ p50 = avg; gotP50 = true; }
     if(!gotP95 && cum + c > i95){ p95 = avg; gotP95 = true; }
     cum += c;
   }
+  return { buckets, n, p5, p50, p95 };
+}
+
+const _runMonteCarlo = debounceDelay(function(out, colorFor){
+  if(monteKey(out) !== recalc._lastMonteKey) return;
+  const { buckets, n, p5, p50, p95 } = reviewerStats(out);
   const maxB = Math.max(...buckets,1);
   O("o_dist").innerHTML = buckets.map((c, i) => {
     const score  = i + 1;
@@ -1774,23 +1773,6 @@ const _runMonteCarlo = debounceDelay(function(zFinal, psEnabled, colorFor, seed,
   }
 }, 150);
 
-function reviewerRange(out){
-  const key = `${out.z_final.toFixed(4)}|${out.psEnabled ? 1 : 0}|${out.displayed}|${out.ceilingDemoted ? 1 : 0}|${out.earlyCapApplied ? 1 : 0}|${out.rescueApplied ? 1 : 0}`;
-  const { sumHist, n } = simulateReviewers(out.z_final, out.psEnabled, MONTE_RUNS, hashSeed(key));
-  const i5 = Math.floor(n*0.05), i50 = Math.floor(n*0.50), i95 = Math.floor(n*0.95);
-  let cum = 0, p5 = 1, p50 = 1, p95 = 1, gotP5 = false, gotP50 = false, gotP95 = false;
-  for(let s = 4; s < sumHist.length; s++){
-    const c = sumHist[s];
-    if(!c) continue;
-    const avg = s/4;
-    if(!gotP5  && cum + c > i5 ){ p5  = avg; gotP5  = true; }
-    if(!gotP50 && cum + c > i50){ p50 = avg; gotP50 = true; }
-    if(!gotP95 && cum + c > i95){ p95 = avg; gotP95 = true; }
-    cum += c;
-  }
-  return { p5, p50, p95 };
-}
-
 const scheduleSaveState = debounceDelay(saveState, 250);
 
 const TREND_VALUES = Object.freeze({
@@ -1799,7 +1781,7 @@ const TREND_VALUES = Object.freeze({
 });
 function parseTrend(v){
   if(Object.prototype.hasOwnProperty.call(TREND_VALUES, v)) return TREND_VALUES[v];
-  if(typeof console !== "undefined") console.warn("Unknown trend option value:", v);
+  console.warn("Unknown trend option value:", v);
   return NaN;
 }
 
@@ -1843,7 +1825,7 @@ function saveState(){
 
     saveState._toasted = false;
   } catch(e){
-    if(!saveState._toasted){ saveState._toasted = true; if(typeof toast === "function") toast("Couldn't auto-save form state (storage full or disabled)", "warn", 5000); }
+    if(!saveState._toasted){ saveState._toasted = true; toast("Couldn't auto-save form state (storage full or disabled)", "warn", 5000); }
   }
 }
 function loadState(){
@@ -1855,7 +1837,7 @@ function loadState(){
     return JSON.parse(raw);
   } catch(e){
     try { localStorage.removeItem(STORAGE_KEY); } catch(_){  }
-    if(typeof toast === "function") toast("Saved form state was unreadable and has been reset to defaults", "warn", 5000);
+    toast("Saved form state was unreadable and has been reset to defaults", "warn", 5000);
     return null;
   }
 }
@@ -1909,8 +1891,6 @@ function initUI(){
     }
   };
   if(topicFilter) topicFilter.addEventListener("input", applyTopicFilter);
-
-  initUI._applyTopicFilter = applyTopicFilter;
 
   makeOpts("#i_genre",   genreNames, "Action");
   makeOpts("#i_genre2",  genreNames, "", true);
@@ -1979,7 +1959,7 @@ function initUI(){
         cb.checked = true;
       }
 
-      if(e.isTrusted && typeof syncPickerToManualSetup === "function") syncPickerToManualSetup();
+      if(e.isTrusted) syncPickerToManualSetup();
     });
   });
   multiCb.addEventListener("change", () => {
@@ -1999,7 +1979,7 @@ function initUI(){
       }
     }
 
-    if(typeof syncPickerToManualSetup === "function") syncPickerToManualSetup();
+    syncPickerToManualSetup();
   });
 
   loadTopicLocks();
@@ -2013,9 +1993,7 @@ function initUI(){
   refreshGenreOptions();
   refreshAudienceOptions();
 
-  const autoRepickAfterLockChange = debounceDelay(() => {
-    if(typeof pickPerfectGame === "function") pickPerfectGame(false);
-  }, 200);
+  const autoRepickAfterLockChange = debounceDelay(() => pickPerfectGame(false), 200);
   $("#topic_lock_grid").addEventListener("click", e => {
     const btn = e.target.closest("[data-topiclock]");
     if(!btn) return;
@@ -2173,9 +2151,7 @@ function initUI(){
   calcPane.addEventListener("change", e => clampInputFeedback(e.target));
 
   const dateRepick = debounceDelay(() => {
-    if(typeof pickPerfectGame === "function" && PICKER_STATE.lastKey){
-      pickPerfectGame(false);
-    }
+    if(PICKER_STATE.lastKey) pickPerfectGame(false);
   }, 200);
   const ymwIds = new Set(["i_year","i_month","i_week"]);
   ["i_year","i_month","i_week","i_tsa","i_top","i_fans"].forEach(id => {
@@ -2507,7 +2483,7 @@ function initUI(){
     refreshGenreOptions();
     refreshAudienceOptions();
 
-    if(droppedDuringRestore && typeof scheduleSaveState === "function") scheduleSaveState();
+    if(droppedDuringRestore) scheduleSaveState();
   } else {
     applyOptimalSliders();
   }
@@ -2551,7 +2527,7 @@ function initUI(){
       const params = gatherParams();
       const out    = applyCapExpectedValue(params, calcReview(params, mulberry32(0)));
       const scored = !!out && !out.error;
-      const critics = scored ? reviewerRange(out) : null;
+      const critics = scored ? reviewerStats(out) : null;
       const trendLabel = $("#i_trend").options[$("#i_trend").selectedIndex]?.text || params.trend;
       const flags = [
         params.fatigue   && "fatigue (same topic+genre+second as previous)",
@@ -2662,7 +2638,7 @@ function initUI(){
       b.classList.toggle("active", b.dataset.logfilter === _view.logFilter));
   }
 
-  if(typeof initUI._applyTopicFilter === "function") initUI._applyTopicFilter();
+  applyTopicFilter();
 
   const runCountEl = $("#dist_run_count");
   if(runCountEl) runCountEl.textContent = String(MONTE_RUNS).replace(/\B(?=(\d{3})+(?!\d))/g, " ");
@@ -2965,7 +2941,7 @@ function pickPerfectGame(arg, forceApply){
   if(allTuples.length === 0){
     if(badge) badge.classList.add("hidden");
     PICKER_STATE.lastKey = null;
-    if(typeof rerenderCombosIfActive === "function") rerenderCombosIfActive();
+    rerenderCombosIfActive();
 
     const fracYear = getCurrentFractionalYear();
     const availCount = PLATFORMS.filter(p => isPlatformAvailable(p.id, fracYear)).length;
@@ -2995,7 +2971,7 @@ function pickPerfectGame(arg, forceApply){
       if(prevIdx < 0) badge.classList.add("hidden");
       else { badge.textContent = `${prevIdx + 1}/${combos.length}`; badge.classList.remove("hidden"); }
     }
-    if(typeof rerenderCombosIfActive === "function") rerenderCombosIfActive();
+    rerenderCombosIfActive();
     return;
   }
   let idx;
@@ -3041,7 +3017,7 @@ function pickPerfectGame(arg, forceApply){
   const autofillBtn = $("#btn_autofill");
   if(autofillBtn) autofillBtn.click();
 
-  if(typeof rerenderCombosIfActive === "function") rerenderCombosIfActive();
+  rerenderCombosIfActive();
 }
 
 function applyComboFromTable(key){
@@ -3051,7 +3027,7 @@ function applyComboFromTable(key){
   const calcTabBtn = document.querySelector('.tab[data-tab="calc"]');
   if(calcTabBtn) calcTabBtn.click();
   const parts = key.split("|");
-  if(typeof toast === "function") toast(`Applied ${parts[0]} / ${parts[1]} / ${parts[2]} on ${parts[3]} to Game Setup`, "ok", 3500);
+  toast(`Applied ${parts[0]} / ${parts[1]} / ${parts[2]} on ${parts[3]} to Game Setup`, "ok", 3500);
 }
 
 function syncPickerToManualSetup(){
@@ -3101,7 +3077,7 @@ function syncPickerToManualSetup(){
     result.innerHTML = `⚠ Manual setup <b>${topicId} / ${genre} / ${aud}</b>${single ? ` on <b>${single}</b>` : ""}
       is <b>NOT in the perfect pool</b>: ${reasons.join(" · ")}.`;
   }
-  if(typeof rerenderCombosIfActive === "function") rerenderCombosIfActive();
+  rerenderCombosIfActive();
 }
 
 function renderSimpleLockGrid(gridId, items, lockedSet, dataAttr, labelFn){
@@ -3130,10 +3106,8 @@ function renderAudienceLockGrid(){
 }
 
 function rerenderCombosIfActive(){
-  const pane = $("#tab-combo");
-  if(pane && !pane.classList.contains("hidden") && typeof renderCombos === "function") renderCombos();
-
-  else if(typeof renderCombos === "function") renderCombos._dirty = true;
+  if(!$("#tab-combo").classList.contains("hidden")) renderCombos();
+  else renderCombos._dirty = true;
 }
 
 const _TOPIC_PERFECT_COMBO_CACHE = new Map();
@@ -3317,7 +3291,7 @@ function updatePlatformAvailability(){
       const fallback = getPlatformCheckboxDom(avail[0].id);
       if(fallback && !fallback.disabled){
         fallback.checked = true;
-        if(typeof toast === "function") toast(`Switched to ${avail[0].id}: your platform retired by this date`, "warn");
+        toast(`Switched to ${avail[0].id}: your platform retired by this date`, "warn");
       }
     }
   }
@@ -3408,8 +3382,8 @@ function applyCapExpectedValue(params, out){
 function recalc(){
   try { _recalcCore(); }
   catch(err){
-    if(typeof console !== "undefined") console.error("recalc failed:", err);
-    if(typeof toast === "function") toast("Couldn't update the score (internal error): see the browser console.", "bad", 6000);
+    console.error("recalc failed:", err);
+    toast("Couldn't update the score (internal error): see the browser console.", "bad", 6000);
   }
 }
 function _recalcCore(){
@@ -3658,8 +3632,7 @@ function scheduleSlowPanels(params, out, colorFor){
     if(token !== recalc._slowToken) return;
     renderSlowPanels(params, out, colorFor);
   };
-  if(typeof requestIdleCallback === "function") requestIdleCallback(run, {timeout: 80});
-  else requestAnimationFrame(() => setTimeout(run, 0));
+  requestIdleCallback(run, {timeout: 80});
 }
 
 function renderSlowPanels(params, out, colorFor){
@@ -4006,10 +3979,10 @@ function renderSlowPanels(params, out, colorFor){
     </li>
   `).join("");
 
-  const monteKey = `${out.z_final.toFixed(4)}|${out.psEnabled ? 1 : 0}|${out.displayed}|${out.ceilingDemoted ? 1 : 0}|${out.earlyCapApplied ? 1 : 0}|${out.rescueApplied ? 1 : 0}`;
-  if(recalc._lastMonteKey !== monteKey){
-    recalc._lastMonteKey = monteKey;
-    _runMonteCarlo(out.z_final, out.psEnabled, colorFor, hashSeed(monteKey), recalc._slowToken);
+  const key = monteKey(out);
+  if(recalc._lastMonteKey !== key){
+    recalc._lastMonteKey = key;
+    _runMonteCarlo(out, colorFor);
   }
 
   const capEl = O("o_capwarn");
@@ -4021,7 +3994,7 @@ function renderSlowPanels(params, out, colorFor){
       capEl.innerHTML = `
         <b class="text-[#ff8da3]">⛔ Early-game cap is ACTIVE.</b>
         Internal score reached <b>${willCap.toFixed(2)}</b> but before year 4 AND with fewer than 2 top-score achievements,
-        any 9+ is randomly knocked down by <b>1.05-1.25</b> → final ~7.75-7.95 → critics show <b>7 or 8</b>.<br>
+        any 9+ is randomly knocked down by <b>1.05-1.5</b> → critics show <b>7 or 8</b>.<br>
         <span class="text-[#a9b1d6]">Fix:</span> nothing for this game. After 2 top scores OR year 4 the cap unlocks.
       `;
     } else if(willCap > 8.5){
@@ -4066,20 +4039,13 @@ function clampInputFeedback(el){
   }
 }
 
-let _prefersReducedMotion = false;
-if(window.matchMedia){
-  const _rmq = window.matchMedia("(prefers-reduced-motion: reduce)");
-  _prefersReducedMotion = _rmq.matches;
-  const _onReducedMotionChange = e => { _prefersReducedMotion = e.matches; };
-  if(_rmq.addEventListener)      _rmq.addEventListener("change", _onReducedMotionChange);
-  else if(_rmq.addListener)      _rmq.addListener(_onReducedMotionChange);
-}
+const REDUCED_MOTION = window.matchMedia("(prefers-reduced-motion: reduce)");
 
 function tweenScore(el, to, fmt){
   if(!el) return;
   if(el._tweenRAF){ cancelAnimationFrame(el._tweenRAF); el._tweenRAF = null; }
   const prev = (el._tweenVal != null && Number.isFinite(el._tweenVal)) ? el._tweenVal : to;
-  if(_prefersReducedMotion || prev === to){
+  if(REDUCED_MOTION.matches || prev === to){
     el._tweenVal = to;
     fmt(el, to);
     return;
@@ -4128,10 +4094,7 @@ function renderCombos(){
   const af  = $("#cmb_aud").value;
   const pf  = $("#cmb_plat").value.trim();
 
-  const { rows: rowsRaw, droppedLower: droppedLowerTiersTuple, droppedWarn: droppedWarnings } = findCombos(af, tf, gf, pf);
-  const rows = rowsRaw;
-
-  const droppedLowerTiers = droppedLowerTiersTuple;
+  const { rows, droppedLower: droppedLowerTiers, droppedWarn: droppedWarnings } = findCombos(af, tf, gf, pf);
 
   if(CMB_SORT.key){
     const KEY = CMB_SORT.key, DIR = CMB_SORT.dir;
@@ -4216,7 +4179,7 @@ function renderCombos(){
     $("#cmb_count").textContent = `${rows.length} rows${tierTag}`;
   }
 
-  const lastKey = (typeof PICKER_STATE !== "undefined" && PICKER_STATE.lastKey) || null;
+  const lastKey = PICKER_STATE.lastKey;
   let pickedTGA = null, pickedPlat = null;
   if(lastKey){
     const parts = lastKey.split("|");
@@ -4290,7 +4253,6 @@ function renderCombos(){
 }
 
 function renderSug(){
-  renderSug._rendered = true;
   const t  = TOPICS_BY_ID.get($("#sug_topic").value);
   const g  = $("#sug_g").value;
 
@@ -4506,12 +4468,12 @@ function checkStylesLoaded(){
 
 window.addEventListener("error", e => {
   if(!(e && (e.error || e.message))) return;
-  if(typeof console !== "undefined") console.error("Unhandled error:", e.error || e.message);
-  if(typeof toast === "function") toast("Unexpected error, some features may not work. See the browser console for details.", "bad", 6000);
+  console.error("Unhandled error:", e.error || e.message);
+  toast("Unexpected error, some features may not work. See the browser console for details.", "bad", 6000);
 });
 window.addEventListener("unhandledrejection", e => {
-  if(typeof console !== "undefined") console.error("Unhandled promise rejection:", e && e.reason);
-  if(typeof toast === "function") toast("Unexpected error (async): see the browser console for details.", "bad", 6000);
+  console.error("Unhandled promise rejection:", e && e.reason);
+  toast("Unexpected error (async): see the browser console for details.", "bad", 6000);
 });
 
 initTooltips();

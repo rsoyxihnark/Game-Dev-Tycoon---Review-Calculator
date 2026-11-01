@@ -296,6 +296,46 @@ try {
 
   {
     const { ctx, p, errs } = await freshPage(null, ALL_UNLOCKED);
+    const raced = await p.evaluate(async () => {
+      const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+      const frames = () => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
+      const copies = [];
+      Object.defineProperty(navigator, "clipboard", {
+        configurable: true,
+        value: { writeText: async (t) => { copies.push(t); } },
+      });
+      const set = (id, v) => {
+        const el = document.querySelector(id);
+        el.value = v;
+        el.dispatchEvent(new Event("input", { bubbles: true }));
+        el.dispatchEvent(new Event("change", { bubbles: true }));
+      };
+      for (const [id, v] of [["#i_size", "medium"], ["#i_D", "60"], ["#i_T", "40"], ["#i_year", "8"],
+        ["#i_tsa", "3"], ["#i_top", "75"], ["#i_fans", "1000"]]) set(id, v);
+      await wait(1200);
+      const before = document.querySelector("#o_score").textContent;
+      set("#i_fans", "1000000");
+      await frames();
+      await wait(30);
+      set("#i_fans", "2000000");
+      await wait(1500);
+      document.querySelector("#btn_report").click();
+      await wait(300);
+      const line = (copies.at(-1) || "").split("\n").find((l) => l.startsWith("Average critic score")) || "";
+      const r = line.match(/: ([\d.]+) \/ 10 .* between ([\d.]+) and ([\d.]+)$/);
+      const s = document.querySelector("#o_reviewers_line").textContent.match(/^([\d.]+) \/ 10\s+\(range ([\d.]+)-([\d.]+)\)/);
+      return { before, after: document.querySelector("#o_score").textContent,
+        report: r ? r.slice(1) : line, panel: s ? s.slice(1) : null };
+    });
+    check("the reviewer distribution keeps up with a score that changes and then holds",
+      errs.length === 0 && raced.before !== raced.after && raced.panel &&
+        JSON.stringify(raced.report) === JSON.stringify(raced.panel),
+      JSON.stringify({ errs: errs.slice(0, 3), raced }));
+    await ctx.close();
+  }
+
+  {
+    const { ctx, p, errs } = await freshPage(null, ALL_UNLOCKED);
     const gr = await p.evaluate(async () => {
       const wait = (ms) => new Promise((r) => setTimeout(r, ms));
       const read = () => {
