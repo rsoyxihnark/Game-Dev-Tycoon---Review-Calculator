@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.0
+
+- Under Internal final score, the calculator now shows how many Design + Technology points a 9 needs at your balance
+
 ## 1.1.1
 
 - Slider Suggester and Auto-suggest optimal now land closer to the genre's golden ratio

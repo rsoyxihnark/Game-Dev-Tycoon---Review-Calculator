@@ -19,7 +19,7 @@ export async function loadCalculator() {
     slice(lineOf(/^const gi = /), lineOf(/^function findCombos/) - 1),
     slice(lineOf(/^function suggestSliders/), lineOf(/^const \$  = sel/) - 1),
     slice(lineOf(/^function mulberry32/), lineOf(/^function mulberry32/) + 8),
-    "export { calcReview, simulateReviewers, displayedScore, hasRecordedTopScore, mulberry32,",
+    "export { calcReview, simulateReviewers, displayedScore, hasRecordedTopScore, mulberry32, pointsForNine,",
     "  platformMarketUnits, ymwToWeek, dateStrToWeek, suggestSliders, missionGenreWeight,",
     "  TOPICS, PLATFORMS, MISSIONS, MISSIONS_BY_STAGE, PLATFORM_DATES, PLATFORM_MARKET,",
     "  GENRES, AUDIENCES, GAME_SIZES };",

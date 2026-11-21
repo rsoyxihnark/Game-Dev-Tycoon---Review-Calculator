@@ -1196,6 +1196,8 @@ looking at a 1.0 pair. Space with Adventure, asked about as a pair that does not
   requires the page's interpolation between the key points to land on the game's to the bit.
 - `score-parity.mjs` scores randomised setups with the game's `Reviews.rateGame` and with the
   page, sharing one random stream, and requires the two to be identical bit for bit.
+  It also has the game check the Design and Technology total the page says a 9 needs: at that
+  total the game's score before its random cuts is 9 or more, and one point less it is not.
 - `reviewer-parity.mjs` does the same for the four reviewer scores.
 - `slider-boundary.mjs` sweeps every slider triple that lands exactly on a focus threshold.
 - `suggester.mjs` scores the slider suggester's pick with the game's own review code and

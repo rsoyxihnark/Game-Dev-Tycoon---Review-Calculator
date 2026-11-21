@@ -380,6 +380,7 @@
         <div id="o_pill" class="pill warn">Calculating…</div>
       </div>
       <div id="o_displayed_sub" class="text-xs text-subtle mt-1">-</div>
+      <div id="o_nine" class="text-xs text-subtle mt-1 hidden"></div>
 
       <div id="o_assume" class="mt-2 text-[11px] text-subtle hidden" title="Assumptions the calculator is making because these values aren't stored in a way it can read directly. Adjust the Experts / Team contribution inputs to match your save."></div>
       <div id="o_topwarn" class="mt-3 text-xs hidden"></div>
@@ -599,7 +600,7 @@
 (function(){
 "use strict";
 
-const APP_VERSION = "1.1.1";
+const APP_VERSION = "1.2.0";
 
 const TOPSCORE_MAX = 10000;
 
@@ -1256,6 +1257,30 @@ function simulateReviewers(zFinal, psEnabled, n, seed){
     sumHist[sum]++;
   }
   return { sumHist, n };
+}
+
+function pointsForNine(params){
+  const total = (+params.D || 0) + (+params.T || 0);
+  if(!(total > 0)) return null;
+  const at = n => calcReview({ ...params, D: params.D*n/total, T: params.T*n/total }, mulberry32(0), true);
+  const now = at(total);
+  if(!now || now.error) return null;
+  if(10*now.u_factor < 9) return { reachable: false, cap: 10*now.u_factor };
+  const nine = n => { const r = at(n); return !r.error && r.zPreRescue * r.u_factor >= 9; };
+  const lowest = (lo, hi) => {
+    while(lo < hi){
+      const mid = Math.floor((lo + hi) / 2);
+      if(nine(mid)) hi = mid; else lo = mid + 1;
+    }
+    return lo;
+  };
+  if(nine(29)) return { reachable: true, need: lowest(1, 29) };
+  let hi = Math.max(30, Math.ceil(total));
+  while(!nine(hi)){
+    hi *= 2;
+    if(hi > 1e9) return { reachable: false, cap: 10*now.u_factor };
+  }
+  return { reachable: true, need: lowest(30, hi) };
 }
 
 function findCombos(audFilter, topicFilter, genreFilter, platFilter){
@@ -3146,6 +3171,7 @@ function clearOutputs(reason){
   O("o_warn").classList.add("hidden");
   O("o_topwarn").classList.add("hidden");
   O("o_capwarn").classList.add("hidden");
+  O("o_nine").classList.add("hidden");
   ["o_p","o_q","o_v","o_A","o_r","o_u","o_trend","o_s","o_gr","o_gra","o_ltot","o_topref","o_z"]
     .forEach(id => { const el = O(id); if(el) el.textContent = "-"; });
   O("o_log").innerHTML = "";
@@ -3296,6 +3322,24 @@ function _recalcCore(){
   N.dispSub.textContent = out.capRange
     ? `pre-cap raw (z_raw) ${out.z_raw.toFixed(2)}  ·  z_final ≈ ${out.z_final.toFixed(2)} (RNG-capped, expected value; range ${out.capRange.min.toFixed(2)}-${out.capRange.max.toFixed(2)} over ${out.capRange.n} draws)`
     : `pre-cap raw score (z_raw) ${out.z_raw.toFixed(2)}  ·  internal final score (z_final) ${out.z_final.toFixed(3)}`;
+  {
+    const nineEl = O("o_nine");
+    const nine = pointsForNine(params);
+    const have = Math.round(params.D + params.T);
+    if(!nine){
+      nineEl.classList.add("hidden");
+    } else if(!nine.reachable){
+      nineEl.textContent = `No amount of Design + Technology reaches a 9 here: the tech-fit factor caps this game at ${nine.cap.toFixed(1)}.`;
+      nineEl.classList.remove("hidden");
+    } else {
+      const head = `For a 9 before the game's random cuts, this balance needs about ${nine.need} Design + Technology.`;
+      const over = have >= nine.need
+        ? ` You have ${have}, ${Math.round((have/nine.need - 1)*100)}% more, and points past a 9 can raise the target your next game must beat.`
+        : ` You have ${have}, ${nine.need - have} short.`;
+      nineEl.textContent = head + over;
+      nineEl.classList.remove("hidden");
+    }
+  }
 
   const capChip = O("o_cap_chip");
   if(capChip){

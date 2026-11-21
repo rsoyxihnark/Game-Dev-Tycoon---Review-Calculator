@@ -108,4 +108,33 @@ heading("every platform count, on slider shares that sit exactly on a threshold"
     `${divergent} divergent\n${examples.join("\n")}`);
 }
 
+heading("the Design + Technology a 9 needs, judged by codeNw.js");
+{
+  const R = mulberry32(4242);
+  let checked = 0, capped = 0;
+  const wrong = [];
+  for (let i = 0; i < 400; i++) {
+    const p = broadSetup(R);
+    const total = p.D + p.T;
+    if (!(total > 0)) continue;
+    const n = headcount(p);
+    const r = page.pointsForNine({ ...p, teamSize: n });
+    if (!r) continue;
+    const gameNine = (k) => {
+      const d = oracle.rate(oracleSpec({ ...p, D: p.D * k / total, T: p.T * k / total }, n), mulberry32(0));
+      return d.z_raw * d.u >= 9;
+    };
+    if (!r.reachable) {
+      capped++;
+      if (gameNine(1e7)) wrong.push(`said out of reach, codeNw.js reaches 9\n${JSON.stringify(p)}`);
+      continue;
+    }
+    checked++;
+    if (!gameNine(r.need)) wrong.push(`codeNw.js is under 9 at ${r.need}\n${JSON.stringify(p)}`);
+    else if (r.need > 1 && gameNine(r.need - 1)) wrong.push(`codeNw.js already reaches 9 at ${r.need - 1}\n${JSON.stringify(p)}`);
+  }
+  check(`${checked} setups land on the game's own boundary, ${capped} capped below 9 by tech-fit`,
+    wrong.length === 0 && checked > 50 && capped > 0, wrong.slice(0, 3).join("\n"));
+}
+
 finish();
