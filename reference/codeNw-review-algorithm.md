@@ -1,7 +1,9 @@
 # The review algorithm in codeNw.js
 
 Everything below was read out of `codeNw.js` in this repository. Line numbers are that file.
-Quoted code is the game's own minified text, copied, not retyped.
+Code blocks follow the game's own minified text, spaced out for reading and cut where they
+show `...`. A block written in whole words, such as `target = ...`, is a reading of the code
+and not a copy of it.
 
 ## Finding your way around the file
 
@@ -31,16 +33,19 @@ confident, wrong answer.
 | `q` | technology points, then the previous release, then the platform to genre weight |
 | `s` | the quality term, the thing that becomes `1 + s` |
 | `u` | the good-flag counter, then the technical expertise factor |
-| `t` | the bad-flag counter, then a loop variable |
+| `t` | the bad-flag counter, then the logged game the re-anchor loop is looking at |
 | `v` | the golden-ratio percentage, then the good-focus mission list, then the genre display name, then topic to audience |
 | `A` | the odd-focus mission list, then the forgotten-mission list, then a platform genre weight, then the bug factor |
 | `r` | the golden ratio and its residual, then the mission list, then the tech spread factor, then the trend, then the rescue score |
-| `B` | a platform index for the messages, then the highest tech level, then the target top score, then the staff count |
+| `B` | a platform index for the messages, then the highest tech level, then the target top score, then the staff count, then the highest tech level again |
+| `D` | the lowest tech level, in both tech-spread loops |
+| `w` | a staff id in the rescue's count, then the optimal team size, then the gap to it, then the new-staff list |
 | `z` | a platform genre weight for the messages, then the score: `l / topScore`, then that times ten, then the final value |
 | `n` | the original game when this one is a sequel or an expansion |
 
-Loop counters are left out of that table: `r`, `t` and `B` each serve as one. So are the
-short-lived values a message or a flag needs. `v` and `A` hold a mission object while a
+Loop counters are left out of that table: `r` serves as one in four loops, and `E` counts
+through the platforms in both tech-spread loops. So are the short-lived values a message or a
+flag needs. `v` and `A` hold a mission object while a
 message is built, `q` holds one of the message strings, and `u` carries the re-anchor flag
 at the end.
 
@@ -57,7 +62,7 @@ at the end.
 | Topic to audience weight | 331 | `General.getAudienceWeighting` |
 | Optimal team size | 334 | `General.getOptimalTeamSize` |
 | Mission weight with overrides | 417 | `Missions.getGenreWeighting` |
-| Mission table, 9 missions | 418 | `Missions.Stage1Missions` and Stage2, Stage3 |
+| Mission table, 9 missions | 418 to 420 | `Missions.Stage1Missions` and Stage2, Stage3 |
 | Platform weight normalising | 426 | `Platforms.getNormalizedGenreWeighting` |
 | Platform table | 427 onward | `var a=[{id:"PC"...]` then `Platforms.allPlatforms.addRange(...)` |
 | Multi-platform blend | 451 | `Platforms.getGenreWeighting`, `getPlatformsAudienceWeighting` |
@@ -88,7 +93,7 @@ game that reaches the MMO doubling in `rateGame` is a large or an AAA one.
 Which sizes and features exist at all is research, never an office level. Medium games want
 10 research points and a second member of staff, large games 40 points with over 140000 fans
 and more than four staff, AAA 2000 points and a large game already scored at a straight 10,
-and MMO 1700 points. Multi Genre is 80 points and `isLaterOrEqualThan(12,8)`, Multi Platform
+and MMO 1700 points once Internet Opportunities is researched. Multi Genre is 80 points and `isLaterOrEqualThan(12,8)`, Multi Platform
 100 points and `isLaterOrEqualThan(17,2)`. That helper takes a week as its third argument and
 neither call passes one, so the equal-month branch compares against `undefined` and is always
 false: the two become researchable a month after the numbers read, year 12 month 9 and year
@@ -211,7 +216,7 @@ the target and the upper edge stretches:
 | Adventure | 0.4 | under 0.00 | 0.15 | 0.40 | 0.65 | over 0.90 |
 | Casual | 0.5 | under 0.00 | 0.25 | 0.50 | 0.75 | over 1.00 |
 | RPG | 0.6 | under 0.10 | 0.35 | 0.60 | 0.85 | over 1.20 |
-| Strategy | 1.4 | under 0.90 | 1.12 | 1.40 | 1.866 | over 2.80 |
+| Strategy | 1.4 | under 0.90 | 1.12 | 1.40 | 1.867 | over 2.80 |
 | Simulation | 1.6 | under 1.067 | 1.28 | 1.60 | 2.133 | over 3.20 |
 | Action | 1.8 | under 1.20 | 1.44 | 1.80 | 2.40 | over 3.60 |
 
@@ -274,18 +279,27 @@ Simulation, Strategy, Casual.
 | 3 | Graphic | Graphic | 0.5 | 0.5 | 1.0 | 0.9 | 0.9 | 1.0 | 0.8 | 1.0 |
 | 3 | Sound | Sound | 0.4 | 0.6 | 0.9 | 0.8 | 0.8 | 0.9 | 0.9 | 0.9 |
 
-Across the nine the technology factors sum to 4.0 and the design factors to 5.0, so a game
-that spread its time evenly would generate 25 percent more design than technology. That is
+Across the nine the technology factors sum to 4.0 and the design factors to 5.0, so on the
+mission term alone a game that spread its time evenly would generate 25 percent more design
+than technology. Genre weights, features and staff skills move that figure, but the lean is
 the reason the design-leaning genres are the easier ones to hit.
 
 The id is what the code matches on; the shown name is only a label. A second genre blends
 each weight as `(2*first + second)/3`, so a mixed game can sit between the table's values.
 
 That blending thins out the 0.9 band, which is the real trade in a mixed genre. Strategy on
-its own counts six missions at 0.9 or better and RPG counts six; blend them and only three
-survive, Gameplay, Level Design and World Design, and Strategy with Adventure leaves the same
-three. Fewer missions carry a rule, so most sliders go free, but the focus bonus still wants
-two of them above 40 percent and there are now only three to pick from.
+its own counts six missions at 0.9 or better and RPG counts six; blend them with Strategy
+first and only three survive, Gameplay, Level Design and World Design, and Strategy with
+Adventure leaves the same three. RPG first with Strategy second keeps five. Fewer missions
+carry a rule, so most sliders go free, but the focus bonus still wants two of them above 40
+percent and there are now only three to pick from.
+
+Dialogs is the catch in both of those blends. Its 0.7 for Strategy and 1.0 second blend to
+0.8 on paper and to 0.7999999999999999 in the game's floating point, so it stays under the
+0.8 line and still takes the odd-focus penalty at 40 percent or more. The same rounding
+lands twenty cells of the mission table, taken over all thirty genre pairs, just under 0.8:
+a 0.7 main genre with a 1.0 second, or 0.9 with 0.6. The calculator scores them the way the
+game does.
 
 **Topic overrides on mission weights.** Nine of the 66 topics replace individual mission
 weights. `topic.missionOverrides` is six rows, one per genre in the order above, each nine
@@ -334,8 +348,9 @@ hasBetterEngineThanSequel && +0.2`. Carrying the same engine forward blocks the 
 The MMO penalty is the one entry that moves neither counter.
 
 An expansion pack goes down the same path as a sequel. `UI._showGameDefinition` sets
-`sequelTo` for both, and `createPack` only adds locked settings on top, so an expansion
-carries a sequel target like any other. That puts it in the better seat on this row: the
+`sequelTo` for both, and the `createPack` branch adds locked settings, copies the original's
+platforms and sets the MMO flag on top, so an expansion carries a sequel target like any
+other, and every expansion is scored as an MMO. That puts it in the better seat on this row: the
 `-0.1` is barred to it by `!isExtensionPack`, while the `+0.2` is not, so an expansion built
 on a newer engine than the game it expands collects the bonus and can never pay the penalty.
 
@@ -404,25 +419,28 @@ touched. The audience array works the same way over three slots instead of six.
 **Tech spread**: with more than one platform, `1 - (highest - lowest)/20` over the
 platforms' tech levels. The shipped platforms carry levels 1 to 7, so across those the
 widest spread is 6 and the factor stays at 0.70 or above. One platform leaves it at exactly
-1. A console the player builds is not bound by that: its `techLevel` is the average of its
-parts' levels, which run 0 to 7, and its id is not `PC`, so it is neither skipped nor
-rounded. With one of those in the list the spread can pass 6 and the factor can fall below
-0.70.
+1. A console the player builds counts too, since its id is not `PC`, and it stays inside the
+same range. Its `techLevel` is the average over its parts that carry one, but the console
+screen treats the graphics parts as one radio group that cannot be emptied, and Text Based is
+not a console part, so exactly one graphics part is fitted and the level is a whole 1 to 7.
 PC is skipped by an explicit `"PC"==id` test in the loop. It also happens to carry no
 `techLevel` field, but that is incidental, not the reason.
 
-**Trend**: 1.2 when the game matches a genre trend, an audience trend, or a new-topic trend,
-and the new-topic case needs a topic that has never appeared in the game log at all. During
+**Trend**: 1.2 when the game's main genre matches a genre trend, when it matches an audience
+trend, or during a new-topic trend, and the new-topic case needs a topic that has never
+appeared in the game log at all. A second genre never meets a genre trend. During
 a strange-combinations trend it is 0.85 for a perfect topic-genre pair, 1.1 for 0.9, 1.2 for
 0.8, and 1.4 for anything lower. That lookup passes only the first genre, so a second genre
 can never produce a value in between. Any other trend, or none, leaves it at 1.
 
 Only one trend runs at a time, and none runs in the garage: the whole setter sits inside
 `if(1 != a.currentLevel)`, so a company at office level 1 always scores on a factor of 1.
-A trend starts on a coin flip once the last one has expired, after `24 + 12*rand` weeks, and
-the type is drawn from the same number: genre up to 0.5, new topics to 0.7, audience to 0.95
-and only above 0.96 strange combinations, so that one is the rarest by a wide margin. The
-audience trend also needs the target audience research.
+The setter runs every `24 + 12*rand` weeks. It ends whatever trend is running, and only when
+none was running does a coin flip start a new one, so a trend lasts one such stretch and is
+always followed by at least one without. The type is drawn from one number: genre up to 0.5,
+new topics to 0.7, audience to 0.95, nothing from there to 0.96, and strange combinations
+from 0.96 up, so that one is the rarest by a wide margin. An audience draw also needs the
+target audience research, and without it no trend starts.
 
 ### 3. Against the top score
 
@@ -437,8 +455,9 @@ Otherwise:
 yearFactor = year <= 6 ? 1.15 : year > 23 ? 1.10 : 1.20
 target     = floor(lastTopScore + lastTopScoreIncrease * yearFactor)
 warmup     = 6 + 9 * getGameSizeDurationFactor(lastTopScoreGameSize)
+start      = previousTopScore, or 20 while that is 0
 no week on record, or currentWeek >= lastTopScoreWeek + warmup  ->  target
-otherwise  ->  floor(previousTopScore + (target - previousTopScore) * weeksElapsed / warmup)
+otherwise  ->  floor(start + (target - start) * weeksElapsed / warmup)
 ```
 
 So the divisor steps up every time you beat it, and inside the warm-up window it ramps
@@ -509,8 +528,8 @@ ceiling demotion below sets `lastTopScore` without touching that counter. And
 `0.9>A ? r-=0.5 : 0.6>=A && (r-=1)` can never reach its second branch, because a bug factor
 of 0.6 or less is already under 0.9. Both are reproduced as written.
 
-**The quiet downward re-anchor.** Still inside the rescue block, after the floor has been
-applied:
+**The quiet downward re-anchor.** Still inside the rescue block, after the floor step whether
+or not it raised the score, and only once the log holds more than three games:
 
 ```
 if(3<d.gameLog.length){u=!0;
@@ -564,8 +583,9 @@ those sizes than above them: the time-share gate asks for the full `5 * sum(v)` 
 below large, and only 0.7 and 0.4 of it on a large and an AAA game.
 
 It is also not the custom engine's own `techLevel`, which is an average over engine parts.
-That one never reaches the score: it only sets `hasBetterEngineThanSequel` and
-`isNewBetterEngine`, and the second of those is written but read nowhere in the file.
+That one reaches the review only through `hasBetterEngineThanSequel`. It also sets
+`isNewBetterEngine`, which is written but read nowhere in the file, and away from the review
+it scales the monthly income from licensing an engine that carries the SDK part.
 Because it is an average it can be fractional, so an engine built with an older graphics
 version alongside a newer one sits between two whole levels. A player who wants the `+0.2`
 sequel bonus again and again can climb in those fractions instead of whole levels.
@@ -662,9 +682,10 @@ At 9 or above, the score is usually pulled back down:
 ```
 
 With a quality factor under 1.1 there is an 80 percent chance of landing in 8.45 to 9.10.
-Failing that, new staff on the team drops it into 8.15 to 9.10. Either way a further 10
-percent chance lifts it to 9.00 to 9.25. The `&&` short-circuits, so the draw only happens
-when `s` is under 0.1.
+Failing that, new staff on the team drops it into 8.15 to `8.15 + 0.95/n` for `n` new hires,
+so up to 9.10 with one and 8.625 with two. Either way a further 10 percent chance replaces
+the result with 9.00 to 9.25. The `&&` short-circuits, so the first draw only happens when `s`
+is under 0.1.
 
 Which of the two bands you land in is decided by the branch, not by the team. `newStaffIds`
 is written in exactly one place in the whole file, the else-branch of that ternary. So when
@@ -679,11 +700,14 @@ and third releases.
 
 Then the early-game cap, only while the top-score count is under 2 and the year under 4:
 exactly 10 loses 1.05 to 1.50, 9 or above loses 1.05 to 1.25, and anything over 8.5 loses
-0.4 to 0.6. Early 10 out of 10 is therefore out of reach, and the practical ceiling is
-about 9.25.
+0.4 to 0.6. Nothing above 8.5 gets through untouched, so while the cap is on the best a game
+can end on is 8.95, a straight 10 that drew the smallest cut. The first two branches still
+raise the top-score count and record the top score, even though the score they leave is
+under 9.
 
 Finally, `9<=z` raises the top-score count, and a score that is not 10 on the third
-top-score achievement is forced to 10. In practice that fires when the count was 2 going in.
+top-score achievement is forced to 10. In practice that fires when the count was 2 going in,
+which also means the early-game cap is already off.
 
 That last line runs after the technical expertise factor, which is what makes the third top
 score worth timing. A small game made from office level 2 or above is multiplied by 0.9 and
@@ -877,7 +901,9 @@ Each of these has been got wrong before, in a guide or in a set of notes.
 
 ## What the published guides get wrong
 
-Checked against the code, with the check kept in `tests/`:
+Checked against the code. The first, third and fourth of these are also held by the
+differential tests in `tests/`. The trend lookup and the target score sit outside those tests,
+because the calculator takes the trend factor and the top score as inputs:
 
 - The odd-focus penalty is not "at least twice". The code tests for exactly two. Three or
   more low-weight missions above 40 percent cost nothing.
@@ -893,7 +919,8 @@ Checked against the code, with the check kept in `tests/`:
   The five factors after it, platform to genre, topic to audience, bugs, tech spread and
   trend, are the ones that multiply separately.
 - The first target high score is not `20 + max(base - 20, 2) * yearFactor`. It is
-  `floor(base + max(base - 20, 2) * yearFactor)`. At a base of 50 the game gives 84, not 54.5.
+  `floor(base + max(base - 20, 2) * yearFactor)` once the warm-up has passed. At a base of
+  50 in the first six years the game gives 84, not 54.5.
 
 What the guides get right, confirmed the same way: the base score formula and its term
 order, the size factors, the golden-ratio bands and the 30-point cutoff, the 40 and 20
@@ -932,13 +959,14 @@ read straight out of `codeNw.js`:
 What part 3 gets right, read the same way: AAA wanting tech level 5 and three experts, the MMO
 penalty when the topic to genre weight is under 1.0, the level 7 and 900 point specialisation
 requirements, the 700 skill points for the lab specialist, and the 3M monthly ceiling on lab
-spending. Its project table holds up on nine of its eleven rows, the two AAA prices being the
-exception, and the gates it lists for AAA Games, Own Convention and Hardware are exact. Two things it leaves out. `getMaxRndBudget` starts that ceiling at 3M and drops it by
-100000 for every design specialist past the first, but the count is clamped at seven, so the
-budget bottoms out at 2.3M with eight specialists and the 500000 floor in the same line can
-never be reached. And
-`Research.ownConvention` wants 1000000 fans, or year 23 or later, before the convention it
-describes timing for can be researched at all.
+spending. Its project table holds up on eight of its eleven rows. The two AAA prices are
+wrong, and so is the year on Own Convention: `Research.ownConvention` wants 1000000 fans, or
+`isLaterOrEqualThan(23)` with no month, which reads year 23 itself as false, so the date route
+opens in year 24 and not 23. The gates it lists for AAA Games and Hardware are exact. One
+thing it leaves out: `getMaxRndBudget` starts that ceiling at 3M and drops it by 100000 for
+every design specialist past the first, but the count is clamped at seven, so the budget
+bottoms out at 2.3M with eight specialists and the 500000 floor in the same line can never be
+reached.
 
 Part 2 of the same guide walks the review algorithm itself and gets most of it right, which
 makes the places it slips worth naming:
@@ -1013,9 +1041,9 @@ Four more of its claims do not survive the code:
   percent as Simulation above it. Strategy's golden ratio is 1.4. The row was copied.
 - It calls a Graphics specialist useful everywhere. Graphic is 0.8 for Strategy, which is the
   one genre that does not count it, as the table above shows.
-- It names Simulation with Adventure as the multi-genre pair closest to balance, at 1.02.
-  That pair is 1.200. The one that reaches exactly 1.000 is RPG with Action second, which the
-  guide never mentions.
+- It names Simulation with Adventure and Strategy with Adventure as the multi-genre pairs
+  closest to balance, both at 1.02. Those pairs are 1.200 and 1.067. The one that reaches
+  exactly 1.000 is RPG with Action second, which the guide never mentions.
 
 What it gets right is the hard part. Its target score approximation, `Top_Score` plus the
 greater of the last increase and 12 percent, with a 20 percent ceiling outside the garage, is
@@ -1039,7 +1067,7 @@ has" is simply missing.
 
 The wiki's Game Development Based on Experience page for 1.6.11 is the most accurate of the
 set on everything it counts, and its legend is the clearest statement anywhere of the bands
-at the top of this page. Three things in it do not hold:
+at the top of this page. Four things in it do not hold:
 
 - It names Startups among the topics with more terrible pairs than great ones. There is no
   Startups topic. The game ships 66 and none of them is called that.
@@ -1047,16 +1075,22 @@ at the top of this page. Three things in it do not hold:
   seventeen, and the list misses Transport, which is the worst in the game at four against
   two, along with Abstract, Comedy, Dance, Evolution, Government, Technology, Construction,
   Expedition, Law, Mad Science and Wild West.
-- A comment on it from 2025 reports that Action's stage 3 requirements have been swapped to
-  `+++ ++ ~`. They have not. World Design, Graphic and Sound read 0.8, 1.0 and 0.9 for Action,
-  which is what the page's own table says. Whatever the reporter was reading, it was not the
-  game.
+- Its multi-genre table marks twenty cells `~`, which its legend says can be set to anything,
+  where the game's blend comes out at 0.7999999999999999, as the Dialogs note above shows.
+  Those missions take the odd-focus penalty at 40 percent or more. Five more cells show `++`
+  at 0.8667, which earns no focus bonus.
+- A comment on it from 2025 reports that Action's stage 3 requirements changed to
+  `+++/++/-` and that the game grades by them. The base table has not changed: World Design,
+  Graphic and Sound read 0.8, 1.0 and 0.9 for Action, as the page says. What the reporter saw
+  matches a topic override exactly, since Cyberpunk sets those three to 1.0, 0.9 and 0.8 for
+  Action, and the page's tables never say that nine topics rewrite them.
 
 Everything else it states in numbers checks out. Dungeon, Airplane and Fantasy each carry
 four great pairs and one terrible one. Game Dev and Superheroes each carry three terrible
 against one great, and Romance, Hospital and Surgery two against one. Its legend thresholds
 are the review's own tests. Its claim that Strategy or RPG alone leaves six important fields
-while Strategy with Adventure or RPG leaves three is exact. Its staff burn rates of one, five
+while Strategy with Adventure or RPG leaves three is exact, though Dialogs still carries the
+odd-focus rule in both blends where the page calls everything else free. Its staff burn rates of one, five
 thirds and two for medium, large and AAA are `100/(300/optimalTeamSize)` to the digit. A
 comment on it from 2025 quotes the Thief topic's two weight arrays out of the source and both
 are correct today, and another from 2021 reporting Farming with Casual as good rather than
@@ -1075,9 +1109,11 @@ the norm.
 
 A comment under it writes three mission ratios backwards. It gives Engine and AI as T/D 8:2,
 which is right, and then Gameplay and Story/Quests as 8:2 and Dialogues as 9:1 in the same
-sentence. Those three are 2:8, 2:8 and 1:9. The advice around them, to even a technology lean
-out with design-heavy features, only makes sense with the real figures, so the numbers are
-flipped and not the reasoning.
+sentence. Those three are 2:8, 2:8 and 1:9. The advice around them, to lean towards
+technology with Engine and AI features and even that out with design-heavy ones, does not
+hold with any figures. A feature's bonus is added after the mission's technology and design
+factors have been applied, so it raises both sides alike and only the skills of the staff
+member doing the work tilt it. Time spent in a mission tilts the split; a feature does not.
 
 The 1.4.3 page is the 1.6.11 page's older self and its article adds only the console rule
 above. Its value is its comment thread, 1006 of them with a body, 862 from 2013. Only 84
@@ -1094,6 +1130,8 @@ and three pieces of spam. Of those 84, these are wrong:
   weight is a raw 1.0, which normalises to 1.2, the ceiling; and its genre row is
   0.9, 1.0, 0.9, 1.0, 1.0, 0.6, which is anything but flat. Casual on PC is the worst band
   there is.
+- Another has PC at 1, 1.2 and 1.3 for young, everyone and mature. PC's raw 0.8, 0.9 and 1.0
+  normalise to 1.0, 1.1 and 1.2.
 - The same comment has every topic at 1.0 for the everyone and mature audiences. Twenty
   seven of the 66 miss on everyone and 35 on mature. Its third claim holds: young is the one
   most often marked down, in 49 of the 66.
@@ -1111,7 +1149,8 @@ and three pieces of spam. Of those 84, these are wrong:
   out of the game log by the rule above.
 - One has the strange-combinations trend paying 1.2 for anything that is not a great
   combination. It pays 1.1 at 0.9, 1.2 at 0.8 and 1.4 below that.
-- Two comments, and the 1.6.11 page, name a Startups topic. There is none.
+- Two comments, and the article itself in the same words as the 1.6.11 page, name a Startups
+  topic. There is none.
 
 What the thread gets right, all of it checked against the source: the 140000 fans and four
 staff behind Large Games and the straight 10 behind AAA; the tech level order of all thirteen
@@ -1141,6 +1180,8 @@ looking at a 1.0 pair. Space with Adventure, asked about as a pair that does not
   page, sharing one random stream, and requires the two to be identical bit for bit.
 - `reviewer-parity.mjs` does the same for the four reviewer scores.
 - `slider-boundary.mjs` sweeps every slider triple that lands exactly on a focus threshold.
+- `suggester.mjs` scores the slider suggester's pick with the game's own review code and
+  requires that no other whole-game slider strategy, and no point in a slider sweep, beats it.
 - `self-contained.mjs` loads the page in a browser with the network off, then puts it into the
   states a player can reach that once broke it: every genre or audience locked, a saved form
   state of the wrong shape, an in-game month or week typed past its limit.
@@ -1148,11 +1189,15 @@ looking at a 1.0 pair. Space with Adventure, asked about as a pair that does not
 - `release-consistency.mjs` checks the version, the changelog section and the workflow agree.
 
 Run them with `npm test`. `tests/lib/oracle.mjs` is the piece that lifts `Reviews.rateGame`
-out of `codeNw.js` and runs it. It makes three kinds of change to that source, all named in
+out of `codeNw.js` and runs it. It lifts the thirteen genre, mission, size, audience and
+platform helpers that function calls, and `Missions.BASE_DURATION`, out of the same file by
+name rather than retyping them. It makes four kinds of change to that source, all named in
 the file: five probe insertions that only copy intermediates onto a global, one replacement
-of the review-message loop inside `getReviews`, and a stub for `getReviews` on the score
-path. Every anchor is unique in the whole file, and the loader fails loudly if one
-disappears, so a future version of the game cannot quietly slip past the tests.
+of the review-message loop inside `getReviews`, a stub for `getReviews` on the score path,
+and a stub for the trend factor, which the calculator takes as an input. Every anchor is
+unique in the whole file, and the loader fails loudly if one disappears, or if a lifted
+helper's name shows up twice, so a future version of the game cannot quietly slip past the
+tests.
 
 The message-loop replacement does change how many random draws `getReviews` consumes, because
 the real loop draws at least once per reviewer. The reviewer test is therefore exact against
