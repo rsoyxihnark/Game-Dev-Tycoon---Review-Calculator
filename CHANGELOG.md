@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.0.25
+
+- Fixed the Perfect Combos tab showing a different top tier, such as 8/8 instead of 4/4, depending on which column sorts the table
+- Fixed an empty Team contribution box counting as 0%, which switched off the rescue and dropped the score
+- Fixed changes you make while no platform is selected, or while a library has nothing unlocked, being forgotten on reload
+- Fixed a Development slider value typed above 100 stretching its bar and the Time Allocation preview past what the score uses
+- Fixed the Back-solve topScore dialog pulling the cursor back to its button a moment after you closed it yourself
+- Fixed the platform switch notice saying your platform retired when it was simply not out yet at the date you set
+
 ## 1.0.24
 
 - Fixed a click in the Topic & Genre Library replacing a Game Setup you made by hand with a game from Pick a Perfect Game

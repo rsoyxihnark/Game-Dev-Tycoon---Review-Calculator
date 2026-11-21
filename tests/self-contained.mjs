@@ -527,6 +527,42 @@ try {
       JSON.stringify({ errs: errs.slice(0, 3), before: before.topicFix, after: after.topicFix }));
     await ctx.close();
   }
+
+  {
+    const { ctx, p, errs } = await freshPage(null, ALL_UNLOCKED);
+    const seen = await p.evaluate(async () => {
+      const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+      const year = document.querySelector("#i_year");
+      year.value = "20";
+      year.dispatchEvent(new Event("input", { bubbles: true }));
+      await wait(700);
+      document.querySelector('.tab[data-tab="combo"]').click();
+      await wait(400);
+      const tier = () => document.querySelector("#cmb_count").textContent.match(/top tier \S+/)?.[0];
+      const tiers = [tier()];
+      document.querySelector('th[data-sort="topic"]').click();
+      await wait(300);
+      tiers.push(tier());
+      document.querySelector('.tab[data-tab="calc"]').click();
+      const top = document.querySelector("#i_top");
+      top.value = "60";
+      top.dispatchEvent(new Event("input", { bubbles: true }));
+      await wait(700);
+      const full = document.querySelector("#o_score").textContent;
+      const contrib = document.querySelector("#i_teamcontrib");
+      contrib.value = "";
+      contrib.dispatchEvent(new Event("input", { bubbles: true }));
+      await wait(700);
+      return { tiers, full, empty: document.querySelector("#o_score").textContent };
+    });
+    check("the Perfect Combos tier stays the same whichever column sorts the table",
+      errs.length === 0 && seen.tiers[0] === "top tier 4/4" && seen.tiers[1] === seen.tiers[0],
+      JSON.stringify({ errs: errs.slice(0, 3), tiers: seen.tiers }));
+    check("an empty Team contribution box scores as the full-focus default, not as 0",
+      errs.length === 0 && seen.full !== "-" && seen.empty === seen.full,
+      JSON.stringify({ errs: errs.slice(0, 3), full: seen.full, empty: seen.empty }));
+    await ctx.close();
+  }
 } finally {
   await browser.close();
 }

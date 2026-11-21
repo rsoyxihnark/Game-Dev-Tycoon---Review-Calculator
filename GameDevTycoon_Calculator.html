@@ -599,7 +599,7 @@
 (function(){
 "use strict";
 
-const APP_VERSION = "1.0.24";
+const APP_VERSION = "1.0.25";
 
 const TOPSCORE_MAX = 10000;
 
@@ -1264,7 +1264,7 @@ function findCombos(audFilter, topicFilter, genreFilter, platFilter){
   if(genreFilter) tuples = tuples.filter(c => c.genre.toLowerCase().includes(genreFilter.toLowerCase()));
   if(audFilter)   tuples = tuples.filter(c => c.aud === audFilter);
   if(platFilter)  tuples = tuples.filter(c => c.plat.toLowerCase().includes(platFilter.toLowerCase()));
-  const { tuples: clean, topTier, topWF, droppedLower, droppedWarn } = narrowToCleanestTier(tuples);
+  const { tuples: clean, topTier, droppedLower, droppedWarn } = narrowToCleanestTier(tuples);
 
   const byKey = new Map();
   for(const c of clean){
@@ -1284,7 +1284,6 @@ function findCombos(audFilter, topicFilter, genreFilter, platFilter){
   for(const r of rows){
     r.plats.sort((x,y) => (y.pg + y.pa) - (x.pg + x.pa));
     r.bestSum   = r.plats.length ? r.plats[0].pg + r.plats[0].pa : 0;
-    r.axisCount = 2 + 2 * r.plats.length;
     let pc = 0;
     if(r.tg >= 0.999) pc++;
     if(r.ta >= 0.999) pc++;
@@ -1298,7 +1297,7 @@ function findCombos(audFilter, topicFilter, genreFilter, platFilter){
     || x.topic.localeCompare(y.topic)
     || x.genre.localeCompare(y.genre)
   );
-  return { rows, droppedLower, droppedWarn, topTier, topWF };
+  return { rows, droppedLower, droppedWarn, topTier };
 }
 
 function suggestSliders(genre, second, topic){
@@ -1529,7 +1528,7 @@ function parseTrend(v){
 }
 
 function toFinite(value, fallback){
-  const n = Number(value);
+  const n = value === "" ? NaN : Number(value);
   return Number.isFinite(n) ? n : fallback;
 }
 function clampNum(n, min, max){
@@ -1951,9 +1950,11 @@ function initUI(){
   }
 
   const modal = $("#calib_modal");
+  let calibCloseTimer = null;
   const calibModal = makeModal(modal, {
     initialFocus: () => $("#calib_obs"),
     onOpen: () => { $("#calib_obs").value = ""; $("#calib_msg").classList.add("hidden"); },
+    onClose: () => clearTimeout(calibCloseTimer),
   });
   const openCalibModal  = calibModal.open;
   const closeCalibModal = calibModal.close;
@@ -2049,7 +2050,7 @@ function initUI(){
     ttop.classList.add("input-flash-ok");
     setTimeout(()=>{ ttop.classList.remove("input-flash-ok"); }, 600);
 
-    setTimeout(()=>{ closeCalibModal(); }, 1800);
+    calibCloseTimer = setTimeout(closeCalibModal, 1800);
   });
 
   function applyOptimalSliders(){
@@ -2483,13 +2484,13 @@ function updateMissionVisuals(){
   const topicId = $("#i_topic").value;
   const topic = TOPICS_BY_ID.get(topicId);
 
-  const sigVals = MISSIONS.map(m => +(getMissionDom(m.id).input?.value || 0)).join(",");
+  const sigVals = MISSIONS.map(m => sanitizeInt(getMissionDom(m.id).input?.value, 0, 100, 0)).join(",");
   const dirtyKey = `${g}|${g2}|${topicId}|${sigVals}`;
   if(updateMissionVisuals._key === dirtyKey) return;
   updateMissionVisuals._key = dirtyKey;
   for(const stage of [1,2,3]){
     const ms = MISSIONS_BY_STAGE[stage];
-    const vals = ms.map(m => +(getMissionDom(m.id).input?.value || 0));
+    const vals = ms.map(m => sanitizeInt(getMissionDom(m.id).input?.value, 0, 100, 0));
     const sliderSum = vals.reduce((a,b)=>a+b,0);
 
     const pcts = sliderSum > 0
@@ -3038,7 +3039,7 @@ function updatePlatformAvailability(){
       const fallback = getPlatformCheckboxDom(avail[0].id);
       if(fallback && !fallback.disabled){
         fallback.checked = true;
-        toast(`Switched to ${avail[0].id}: your platform retired by this date`, "warn");
+        toast(`Switched to ${avail[0].id}: your platform is not on the market at this date`, "warn");
       }
     }
   }
@@ -3147,6 +3148,7 @@ function _recalcCore(){
     rerenderCombosIfActive();
   }
   const params = gatherParams();
+  scheduleSaveState();
 
   if(!GENRES.some(isGenreUnlocked)){
     clearOutputs("No genre unlocked, open the Topic & Genre Library and mark which genres you've researched in-game.");
@@ -3164,8 +3166,6 @@ function _recalcCore(){
     clearOutputs("Select at least one platform.");
     return;
   }
-
-  scheduleSaveState();
 
   const sig = paramsSignature(dateKey, params) + "|" + $("#i_trend").value + "|" + lockKey();
   if(recalc._lastSig === sig) return;
@@ -3841,7 +3841,7 @@ function renderCombos(){
   const af  = $("#cmb_aud").value;
   const pf  = $("#cmb_plat").value.trim();
 
-  const { rows, droppedLower: droppedLowerTiers, droppedWarn: droppedWarnings } = findCombos(af, tf, gf, pf);
+  const { rows, topTier, droppedLower: droppedLowerTiers, droppedWarn: droppedWarnings } = findCombos(af, tf, gf, pf);
 
   if(CMB_SORT.key){
     const KEY = CMB_SORT.key, DIR = CMB_SORT.dir;
@@ -3916,7 +3916,7 @@ function renderCombos(){
   const limit   = limitEl ? +limitEl.value : 99999;
   const shown   = rows.slice(0, limit);
   const tierTag = rows.length
-    ? ` · top tier ${rows[0].perfectCount}/${rows[0].axisCount} ★`
+    ? ` · top tier ${topTier}/4 ★`
       + (droppedLowerTiers ? ` (${droppedLowerTiers} weaker hidden)` : "")
       + (droppedWarnings  ? ` · ${droppedWarnings} warning-firing combo${droppedWarnings===1?"":"s"} hidden` : "")
     : "";
