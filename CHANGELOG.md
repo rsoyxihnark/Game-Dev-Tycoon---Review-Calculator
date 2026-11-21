@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.0.26
+
+- Fixed the Team size help saying only a team bigger than optimal costs rescue points, when a smaller team costs the same
+- Fixed the Team-size mismatch advice telling you to take staff off a game that is already short of staff
+- Fixed the Displayed in-game tooltip leaving out that reviewers can vary by 2 on a score of 5 or 6
+- Fixed Where does the score come from? leaving out that the golden ratio only counts once Design and Tech reach 30 together
+- Fixed the ++ mark on a slider not saying that a two-genre blend rounded up to ++ earns no focus bonus
+
 ## 1.0.25
 
 - Fixed the Perfect Combos tab showing a different top tier, such as 8/8 instead of 4/4, depending on which column sorts the table

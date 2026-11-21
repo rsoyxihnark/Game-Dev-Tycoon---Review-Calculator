@@ -312,14 +312,14 @@
             If &gt; 0, the score has a hard time reaching <b>9.0+</b> (the game randomly drags 9s down to ~8.15-9.10). Set to <b>0</b> if you haven't hired anyone in the last 2 releases.
           </span>
         </label>
-        <label class="flex flex-col text-xs gap-1 col-span-2" title="Number of staff who actually contributed to this game. Below roughly 5.2 the game runs a rescue branch that deducts 1 point for every staffer past the optimal team size plus one.">
+        <label class="flex flex-col text-xs gap-1 col-span-2" title="Number of staff who actually contributed to this game. Below roughly 5.2 the game runs a rescue branch that deducts 1 point for every staffer the team is off the optimal size by, past the first, whether above or below it.">
           <span>Team size on this game <span class="text-[#f7768e]">★ critical for low-score rescue</span></span>
           <input type="number" id="i_team" value="1" min="0" max="20" placeholder="auto = optimal">
           <span class="text-[10px] text-subtle leading-snug">
             How many staff actually worked on the game (had non-zero contribution).
             Leave at <b>0</b> for "auto = optimal" (no penalty).
             <br>Optimal sizes: <b>small=1</b>, <b>medium=3</b>, <b>large=5</b>, <b>aaa=6</b>.
-            If your real team is larger, the rescue branch loses <b>1 point per extra staffer past optimal+1</b>.
+            If your real team is larger or smaller, the rescue branch loses <b>1 point per staffer of gap past the first</b>.
             <br>Example: small game, 8 staff → |1−8|=7, penalty = <b>−6 points</b> off the rescue ceiling (drops your score from ~7 to ~1).
           </span>
         </label>
@@ -372,7 +372,7 @@
           </div>
           <div>
             <div class="text-xs text-subtle cursor-help"
-                 title="Base critic score = floor(internal final score), with 9.5 and up rounding to 10 (Reviews.getReviews). The 4 reviewers each vary ±1 around it, so the median below can sit a point either side and is not meant to match.">Displayed in-game</div>
+                 title="Base critic score = floor(internal final score), with 9.5 and up rounding to 10 (Reviews.getReviews). The 4 reviewers each vary ±1 around it, ±2 now and then on a 5 or 6, so the median below can sit a point either side and is not meant to match.">Displayed in-game</div>
 
             <div id="o_displayed_big" class="text-5xl font-bold text-[#7aa2f7] tabular-nums placeholder-dim">-<span class="text-2xl text-subtle">/10</span></div>
           </div>
@@ -545,7 +545,7 @@
     <h2 class="text-[#7aa2f7] font-bold text-lg">Where does the score come from?</h2>
     <ol class="list-decimal list-inside space-y-1 text-[#a9b1d6]">
       <li><span class="text-[#e0af68] font-semibold">Topic</span> sets <code>p</code> (topic↔genre raw 0.6..1.0) AND <code>v</code> (topic↔audience raw 0.6..1.0). If <code>p ≤ 0.7</code> or <code>v ≤ 0.7</code> the score above 0.6 is halved → huge effective penalty. 9 topics also override individual mission weights via <code>missionOverrides</code> (Sports, Racing, Mystery, Horror, Detective, Cyberpunk, Law, Music, Rythm).</li>
-      <li><span class="text-[#e0af68] font-semibold">Genre / Second genre</span> set the golden ratio (Action 1.8 / Sim 1.6 / Strat 1.4 / RPG 0.6 / Casual 0.5 / Adv 0.4; combo = (2·main+second)/3). Tech ≈ Design · ratio. |T − D·ratio| / max(D,T) ≤ 25 % → +0.1 bonus, &gt; 50 % → −0.1.</li>
+      <li><span class="text-[#e0af68] font-semibold">Genre / Second genre</span> set the golden ratio (Action 1.8 / Sim 1.6 / Strat 1.4 / RPG 0.6 / Casual 0.5 / Adv 0.4; combo = (2·main+second)/3). Tech ≈ Design · ratio. |T − D·ratio| / max(D,T) ≤ 25 % → +0.1 bonus, &gt; 50 % → −0.1, checked only once D + T reaches 30.</li>
       <li><span class="text-[#e0af68] font-semibold">Platforms</span> give <code>q</code> (normalized weights 0.9..1.1, multi-platform via 0.7^n falloff). 3rd platform contributes <i>negative</i> weight. Wrong audience for a platform applies an additional raw-weight multiplier (when z &gt; 0.7).</li>
       <li><span class="text-[#e0af68] font-semibold">Sliders</span> = the 9 dev missions, each with fixed Tech/Design factors and per-genre weights. The three rules below count <b>across all 9</b>, not per stage, and every penalty among them doubles on an MMO.</li>
       <li><b>Focus</b>: weight≥0.9 missions at ≥40 % → +0.2 for two or more, +0.1 for exactly one, −0.15 for none at all.</li>
@@ -599,7 +599,7 @@
 (function(){
 "use strict";
 
-const APP_VERSION = "1.0.25";
+const APP_VERSION = "1.0.26";
 
 const TOPSCORE_MAX = 10000;
 
@@ -2529,7 +2529,7 @@ function updateMissionVisuals(){
         const wr = Math.round(w*10)/10;
         let txt, cls, tip;
         if(wr >= 1.0)      { txt = "+++"; cls = "text-[#9ece6a]"; tip = "very important"; }
-        else if(wr >= 0.9) { txt = "++";  cls = "text-[#9ece6a]"; tip = "quite important"; }
+        else if(wr >= 0.9) { txt = "++";  cls = "text-[#9ece6a]"; tip = "quite important, the game's ++ band; a blend that rounds up to 0.9 earns no focus bonus"; }
         else if(wr >= 0.8) { txt = "+";   cls = "text-[#e0af68]"; tip = "okay, the game's + band; a blend that rounds up to 0.8 can still take the odd-focus penalty"; }
         else if(wr >= 0.7) { txt = "--";  cls = "text-[#e0af68]"; tip = "not important"; }
         else               { txt = "---"; cls = "text-[#f7768e]"; tip = "not at all important"; }
@@ -3486,8 +3486,9 @@ function renderSlowPanels(params, out, colorFor){
         ${severe ? "⛔" : "⚠"} <b>Team-size mismatch</b> for <b>${params.size}</b> game:
         optimal is <b>${OPT_TEAM}</b>, you have <b>${actualTeam}</b> staff working on this game.<br>
         If the rescue branch fires (raw score &lt; ~5), it loses <b>${penalty} points</b> off the recovery ceiling.
-        <br><span class="text-subtle">Fix:</span> for late-game small/medium projects, only assign ${OPT_TEAM} staff
-        to the game (set the others to training/research/idle), or do bigger games to match your team.
+        <br><span class="text-subtle">Fix:</span> ${actualTeam > OPT_TEAM
+          ? `for late-game small/medium projects, only assign ${OPT_TEAM} staff to the game (set the others to training/research/idle), or do bigger games to match your team.`
+          : `put more of your staff on the game, up to ${OPT_TEAM}, or make a smaller game that fits the team you have.`}
       `});
     }
   }
