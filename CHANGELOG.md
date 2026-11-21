@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.0.24
+
+- Fixed a click in the Topic & Genre Library replacing a Game Setup you made by hand with a game from Pick a Perfect Game
+- Fixed the advice still offering a topic or audience you had just locked in the Topic & Genre Library
+- Fixed the strangeCombos row warning not appearing when you switch Trend factor between two rows that both pay 1.20
+- Fixed the 2nd genre list still blocking the old main genre and offering the new one after Pick a Perfect Game changes the genre
+- Fixed REPORT ISSUE running its sections together with no blank line between them
+- Fixed the advice naming a Calibrate button the calculator does not have
+- Fixed the Engine techLevel in Year 1 advice treating Graphics engine tech level as a count of features
+- Fixed Pick a Perfect Game and the Perfect Combos tab calling the Topic & Genre Library by other names
+
 ## 1.0.23
 
 - Fixed the Back-solve topScore result always showing in grey instead of green, amber or red by how close the fit is

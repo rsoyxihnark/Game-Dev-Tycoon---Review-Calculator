@@ -31,7 +31,7 @@ let divergent = 0;
 const examples = [];
 for (let seed = 0; seed < RUNS; seed++) {
   const R = mulberry32(seed);
-  const score = 1 + R() * 9.6;        // spans 1..10.6, so floor(score)===10 and score>=9.5 both occur
+  const score = 1 + R() * 9.6;
   const psEnabled = R() < 0.5;
   const stream = seed * 7919 + 13;
   const want = gameReviewers(score, psEnabled, mulberry32(stream));

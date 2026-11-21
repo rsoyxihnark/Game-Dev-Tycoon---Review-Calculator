@@ -599,7 +599,7 @@
 (function(){
 "use strict";
 
-const APP_VERSION = "1.0.23";
+const APP_VERSION = "1.0.24";
 
 const TOPSCORE_MAX = 10000;
 
@@ -900,6 +900,9 @@ let LOCKED_AUDIENCES = new Set(AUD_DEFAULT_LOCKED);
 function loadAudienceLocks(){ loadLockSet(AUD_LOCK_KEY, AUD_DEFAULT_LOCKED, s => { LOCKED_AUDIENCES = s; }, "audience locks"); }
 function saveAudienceLocks(){ saveLockSet(AUD_LOCK_KEY, LOCKED_AUDIENCES, "audience locks"); }
 function isAudienceUnlocked(id){ return !LOCKED_AUDIENCES.has(id); }
+function lockKey(){
+  return [LOCKED_TOPICS, LOCKED_GENRES, LOCKED_AUDIENCES].map(s => [...s].sort().join(",")).join("|");
+}
 
 const TOPICS_BY_ID    = new Map(TOPICS.map(t => [t.id, t]));
 const PLATFORMS_BY_ID = new Map(PLATFORMS.map(p => [p.id, p]));
@@ -1733,7 +1736,9 @@ function initUI(){
   refreshGenreOptions();
   refreshAudienceOptions();
 
-  const autoRepickAfterLockChange = debounceDelay(() => pickPerfectGame(false), 200);
+  const autoRepickAfterLockChange = debounceDelay(() => {
+    if(PICKER_STATE.lastKey) pickPerfectGame(false);
+  }, 200);
   $("#topic_lock_grid").addEventListener("click", e => {
     const btn = e.target.closest("[data-topiclock]");
     if(!btn) return;
@@ -1757,6 +1762,7 @@ function initUI(){
     renderGenreLockGrid();
     refreshGenreOptions();
     rerenderCombosIfActive();
+    debouncedRecalc();
     autoRepickAfterLockChange();
   });
   $("#aud_lock_grid").addEventListener("click", e => {
@@ -1769,6 +1775,7 @@ function initUI(){
     renderAudienceLockGrid();
     refreshAudienceOptions();
     rerenderCombosIfActive();
+    debouncedRecalc();
     autoRepickAfterLockChange();
   });
   $("#btn_lock_all").addEventListener("click", () => {
@@ -1802,6 +1809,7 @@ function initUI(){
         saveAudienceLocks(); renderAudienceLockGrid(); refreshAudienceOptions();
       }
       rerenderCombosIfActive();
+      debouncedRecalc();
       autoRepickAfterLockChange();
       return;
     }
@@ -2307,24 +2315,24 @@ function initUI(){
           : `(invalid, calculator could not produce a result: ${out && out.error ? out.error : "unknown"})`,
         critics
           ? `Average critic score (4 reviewers): ${critics.p50.toFixed(1)} / 10   |  90 % of in-game runs land between ${critics.p5.toFixed(1)} and ${critics.p95.toFixed(1)}`
-          : "",
+          : null,
         scored
           ? `Chain: p=${out.p_val.toFixed(2)}  q=${out.q_val.toFixed(3)}  v=${out.v_val.toFixed(2)}  A=${out.A_val.toFixed(3)}  r=${out.r_val.toFixed(3)}  u=${out.u_factor.toFixed(3)}  s=${out.s.toFixed(3)}  trend=${params.trend}  experts=${params.experts}`
-          : "",
-        scored ? `Golden ratio (target / actual T÷D): ${out.gr.toFixed(3)} / ${out.grActual.toFixed(3)}` : "",
-        scored ? `l_total: ${out.l_total.toFixed(2)}   |  z (l_total ÷ topScore): ${out.z.toFixed(3)}` : "",
+          : null,
+        scored ? `Golden ratio (target / actual T÷D): ${out.gr.toFixed(3)} / ${out.grActual.toFixed(3)}` : null,
+        scored ? `l_total: ${out.l_total.toFixed(2)}   |  z (l_total ÷ topScore): ${out.z.toFixed(3)}` : null,
         scored && out.rescueApplied
           ? `Rescue branch: FIRED, un-rescued raw score ${out.zPreRescue.toFixed(3)} was ≤ gate ${out.rescueThreshold.toFixed(1)}; shown score is the game's pity-floor (starts at 6, your team, hires, bugs and fits move it, capped at 7.7), not raw quality`
           : (scored && out.hasTopScore && out.zPreRescue > out.rescueThreshold && out.zPreRescue < 7.7
               ? `Rescue branch: dead zone, raw ${out.zPreRescue.toFixed(3)} sits between the gate (${out.rescueThreshold.toFixed(1)}) and the rescue ceiling (7.7); a slightly worse game would likely display HIGHER`
-              : ""),
+              : null),
         "",
         "--- ACTUAL IN-GAME RESULT ---",
         "(please fill in: I actually got ____ /10 in the game)",
         "",
         "--- NOTES ---",
         "(any extra context you want to share)",
-      ].filter(l => l !== "");
+      ].filter(l => l !== null);
       const text = lines.join("\n");
 
       const flash = (msg, color) => {
@@ -2582,10 +2590,7 @@ const _findCombosMemo = { key: null, val: null };
 
 function findPerfectGameCombos(min = 0.9){
   const fracYear = getCurrentFractionalYear();
-  const memoKey = min + "|" + fracYear.toFixed(6) + "|"
-    + [...LOCKED_TOPICS].sort().join(",") + "|"
-    + [...LOCKED_GENRES].sort().join(",") + "|"
-    + [...LOCKED_AUDIENCES].sort().join(",");
+  const memoKey = min + "|" + fracYear.toFixed(6) + "|" + lockKey();
   if(_findCombosMemo.key === memoKey) return _findCombosMemo.val;
   const availPlats = PLATFORMS.filter(p => isPlatformAvailable(p.id, fracYear));
   const out = [];
@@ -2733,6 +2738,7 @@ function pickPerfectGame(arg, forceApply){
   $("#i_topic").value  = pick.topic;
   $("#i_genre").value  = pick.genre;
   $("#i_genre2").value = "";
+  syncGenreSecondDisable("#i_genre", "#i_genre2");
   $("#i_aud").value    = pick.aud;
 
   ["i_fat","i_seq","i_sameEng","i_betterEng"].forEach(id => { const el=$("#"+id); if(el) el.checked = false; });
@@ -2810,7 +2816,7 @@ function syncPickerToManualSetup(){
         }
         if(!isPlatformAvailable(single, getCurrentFractionalYear())) reasons.push(`${single} is not on the market at the current Y/M/W`);
       }
-      if(!isTopicUnlocked(topicId)) reasons.push(`topic is marked locked in the Topic Library`);
+      if(!isTopicUnlocked(topicId)) reasons.push(`topic is marked locked in the Topic &amp; Genre Library`);
     }
 
     if(!reasons.length) reasons.push(`a cleaner tier exists (more 1.0-axes available): see the Perfect Combos tab`);
@@ -3161,7 +3167,7 @@ function _recalcCore(){
 
   scheduleSaveState();
 
-  const sig = paramsSignature(dateKey, params);
+  const sig = paramsSignature(dateKey, params) + "|" + $("#i_trend").value + "|" + lockKey();
   if(recalc._lastSig === sig) return;
   recalc._lastSig = sig;
   const fixedSeed = mulberry32(0);
@@ -3644,14 +3650,14 @@ function renderSlowPanels(params, out, colorFor){
   }
   if(params.tl >= 5 && params.year === 1){
     sug.push({sev:"warn", html:`
-      ⚠ <b>Engine techLevel ${params.tl} in Year 1</b>: reaching 5+ top-tier features takes multiple research cycles, usually years of in-game progression.<br>
-      <span class="text-subtle">Fix:</span> set techLevel to match how many fancy/latest-gen features your engine actually has right now (likely 0-2 in year 1).
+      ⚠ <b>Engine techLevel ${params.tl} in Year 1</b>: a graphics engine at level 5 or above takes multiple research cycles, usually years of in-game progression.<br>
+      <span class="text-subtle">Fix:</span> set Graphics engine tech level to the one graphics engine this game uses (likely 0-2 in year 1).
     `});
   }
   if(params.year === 1 && params.lastTop > 50){
     sug.push({sev:"warn", html:`
       ⚠ <b>Year 1 with reference topScore ${params.lastTop}</b>: in year 1 the topScore baseline is normally 20-40. A high baseline implies several prior hit games which contradicts year 1.<br>
-      <span class="text-subtle">Fix:</span> use the Calibrate button to back-solve topScore from a known-score game, or leave at the default 20.
+      <span class="text-subtle">Fix:</span> use the Back-solve from a past game button to find topScore from a known-score game, or leave at the default 20.
     `});
   }
   const sliderIssues = out.log.filter(l => l.startsWith("  -") && (l.includes("focus") || l.includes("forgot")));
@@ -3932,7 +3938,7 @@ function renderCombos(){
     $("#cmb_tbody").innerHTML = `
     <tr><td colspan="7" class="p-6 text-center text-subtle">
       No combos match the current filters.<br>
-      <span class="text-xs">Try clearing the topic/genre filter or unlocking more topics &amp; genres in the Calculator tab's libraries.</span>
+      <span class="text-xs">Try clearing the topic/genre filter or unlocking more topics &amp; genres in the Topic &amp; Genre Library on the Calculator tab.</span>
     </td></tr>`;
     renderCombos._dirty = false;
     return;

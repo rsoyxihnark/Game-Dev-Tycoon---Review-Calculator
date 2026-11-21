@@ -479,6 +479,54 @@ try {
       JSON.stringify({ errs: errs.slice(0, 3), named, advice: seen.advice.slice(0, 300) }));
     await ctx.close();
   }
+
+  {
+    const { ctx, p, errs } = await freshPage(null, ALL_UNLOCKED);
+    const seen = await p.evaluate(async () => {
+      const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+      const set = (id, v) => {
+        const el = document.querySelector(id);
+        el.value = v;
+        el.dispatchEvent(new Event("change", { bubbles: true }));
+        el.dispatchEvent(new Event("input", { bubbles: true }));
+      };
+      const setup = () => [
+        document.querySelector("#i_topic").value,
+        document.querySelector("#i_genre").value,
+        document.querySelector("#i_aud").value,
+        ...[...document.querySelectorAll("[data-plat]:checked")].map((x) => x.dataset.plat),
+      ].join("|");
+      const advice = () => document.querySelector("#o_sug").innerText;
+      const topicFix = () => advice().split("\n").find((l) => l.includes("change topic to one of")) || "";
+      const strange = () => advice().includes("strangeCombos row does not match");
+      set("#i_topic", "Business"); set("#i_genre", "Action"); set("#i_aud", "mature");
+      set("#i_clevel", "2"); set("#i_trend", "1.2_genre");
+      await wait(900);
+      const before = { setup: setup(), topicFix: topicFix(), advice: advice(), strange: strange() };
+      set("#i_trend", "1.2_strange");
+      await wait(900);
+      const strangeRow = strange();
+      document.querySelector('[data-audlock="everyone"]').click();
+      await wait(900);
+      const audienceAdvice = advice();
+      document.querySelector('[data-topiclock="Fantasy"]').click();
+      await wait(900);
+      return { before, strangeRow, after: { setup: setup(), topicFix: topicFix(), advice: audienceAdvice } };
+    });
+    const { before, strangeRow, after } = seen;
+    check("locking a topic or audience in the library leaves a hand-made Game Setup alone",
+      errs.length === 0 && before.setup === "Business|Action|mature|PC" && after.setup === before.setup,
+      JSON.stringify({ errs: errs.slice(0, 3), before: before.setup, after: after.setup }));
+    check("the advice follows a strangeCombos row that pays the same trend factor",
+      errs.length === 0 && !before.strange && strangeRow,
+      JSON.stringify({ errs: errs.slice(0, 3), before: before.strange, after: strangeRow }));
+    check("the advice drops a topic or audience the moment it is locked",
+      errs.length === 0 &&
+        before.topicFix.includes("Fantasy") && !after.topicFix.includes("Fantasy") &&
+        before.advice.includes("Switch audience to everyone") && !after.advice.includes("Switch audience to everyone"),
+      JSON.stringify({ errs: errs.slice(0, 3), before: before.topicFix, after: after.topicFix }));
+    await ctx.close();
+  }
 } finally {
   await browser.close();
 }
