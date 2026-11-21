@@ -119,7 +119,7 @@
         <label class="flex flex-col text-xs gap-1">Game size
           <select id="i_size"></select>
         </label>
-        <label class="flex flex-col text-xs gap-1" title="Company.topScoreAchievements in codeNw.js: how many of your past games scored 10/10. Under 2, together with a year below 4, it switches on the early-game cap. Any value above 0 also tells the calculator a top score is on record.">
+        <label class="flex flex-col text-xs gap-1" title="Company.topScoreAchievements in codeNw.js: how many of your games ended on 9 or more, or were cut down from 9 or more by the early-game cap. Under 2 with a year below 4, the cap is on. Above 0 it tells the calculator a top score is on record.">
           <span>Top-score achievements <span class="text-[#e0af68]">★ must match save</span></span>
           <input type="number" id="i_tsa" min="0" max="999" value="0">
         </label>
@@ -599,7 +599,7 @@
 (function(){
 "use strict";
 
-const APP_VERSION = "1.0.26";
+const APP_VERSION = "1.1.0";
 
 const TOPSCORE_MAX = 10000;
 
@@ -1301,36 +1301,76 @@ function findCombos(audFilter, topicFilter, genreFilter, platFilter){
 }
 
 function suggestSliders(genre, second, topic){
-  const out = {};
+  const gr = goldenRatio(genre, second);
   const stages = [1,2,3].map(stage => {
-    const wms = MISSIONS_BY_STAGE[stage].map(m => ({ m, w: missionGenreWeight(m, genre, second, topic) }));
-    return { wms, high: wms.filter(x => x.w >= 0.9).length };
+    const ms = MISSIONS_BY_STAGE[stage];
+    return { ms, ws: ms.map(m => missionGenreWeight(m, genre, second, topic)) };
   });
-
-  const freeHits = stages.reduce((n, s) => n + (s.high === 1 ? 1 : s.high === 2 ? 2 : 0), 0);
-  let sacrifice = freeHits === 0;
-  for(const st of stages){
-    const wms = st.wms;
-    if(st.high === 3){
-      if(sacrifice){
-        const sorted = wms.slice().sort((a,b) => a.w - b.w);
-        out[sorted[0].m.id] = 0;
-        out[sorted[1].m.id] = 100;
-        out[sorted[2].m.id] = 100;
-        sacrifice = false;
-      } else {
-        for(const x of wms) out[x.m.id] = 100;
-      }
-    } else if(st.high >= 1){
-      for(const x of wms) out[x.m.id] = x.w >= 0.9 ? 100 : 0;
-    } else if(wms.every(x => x.w < 0.8)){
-      for(const x of wms) out[x.m.id] = 30;
-    } else {
-      const top = wms.slice().sort((a,b) => b.w - a.w)[0];
-      for(const x of wms) out[x.m.id] = (x.m === top.m) ? 100 : 0;
-    }
+  const memoKey = stages.map(s => s.ws.join(",")).join("|") + "|" + gr;
+  let sets = SUGGEST_MEMO.get(memoKey);
+  if(!sets){
+    sets = bestSliderSets(stages, gr);
+    SUGGEST_MEMO.set(memoKey, sets);
   }
+  const out = {};
+  stages.forEach((s, i) => s.ms.forEach((m, j) => { out[m.id] = sets[i][j]; }));
   return out;
+}
+
+const SUGGEST_STEPS = [0, 25, 50, 75, 100];
+const SUGGEST_MARGIN = 2;
+const SUGGEST_BAND = 5;
+const SUGGEST_TRIPLES = SUGGEST_STEPS
+  .flatMap(a => SUGGEST_STEPS.flatMap(b => SUGGEST_STEPS.map(c => [a, b, c])))
+  .filter(v => Math.max(...v) === 100)
+  .map(v => {
+    const sum = v[0] + v[1] + v[2];
+    return { v, sh: v.map(x => x/(sum/70) + 10) };
+  });
+const SUGGEST_MEMO = new Map();
+
+function stageSliderOptions(ms, ws){
+  const opts = [];
+  for(const c of SUGGEST_TRIPLES){
+    let good = 0, forgot = 0, odd = 0, margin = Infinity, tech = 0, design = 0, fit = 0;
+    for(let i = 0; i < 3; i++){
+      const sh = c.sh[i], w = ws[i];
+      if(w >= 0.9){
+        margin = Math.min(margin, Math.abs(sh - 40), Math.abs(sh - 20));
+        if(sh >= 40) good++;
+        if(sh <= 20) forgot++;
+      } else if(w < 0.8){
+        margin = Math.min(margin, Math.abs(sh - 40));
+        if(sh >= 40) odd++;
+      }
+      tech += sh * ms[i].t;
+      design += sh * ms[i].d;
+      fit += sh * w;
+    }
+    if(odd === 0 && margin >= SUGGEST_MARGIN) opts.push({ v: c.v, good, forgot, tech, design, fit });
+  }
+  return opts;
+}
+
+function balanceMissPct(design, tech, gr){
+  return Math.abs((design*gr - tech) / Math.max(design, tech)) * 100;
+}
+
+function bestSliderSets(stages, gr){
+  const [o1, o2, o3] = stages.map(s => stageSliderOptions(s.ms, s.ws));
+  let best = null;
+  for(const a of o1) for(const b of o2) for(const c of o3){
+    const good = a.good + b.good + c.good;
+    const q = (good >= 2 ? 20 : good === 1 ? 10 : -15) - 15*(a.forgot + b.forgot + c.forgot);
+    if(best && q < best.q) continue;
+    const miss = balanceMissPct(a.design + b.design + c.design, a.tech + b.tech + c.tech, gr);
+    const band = Math.floor(miss / SUGGEST_BAND);
+    const fit = a.fit + b.fit + c.fit;
+    const better = !best || q > best.q || band < best.band ||
+      (band === best.band && (fit > best.fit + 1e-9 || (fit > best.fit - 1e-9 && miss < best.miss - 1e-9)));
+    if(better) best = { q, band, fit, miss, sets: [a.v, b.v, c.v] };
+  }
+  return best.sets;
 }
 
 const $  = sel => document.querySelector(sel);
@@ -3452,7 +3492,7 @@ function renderSlowPanels(params, out, colorFor){
       ${breaker ? "(this triggers the game's −0.1 unbalanced penalty)" : ""}
       <br>Target T = D × ${out.gr.toFixed(2)} (i.e. T ≈ <b>${grIdeal.toFixed(0)}</b>), you have T/D = ${out.grActual.toFixed(2)} (T = ${params.T}). <b>${ratioPctOff.toFixed(0)}% off</b>, and the +0.1 needs 25% or less.<br>
       <span class="text-subtle">Fix:</span> push for ${dir}.
-      ${breaker ? `<br><span class="text-[#a9b1d6]">⚡ Note: the auto-suggester optimises mission <i>weights</i>, not the T/D ratio. For tech-heavy genres (Action 1.8, Simulation 1.6), you must <b>manually skew sliders toward Tech missions</b> (Engine, AI, Level Design) after auto-suggesting.</span>` : ""}
+      ${breaker ? `<br><span class="text-[#a9b1d6]">⚡ Note: <b>Auto-suggest optimal</b> already leans the time split toward this target as far as the focus bonus allows, for a team producing Design and Technology evenly. If it still misses, your staff tilt it: train or hire toward the side you lack.</span>` : ""}
     `});
   } else if(params.D + params.T >= 30){
     sug.push({sev:"ok", html:`
@@ -3666,7 +3706,7 @@ function renderSlowPanels(params, out, colorFor){
     sug.push({sev:"warn", html:`
       ⚠ <b>Slider focus penalties</b>:
       <span class="text-[#ff8da3]">${sliderIssues.map(x=>x.trim()).join("; ")}</span>.<br>
-      <span class="text-subtle">Fix:</span> use the <b>"Auto-suggest optimal"</b> button, put weight≥0.9 missions ≥40 %, keep weight≤0.7 missions below 40 %, never let a weight≥0.9 mission go ≤20 %.
+      <span class="text-subtle">Fix:</span> use the <b>"Auto-suggest optimal"</b> button, put weight≥0.9 missions ≥40 %, keep missions weighted under 0.8 below 40 %, never let a weight≥0.9 mission go ≤20 %.
     `});
   }
   if(params.fatigue)
@@ -4010,10 +4050,14 @@ function renderSug(){
   const hasOverrides = !!(t && t.o);
 
   let predD = 0, predT = 0;
-  for(const m of MISSIONS){
-    const v = sug[m.id] || 0;
-    predD += v * m.d;
-    predT += v * m.t;
+  for(const stage of [1,2,3]){
+    const ms = MISSIONS_BY_STAGE[stage];
+    const sum = ms.reduce((acc, m) => acc + (sug[m.id] || 0), 0);
+    for(const m of ms){
+      const share = sum > 0 ? (sug[m.id] || 0)/(sum/70) + 10 : 100/3;
+      predD += share * m.d;
+      predT += share * m.t;
+    }
   }
   const predRatio = predD > 0 ? predT/predD : 0;
   const ratioPctOff = predD > 0 ? Math.abs((predD*gr - predT) / Math.max(predD, predT)) * 100 : 0;
@@ -4069,12 +4113,11 @@ function renderSug(){
         Drag each in-game slider to the number you see, that's literally all you do.
       </p>
       <p class="text-xs text-[#e0af68] mt-2">
-        Why <b>0</b> for low-weight missions instead of "some balanced number"?
-        Because the in-game time-share formula is
-        <code class="text-[#9ec1ff]">share = slider×70/sum + 10</code> (clamped 10-80&nbsp;%).
-        Setting a non-essential mission to 50 actively <b>steals share</b> from your high-weight neighbours,
-        often dropping them below the 40&nbsp;% focus threshold. Setting it to 0 keeps the floor at 10&nbsp;%:
-        you still get some points, and your high-weight missions hit 45&nbsp;% (focus bonus active).
+        The in-game time share is <code class="text-[#9ec1ff]">share = slider×70/sum + 10</code>, so every mission keeps at least 10&nbsp;%.
+        Of all the slider sets that earn the full focus bonus, this tab picks the one whose time split lands closest to the genre's golden ratio.
+      </p>
+      <p class="text-xs text-[#e0af68] mt-2">
+        Every value is 0, 25, 50, 75 or 100, so you can set it by eye, and no share it gives sits within 2 points of the 20&nbsp;% or 40&nbsp;% line.
       </p>
       ${hasOverrides ? `<p class="text-xs text-[#7aa2f7] mt-2">★ <b>${t.id}</b> overrides per-mission weights via <code>missionOverrides</code>: values shown reflect the overrides.</p>` : ""}
     </div>
@@ -4085,7 +4128,7 @@ function renderSug(){
         Example: D=100 → aim for T ≈ ${(100*gr).toFixed(0)}.
       </p>
       <p class="text-xs mt-2">
-        <span class="text-subtle">Predicted from these sliders:</span>
+        <span class="text-subtle">Predicted from these sliders, if your team turns time into Design and Technology evenly:</span>
         <span class="font-mono">T/D ≈ ${predRatio.toFixed(2)}</span>
         (target ${gr.toFixed(2)}).<br>
         ${ratioVerdict}

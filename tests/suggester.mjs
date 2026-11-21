@@ -1,4 +1,8 @@
+import { createContext, runInContext } from "node:vm";
 import { loadCalculator } from "./lib/page.mjs";
+import { buildOracle } from "./lib/oracle.mjs";
+import { GAME_SOURCE, closingBracket } from "./lib/game-source.mjs";
+import { oracleSpec, PAGE_MISSION_IDS } from "./lib/generators.mjs";
 import { check, heading, finish } from "./lib/report.mjs";
 
 const { calcReview, suggestSliders, missionGenreWeight, mulberry32,
@@ -138,6 +142,108 @@ heading(`no slider set in a ${GRID.length} by ${GRID.length} by ${GRID.length} s
       got >= best - 1e-9 && best > flat + 1e-9,
       `suggester ${got}, sweep ${best}, every slider at 100 ${flat}`);
   }
+}
+
+const oracle = buildOracle();
+const shareContext = createContext({});
+{
+  const anchor = "UI._getSelectedFeaturePercentages=function(";
+  const at = GAME_SOURCE.indexOf(anchor);
+  if (at < 0 || GAME_SOURCE.indexOf(anchor, at + 1) >= 0) throw new Error(`codeNw.js should hold one ${anchor}`);
+  const fn = GAME_SOURCE.indexOf("function", at);
+  const body = GAME_SOURCE.slice(fn, closingBracket(GAME_SOURCE, GAME_SOURCE.indexOf("{", fn), "{", "}") + 1);
+  runInContext("Array.prototype.sum=function(){var s=0;for(var i=0;i<this.length;i++)s+=this[i];return s};" +
+    "var UI={};UI._getSelectedSliderValues=function(){return __vals};UI._getSelectedFeaturePercentages=" + body + ";",
+    shareContext);
+}
+const gameShares = (values) =>
+  JSON.parse(runInContext(`__vals=[${values.join(",")}];JSON.stringify(UI._getSelectedFeaturePercentages())`, shareContext));
+
+function evenOutput(sliders) {
+  let D = 0, T = 0;
+  for (const stage of STAGES) {
+    const idx = PAGE_MISSION_IDS.map((id, i) => i).filter((i) => (i < 3 ? 1 : i < 6 ? 2 : 3) === stage);
+    const shares = gameShares(idx.map((i) => sliders[PAGE_MISSION_IDS[i]] ?? 0));
+    idx.forEach((i, j) => {
+      D += shares[j] * oracle.data.missions[i].designFactor;
+      T += shares[j] * oracle.data.missions[i].technologyFactor;
+    });
+  }
+  return { D, T };
+}
+
+function gameQuality(topic, genre, second, sliders, D, T) {
+  const p = { ...BASE, topic, genre, second, sliders, D, T, lastTopScore: 0 };
+  return oracle.rate(oracleSpec(p, 1), () => 0.5).s;
+}
+const balanceTerm = (topic, genre, second, sliders) => {
+  const { D, T } = evenOutput(sliders);
+  return Math.round((gameQuality(topic, genre, second, sliders, D, T) - gameQuality(topic, genre, second, sliders, 0, 0)) * 10);
+};
+
+const GUIDE_SETS = {
+  RPG: [[0, 100, 100], [100, 100, 0], [100, 25, 0]],
+  Strategy: [[100, 25, 0], [0, 25, 100], [25, 100, 33]],
+  Adventure: [[0, 100, 100], [100, 0, 0], [100, 25, 0]],
+  Casual: [[0, 100, 0], [66, 100, 0], [0, 25, 100]],
+  Simulation: [[100, 25, 0], [0, 25, 100], [0, 100, 25]],
+  Action: [[100, 25, 0], [0, 25, 100], [0, 100, 25]],
+};
+
+heading("the suggester leans the time toward the golden ratio, judged by codeNw.js at an even output");
+{
+  const topic = TOPICS_BY_ID.get("Fantasy");
+  for (const [genre, triples] of Object.entries(GUIDE_SETS)) {
+    const guide = {};
+    STAGES.forEach((stage, i) => MISSIONS_BY_STAGE[stage].forEach((m, j) => { guide[m.id] = triples[i][j]; }));
+    const mine = suggestSliders(genre, null, topic);
+    const got = balanceTerm(topic.id, genre, null, mine);
+    const want = balanceTerm(topic.id, genre, null, guide);
+    const focus = quality(topic.id, genre, null, mine);
+    check(`Fantasy / ${genre}: balance ${got / 10} against ${want / 10} for the guides' set, focus ${focus.toFixed(2)}`,
+      got >= want && Math.abs(focus - 0.2) < 1e-9, `suggester ${got / 10}, guide ${want / 10}, focus ${focus}`);
+  }
+
+  const seen = new Set();
+  let mineBonus = 0, flatBonus = 0, total = 0;
+  const worse = [];
+  for (const c of COMBOS) {
+    const topic = TOPICS_BY_ID.get(c.topic);
+    const key = shapeKey(topic, c.genre, c.second) + "#" + c.genre + "+" + c.second;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    const flat = {};
+    for (const m of MISSIONS) flat[m.id] = missionGenreWeight(m, c.genre, c.second, topic) >= 0.9 ? 100 : 0;
+    const got = balanceTerm(c.topic, c.genre, c.second, suggestSliders(c.genre, c.second, topic));
+    const base = balanceTerm(c.topic, c.genre, c.second, flat);
+    total++;
+    if (got > 0) mineBonus++;
+    if (base > 0) flatBonus++;
+    if (got < base) worse.push(`${c.topic}/${c.genre}${c.second ? "+" + c.second : ""}: ${got / 10} vs ${base / 10}`);
+  }
+  check(`on ${total} genre pairings the +0.1 is paid ${mineBonus} times, against ${flatBonus} with every 0.9 mission at 100`,
+    worse.length === 0 && mineBonus > flatBonus, worse.slice(0, 8).join("\n"));
+}
+
+heading("every suggested share stays 2 points clear of the lines the game judges it by");
+{
+  const close = [];
+  for (const c of COMBOS) {
+    const topic = TOPICS_BY_ID.get(c.topic);
+    const sug = suggestSliders(c.genre, c.second, topic);
+    for (const stage of STAGES) {
+      const ms = MISSIONS_BY_STAGE[stage];
+      const shares = gameShares(ms.map((m) => sug[m.id]));
+      ms.forEach((m, j) => {
+        const w = missionGenreWeight(m, c.genre, c.second, topic);
+        const lines = w >= 0.9 ? [20, 40] : w < 0.8 ? [40] : [];
+        if (lines.some((l) => Math.abs(shares[j] - l) < 2)) close.push(`${c.topic}/${c.genre}: ${m.id} at ${shares[j].toFixed(2)}`);
+        if (![0, 25, 50, 75, 100].includes(sug[m.id])) close.push(`${c.topic}/${c.genre}: ${m.id} slider ${sug[m.id]}`);
+      });
+    }
+  }
+  check(`${COMBOS.length} pairings, every slider a quarter step and every share clear`, close.length === 0,
+    close.slice(0, 8).join("\n"));
 }
 
 finish();

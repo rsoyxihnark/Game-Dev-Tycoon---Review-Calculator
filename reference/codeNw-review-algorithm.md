@@ -1061,6 +1061,9 @@ The feature bonus is added after `Missions.getGeneralFactor` has already been ap
 never multiplied by it. What scales the feature bonus is the time share rule, and what scales
 the whole total is the topic to genre weight.
 
+Another comment there gives Action with RPG and Action with Casual a target of 1.24. The blend is
+`(2*first + second)/3`, so those two are 1.400 and 1.367.
+
 The page itself is damaged where it matters most. Its Technical Expertise section has lost the
 line for a small game, which now reads as a fragment, and the AAA formula after "An AAA game
 has" is simply missing.
@@ -1107,6 +1110,17 @@ and nothing weighted under 0.8 above 40. Six for six on the maximum focus bonus,
 what makes the Success Guide's Strategy set, forgetting World Design, the outlier rather than
 the norm.
 
+Those sets also lean the time toward each genre's golden ratio, which putting every 0.9 mission
+at 100 does not. Take an even output, Design and Technology being each share times the mission's
+own `designFactor` and `technologyFactor`, and `Reviews.rateGame` pays the balance `+0.1` on the
+guide's RPG, Strategy, Adventure, Casual and Simulation sets, while every 0.9 mission at 100
+earns it only for RPG, Adventure and Casual. Action misses the bonus either way, but the guide's
+set leaves it 29.6 percent off and clear of the `-0.1`, where every 0.9 mission at 100 is 67.3
+percent off and pays it. The calculator's suggester now searches the quarter steps
+0, 25, 50, 75 and 100 for the full focus bonus first and that lean second, keeping every share
+2 points clear of the 20 and 40 percent lines, and at that even output the `+0.1` is paid on 210
+of the 235 distinct genre pairings, against 72 with every 0.9 mission at 100.
+
 A comment under it writes three mission ratios backwards. It gives Engine and AI as T/D 8:2,
 which is right, and then Gameplay and Story/Quests as 8:2 and Dialogues as 9:1 in the same
 sentence. Those three are 2:8, 2:8 and 1:9. The advice around them, to lean towards
@@ -1145,6 +1159,8 @@ and three pieces of spam. Of those 84, these are wrong:
   beating your own last score. Both feed the base score, and the topic weight multiplies the
   points the game generates on top of that, so they are two of the levers that raise the
   score being compared.
+- One has a single expert on two missions opening the 11 out of 10. Each `flags.expert` names
+  one mission and the count needs that mission's own lead to carry it, so it takes two experts.
 - One asks whether a custom console's genre multipliers are random. They are not: they come
   out of the game log by the rule above.
 - One has the strange-combinations trend paying 1.2 for anything that is not a great
@@ -1182,6 +1198,8 @@ looking at a 1.0 pair. Space with Adventure, asked about as a pair that does not
 - `slider-boundary.mjs` sweeps every slider triple that lands exactly on a focus threshold.
 - `suggester.mjs` scores the slider suggester's pick with the game's own review code and
   requires that no other whole-game slider strategy, and no point in a slider sweep, beats it.
+  At an even output it also has the game judge the pick's balance, which must match the guides'
+  six sets and never fall below every 0.9 mission at 100.
 - `self-contained.mjs` loads the page in a browser with the network off, then puts it into the
   states a player can reach that once broke it: every genre or audience locked, a saved form
   state of the wrong shape, an in-game month or week typed past its limit.
