@@ -599,7 +599,7 @@
 (function(){
 "use strict";
 
-const APP_VERSION = "1.1.0";
+const APP_VERSION = "1.1.1";
 
 const TOPSCORE_MAX = 10000;
 
@@ -1317,39 +1317,60 @@ function suggestSliders(genre, second, topic){
   return out;
 }
 
-const SUGGEST_STEPS = [0, 25, 50, 75, 100];
-const SUGGEST_MARGIN = 2;
-const SUGGEST_BAND = 5;
-const SUGGEST_TRIPLES = SUGGEST_STEPS
-  .flatMap(a => SUGGEST_STEPS.flatMap(b => SUGGEST_STEPS.map(c => [a, b, c])))
-  .filter(v => Math.max(...v) === 100)
-  .map(v => {
-    const sum = v[0] + v[1] + v[2];
-    return { v, sh: v.map(x => x/(sum/70) + 10) };
-  });
+const SUGGEST_BIN = 0.25;
+const SUGGEST_BINS = Math.round(100 / SUGGEST_BIN) + 1;
 const SUGGEST_MEMO = new Map();
 
 function stageSliderOptions(ms, ws){
-  const opts = [];
-  for(const c of SUGGEST_TRIPLES){
-    let good = 0, forgot = 0, odd = 0, margin = Infinity, tech = 0, design = 0, fit = 0;
+  const kind = ws.map(w => w >= 0.9 ? 2 : w < 0.8 ? 1 : 0);
+  const slots = 16 * SUGGEST_BINS;
+  const bestMargin = new Float64Array(slots).fill(-1);
+  const bestNice = new Int32Array(slots);
+  const bestCode = new Int32Array(slots).fill(-1);
+  const bestTech = new Float64Array(slots), bestDesign = new Float64Array(slots);
+  const v = [0, 0, 0];
+  for(v[0] = 0; v[0] <= 100; v[0]++) for(v[1] = 0; v[1] <= 100; v[1]++) for(v[2] = 0; v[2] <= 100; v[2]++){
+    const sum = v[0] + v[1] + v[2];
+    if(sum === 0) continue;
+    let good = 0, forgot = 0, odd = 0, margin = 100, tech = 0, design = 0, nice = 0, top = 0;
     for(let i = 0; i < 3; i++){
-      const sh = c.sh[i], w = ws[i];
-      if(w >= 0.9){
-        margin = Math.min(margin, Math.abs(sh - 40), Math.abs(sh - 20));
-        if(sh >= 40) good++;
-        if(sh <= 20) forgot++;
-      } else if(w < 0.8){
-        margin = Math.min(margin, Math.abs(sh - 40));
-        if(sh >= 40) odd++;
+      const x = v[i]/(sum/70) + 10;
+      if(kind[i] === 2){
+        margin = Math.min(margin, Math.abs(x - 40), Math.abs(x - 20));
+        if(x >= 40) good++;
+        if(x <= 20) forgot++;
+      } else if(kind[i] === 1){
+        margin = Math.min(margin, Math.abs(x - 40));
+        if(x >= 40) odd++;
       }
-      tech += sh * ms[i].t;
-      design += sh * ms[i].d;
-      fit += sh * w;
+      tech += x * ms[i].t;
+      design += x * ms[i].d;
+      if(v[i] !== 0 && v[i] !== 100) nice++;
+      if(v[i] > top) top = v[i];
     }
-    if(odd === 0 && margin >= SUGGEST_MARGIN) opts.push({ v: c.v, good, forgot, tech, design, fit });
+    if(odd || margin < 1e-6) continue;
+    if(top !== 100) nice += 10;
+    const slot = (good*4 + forgot)*SUGGEST_BINS + Math.round(tech / SUGGEST_BIN);
+    if(bestCode[slot] < 0 || margin > bestMargin[slot] + 1e-9 ||
+       (margin > bestMargin[slot] - 1e-9 && nice < bestNice[slot])){
+      bestMargin[slot] = margin; bestNice[slot] = nice;
+      bestCode[slot] = v[0]*10201 + v[1]*101 + v[2];
+      bestTech[slot] = tech; bestDesign[slot] = design;
+    }
   }
-  return opts;
+  const groups = [];
+  for(let sig = 0; sig < 16; sig++){
+    const opts = [];
+    for(let b = 0; b < SUGGEST_BINS; b++){
+      const slot = sig*SUGGEST_BINS + b;
+      if(bestCode[slot] < 0) continue;
+      const code = bestCode[slot];
+      opts.push({ v: [Math.floor(code/10201), Math.floor(code/101) % 101, code % 101],
+        tech: bestTech[slot], design: bestDesign[slot], margin: bestMargin[slot], nice: bestNice[slot] });
+    }
+    if(opts.length) groups.push({ good: sig >> 2, forgot: sig & 3, opts });
+  }
+  return groups;
 }
 
 function balanceMissPct(design, tech, gr){
@@ -1357,18 +1378,32 @@ function balanceMissPct(design, tech, gr){
 }
 
 function bestSliderSets(stages, gr){
-  const [o1, o2, o3] = stages.map(s => stageSliderOptions(s.ms, s.ws));
-  let best = null;
-  for(const a of o1) for(const b of o2) for(const c of o3){
+  const [g1, g2, g3] = stages.map(s => stageSliderOptions(s.ms, s.ws));
+  let bestQ = -Infinity;
+  const combos = [];
+  for(const a of g1) for(const b of g2) for(const c of g3){
     const good = a.good + b.good + c.good;
     const q = (good >= 2 ? 20 : good === 1 ? 10 : -15) - 15*(a.forgot + b.forgot + c.forgot);
-    if(best && q < best.q) continue;
-    const miss = balanceMissPct(a.design + b.design + c.design, a.tech + b.tech + c.tech, gr);
-    const band = Math.floor(miss / SUGGEST_BAND);
-    const fit = a.fit + b.fit + c.fit;
-    const better = !best || q > best.q || band < best.band ||
-      (band === best.band && (fit > best.fit + 1e-9 || (fit > best.fit - 1e-9 && miss < best.miss - 1e-9)));
-    if(better) best = { q, band, fit, miss, sets: [a.v, b.v, c.v] };
+    if(q > bestQ){ bestQ = q; combos.length = 0; }
+    if(q === bestQ) combos.push([a, b, c]);
+  }
+  let best = null;
+  for(const [a, b, c] of combos){
+    const pairs = new Map();
+    for(const x of a.opts) for(const y of b.opts){
+      const bin = Math.round((x.tech + y.tech) / SUGGEST_BIN);
+      const margin = Math.min(x.margin, y.margin), nice = x.nice + y.nice;
+      const cur = pairs.get(bin);
+      if(!cur || margin > cur.margin + 1e-9 || (margin > cur.margin - 1e-9 && nice < cur.nice))
+        pairs.set(bin, { x, y, tech: x.tech + y.tech, design: x.design + y.design, margin, nice });
+    }
+    for(const pr of pairs.values()) for(const z of c.opts){
+      const miss = Math.round(balanceMissPct(pr.design + z.design, pr.tech + z.tech, gr) * 10);
+      const margin = Math.min(pr.margin, z.margin), nice = pr.nice + z.nice;
+      const better = !best || miss < best.miss || (miss === best.miss &&
+        (margin > best.margin + 1e-9 || (margin > best.margin - 1e-9 && nice < best.nice)));
+      if(better) best = { miss, margin, nice, sets: [pr.x.v, pr.y.v, z.v] };
+    }
   }
   return best.sets;
 }
@@ -4117,7 +4152,7 @@ function renderSug(){
         Of all the slider sets that earn the full focus bonus, this tab picks the one whose time split lands closest to the genre's golden ratio.
       </p>
       <p class="text-xs text-[#e0af68] mt-2">
-        Every value is 0, 25, 50, 75 or 100, so you can set it by eye, and no share it gives sits within 2 points of the 20&nbsp;% or 40&nbsp;% line.
+        Values can be any whole number from 0 to 100, as the in-game slider allows, so some sit close to the 20&nbsp;% or 40&nbsp;% line: set them exactly.
       </p>
       ${hasOverrides ? `<p class="text-xs text-[#7aa2f7] mt-2">★ <b>${t.id}</b> overrides per-mission weights via <code>missionOverrides</code>: values shown reflect the overrides.</p>` : ""}
     </div>

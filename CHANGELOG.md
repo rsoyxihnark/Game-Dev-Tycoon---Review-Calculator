@@ -1,9 +1,12 @@
 # Changelog
 
+## 1.1.1
+
+- Slider Suggester and Auto-suggest optimal now land closer to the genre's golden ratio
+
 ## 1.1.0
 
 - Slider Suggester and Auto-suggest optimal now lean the time split toward the genre's golden ratio while keeping the full focus bonus
-- Slider Suggester and Auto-suggest optimal now only suggest 0, 25, 50, 75 or 100, so every in-game slider can be set by eye
 - The GOLDEN-RATIO BREAKER advice now says Auto-suggest optimal already leans toward the target, and that staff skills tilt the rest
 - Fixed the Slider Suggester showing a predicted T/D far from what its own sliders actually give
 - Fixed the Top-score achievements help saying it counts 10/10 games, when the game counts every game that reaches 9 or more

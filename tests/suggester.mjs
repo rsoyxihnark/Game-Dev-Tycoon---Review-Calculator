@@ -225,9 +225,9 @@ heading("the suggester leans the time toward the golden ratio, judged by codeNw.
     worse.length === 0 && mineBonus > flatBonus, worse.slice(0, 8).join("\n"));
 }
 
-heading("every suggested share stays 2 points clear of the lines the game judges it by");
+heading("every suggested slider is a whole value the game takes, and no share sits on a line");
 {
-  const close = [];
+  const off = [];
   for (const c of COMBOS) {
     const topic = TOPICS_BY_ID.get(c.topic);
     const sug = suggestSliders(c.genre, c.second, topic);
@@ -237,13 +237,13 @@ heading("every suggested share stays 2 points clear of the lines the game judges
       ms.forEach((m, j) => {
         const w = missionGenreWeight(m, c.genre, c.second, topic);
         const lines = w >= 0.9 ? [20, 40] : w < 0.8 ? [40] : [];
-        if (lines.some((l) => Math.abs(shares[j] - l) < 2)) close.push(`${c.topic}/${c.genre}: ${m.id} at ${shares[j].toFixed(2)}`);
-        if (![0, 25, 50, 75, 100].includes(sug[m.id])) close.push(`${c.topic}/${c.genre}: ${m.id} slider ${sug[m.id]}`);
+        if (lines.some((l) => Math.abs(shares[j] - l) < 1e-6)) off.push(`${c.topic}/${c.genre}: ${m.id} at ${shares[j]}`);
+        if (!Number.isInteger(sug[m.id]) || sug[m.id] < 0 || sug[m.id] > 100) off.push(`${c.topic}/${c.genre}: ${m.id} slider ${sug[m.id]}`);
       });
     }
   }
-  check(`${COMBOS.length} pairings, every slider a quarter step and every share clear`, close.length === 0,
-    close.slice(0, 8).join("\n"));
+  check(`${COMBOS.length} pairings, every slider a whole number from 0 to 100 and no share on a 20 or 40 line`,
+    off.length === 0, off.slice(0, 8).join("\n"));
 }
 
 finish();

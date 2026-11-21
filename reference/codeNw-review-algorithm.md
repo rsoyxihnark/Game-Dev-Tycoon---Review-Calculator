@@ -1116,10 +1116,12 @@ own `designFactor` and `technologyFactor`, and `Reviews.rateGame` pays the balan
 guide's RPG, Strategy, Adventure, Casual and Simulation sets, while every 0.9 mission at 100
 earns it only for RPG, Adventure and Casual. Action misses the bonus either way, but the guide's
 set leaves it 29.6 percent off and clear of the `-0.1`, where every 0.9 mission at 100 is 67.3
-percent off and pays it. The calculator's suggester now searches the quarter steps
-0, 25, 50, 75 and 100 for the full focus bonus first and that lean second, keeping every share
-2 points clear of the 20 and 40 percent lines, and at that even output the `+0.1` is paid on 210
-of the 235 distinct genre pairings, against 72 with every 0.9 mission at 100.
+percent off and pays it. The calculator's suggester searches every whole slider value from 0 to
+100, the range the game's focus sliders take, for the full focus bonus first and the closest
+balance second, keeping no share exactly on a 20 or 40 percent line. At that even output the
+`+0.1` is paid on 224 of the 235 distinct genre pairings, Action included, against 72 with every
+0.9 mission at 100. Held to the quarter steps 0, 25, 50, 75 and 100 instead it reaches 210, so
+the coarser steps cost accuracy.
 
 A comment under it writes three mission ratios backwards. It gives Engine and AI as T/D 8:2,
 which is right, and then Gameplay and Story/Quests as 8:2 and Dialogues as 9:1 in the same
