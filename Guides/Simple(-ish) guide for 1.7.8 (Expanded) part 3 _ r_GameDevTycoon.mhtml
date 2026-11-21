@@ -370,8 +370,7 @@ ss=3D"h-[40px] absolute top-0 end-0">
 mplate></games-section-badge-wrapper>
     </div>
  =20
-    <!----></faceplate-tracker><span slot=3D"content">Open navigation</span=
->
+    <!----></faceplate-tracker><span slot=3D"content">Open navigation</span>
   </rpl-tooltip><faceplate-tracker class=3D"nd:visible flex items-center" s=
 ource=3D"nav" action=3D"click" noun=3D"reddit_logo">
     <rpl-tooltip style=3D"--rpl-z-index-tooltip: 1001;" class=3D"nd:visible=
@@ -1010,79 +1009,7 @@ ic_fck3J4" src=3D"concat:U4kUf3fOxf" loading=3D"eager" data-prefix=3D"en-US=
    =20
        =20
      =20
-  <!----></faceplate-loader><reddit-chat-host country=3D"TR" is-image-obser=
-vability-enabled=3D"" preload=3D"" resizable=3D"" class=3D"block min-w-0" s=
-tyle=3D"display: none;">
-       =20
-    <template>
-   =20
-          <div class=3D"rs-app-container isolate h-full">
-    <rs-app class=3D"w-full h-full" embedded=3D"" locale=3D"en-US" token=3D=
-"{&quot;token&quot;:&quot;eyJhbGciOiJSUzI1NiIsImtpZCI6IlNIQTI1NjpzS3dsMnlsV=
-0VtMjVmcXhwTU40cWY4MXE2OWFFdWFyMnpLMUdhVGxjdWNZIiwidHlwIjoiSldUIn0.eyJpc3Mi=
-OiJodHRwczovL3d3dy5yZWRkaXQuY29tIiwic3ViIjoidXNlciIsImV4cCI6MTc5MjQyNzI0MC4=
-3MjI3MDksImlhdCI6MTc5MjM0MDg0MC43MjI3MDksImp0aSI6ImdUTERXXzRYSmxUWmFOOWkzMn=
-VQV1dkQ2ZhNzhzUSIsImNpZCI6IjBSLVdBTWh1b28tTXlRIiwibGlkIjoidDJfMWQxcmUzZG0iL=
-CJhaWQiOiJ0Ml8xZDFyZTNkbSIsImF0IjoxLCJsY2EiOjE1MjYyMjczMzI3MDEsInNjcCI6ImVK=
-eGtrVkhPM0RBSWhPX0NzMF9RcTFSVjVkaGtGelUyRWVDczl2WVZXWk9OOUw4TjhHVU1rOS1RcTJ=
-JbGctUktNRmRJZ0MzVEJnbDJJdS1Yd3FPZlJPODhlc0dHM1JRU0ZNRmE2WlRUWTkweUNTUjRraH=
-JMR3hKUXhXNWtMamM2c09XZUh3Z0pHdGZDZmFYSHBVMW9HY2JpZG8xcldEV3VHMDlxN3RXNGRyY=
-nB3dmJFLUdabnRTa1Z0X1dqVFBLNlV2a1VMX3JuTjdXM2p1VzdfUzUwWk1PR3F2bUIzcGxKQ080=
-c2Zycm13OTlUazFGc0NGYTE5M2FTT3BaMjNxNWowU0swT0hkODF2UFhaakl1cDJsNVp2dDExeTh=
-odzF1ZTF6RHFBR2FzTVk4eXhwRjF6Szg2Z01ZVkpSdExFTjlHSUZjdWZfMlhZTDgyX1RtNGZlS0=
-g3MGJjOVliZm1vRjZMa0djLWlWa0NIXy1Ed0FRMWVUUiIsInJjaWQiOiJENW1hQmZDQzdCTGtSU=
-FJLOUE4LXRFaGJjVWdlM2hZdzdva2c4WXFDNGpZIiwiZmxvIjoyfQ.et0dPSVVbBwMjIV6zHa7X=
-gfm479k6MoudAPX2aSrF0n6nIWWNfot6_nZAbwMUWvwmt88zQcRw7iyOdnLbLzBhTJuRovPjwoH=
-VwMOih6740qqKajQV1KZfgZSIRbicY5VWurIEvgg-s7BBFgrR894IgUTG8sIbpofEf7XB9FO2Bp=
-a8U91lJKDikJH3Nu3ulzIEGpNUUD2GlXem1VFjDmARLGByT9BRVYT5pIDZgS4cEvu1XZnpCQ8UJ=
-t4hW6zDauqyPj_a5R0Fkc4zN9Dg3aLaiI5AvQ0905zvbRBu7t-5ZFtyIavwyx5kHSObwhdbBxpD=
-gqn-WywcAyO603ijY25Dg&quot;,&quot;expires&quot;:1792427240000}" token-refre=
-sh-url=3D"/svc/shreddit/token" telemetry-event-delivery-method=3D"propagati=
-on" telemetry-event-app-name=3D"web3x" correlation-id=3D"2ce5ddaa-016c-4385=
--92e7-ade24398cd4e" session-id=3D"qbrlrjrkjrflebbgal" data-faceplate-tracki=
-ng-context=3D"{&quot;correlation_id&quot;:&quot;2ce5ddaa-016c-4385-92e7-ade=
-24398cd4e&quot;}" blockedusers=3D"t2_6l4z3,t2_55mv77ab,t2_13rg90sops,t2_qwu=
-apbl6,t2_1ohrou59ge,t2_1dd1tcwb9q,t2_1po73gqh3w" device=3D"desktop" backgro=
-und=3D"true" initial-ui-state=3D"closed">
-      <rs-matrix-client uri=3D"https://matrix.redditspace.com"></rs-matrix-=
-client>
-      <reddit-chat-gql-client></reddit-chat-gql-client>
-      <rs-dynamic-configs config=3D"{&quot;web_chat_large_group_threshold&q=
-uot;:100,&quot;chat_pinned_room_limit&quot;:5}"></rs-dynamic-configs>
-      <rs-experiments config=3D"{&quot;web_chat_draft_query_param_ks&quot;:=
-&quot;enabled&quot;,&quot;web_chat_image_preupload&quot;:&quot;enabled&quot=
-;,&quot;web_chat_send_button_animation&quot;:&quot;enabled&quot;,&quot;web_=
-chat_timeline_animation&quot;:&quot;enabled&quot;,&quot;web_chat_new_loadin=
-g_shimmers&quot;:&quot;enabled&quot;,&quot;web_chat_report_flow_v4&quot;:&q=
-uot;enabled&quot;,&quot;web_q3_a11y_improvement&quot;:&quot;enabled&quot;,&=
-quot;web_chat_rpl_hovercard&quot;:&quot;enabled&quot;,&quot;web_chat_expand=
-ed_composer&quot;:&quot;enabled&quot;,&quot;web_chat_reduce_event_fetching&=
-quot;:&quot;enabled&quot;,&quot;web_chat_reduce_event_fetching_v2&quot;:&qu=
-ot;enabled&quot;,&quot;web_chat_keep_image_uploads&quot;:&quot;enabled&quot=
-;,&quot;web_chat_media_upload_unload_warning&quot;:&quot;enabled&quot;,&quo=
-t;web_chat_no_aggregated_relations_filter&quot;:&quot;enabled&quot;,&quot;w=
-eb_chat_prevent_db_deletion&quot;:&quot;enabled&quot;,&quot;shreddit_human_=
-verification_m1&quot;:&quot;enabled&quot;,&quot;web_chat_loginless_auth&quo=
-t;:&quot;enabled&quot;,&quot;web_chat_db_pagination&quot;:&quot;enabled&quo=
-t;}"></rs-experiments>
-      <rs-history track-change=3D"" mode=3D"memory" pseudo-origin=3D"https:=
-//chat.reddit.com" initial-path=3D"/room/!wauqgS2iTs-lRVn5Ygtw6Q%253Areddit=
-.com"></rs-history>
-     =20
-    <rs-current-user id=3D"t2_1d1re3dm" display-name=3D"17O8" nsfw=3D"true"=
- preferences=3D"{&quot;language&quot;:&quot;en&quot;,&quot;isNsfwContentSho=
-wn&quot;:true,&quot;isNsfwMediaBlocked&quot;:false,&quot;isNightModeEnabled=
-&quot;:true}" moderated-subreddits=3D"{}"></rs-current-user>
-   <rs-sentry-client dsn=3D"https://112489a1da354154aa9116028b27ed7b@error-=
-tracking.reddit.com/o418887/4504057396854784" environment=3D"production" re=
-lease=3D"1.0.0-v2516.sha.476c9ca" user=3D"{&quot;id&quot;:&quot;t2_1d1re3dm=
-&quot;}" embedded=3D""></rs-sentry-client>
-    </rs-app>
-  </div>
-       =20
-    </template>
- =20
-      </reddit-chat-host>
+  <!----></faceplate-loader>
   </div>
       </reddit-header-large>
      =20
@@ -1110,8 +1037,7 @@ PsidQ6K,Ce4RJitxvT,CefhySy2Qe,Chi1QBgkSt,CJowXoJNim,CMcoPgXNg9,CoWeaNg06u,C=
 xWsK3g24C,D3j26I9nFT,d8hYRG--8d,DrL81Zc6l5,DVU-k27NnI,DW1uPpJWKs,Dyg3q1gB6W=
 ,Dyy3mu_xgA,DZDBx0nCO6,DZjNyKcn1L,E1n31MDIvk,e2BBVaCDgh,HpUs05vQlH,iuk9o3jZ=
 tz,MCRen0IqK2,https://www.redditstatic.com/shreddit/human-verification-dial=
-og-client-css-DzNZyEjU.css" loading=3D"programmatic" data-prefix=3D"en-US/"=
->
+og-client-css-DzNZyEjU.css" loading=3D"programmatic" data-prefix=3D"en-US/">
    =20
   <!----></faceplate-loader>
     <faceplate-partial name=3D"HumanVerificationDialog_yxJWB7" src=3D"/svc/=
@@ -1245,8 +1171,7 @@ w.w3.org/2000/svg">
     </svg></span>
      =20
     </span>
-    <faceplate-screen-reader-content>Close</faceplate-screen-reader-content=
->
+    <faceplate-screen-reader-content>Close</faceplate-screen-reader-content>
     </button>
   <ac-track nonce=3D"8cnP3NbZcIYkZGWbAIYGiAP7" san=3D"repost_dialog|click|c=
 lose" trigger-elem=3D"previous"></ac-track>
@@ -1324,8 +1249,7 @@ hreddit/partial/XpstSr/crosspost-dialog-results?params=3Dprefix%3Dr%26subre=
 ddit%3DGameDevTycoon%26postId%3D1otq1e4%26slug%3Dsimpleish_guide_for_178_ex=
 panded_part_3&amp;query=3D%7B%22seeker-session%22%3A%22true%22%7D&amp;sig=
 =3Dv1.-nEInS49gisL7RgF7wAoIWTcdC-3L_RyJBo9yZmyl8U" loading=3D"programmatic"=
- render-mode=3D"contents" class=3D"relative min-h-0 flex-1 overflow-hidden"=
->
+ render-mode=3D"contents" class=3D"relative min-h-0 flex-1 overflow-hidden">
      =20
  =20
         <div class=3D"absolute inset-0 box-border overflow-x-hidden xs:px-m=
@@ -1803,8 +1727,7 @@ gxeQGjI,DKPwz0QUFb,DMzo1_COVH,DNvKdsxBq3,DoEyFGWXz5,DPlAdZ3V0q,DRey3LzQNF,D=
 RrIIDUKo0,DtuahnXS9j,DVU-k27NnI,DW1uPpJWKs,Dyg3q1gB6W,DYVPDcxnXL,Dyy3mu_xgA=
 ,DZ6D5NldfA,DZDBx0nCO6,DZUg4DnZpL,e2BBVaCDgh,eLO2ncy0Gx,FGaj3UHpLV,gSoPAEvZ=
 2i,HpUs05vQlH,iuk9o3jZtz,KNiijef4kE,MCRen0IqK2,Qg8V8ADaZa,rsD7a9ia2I,TyOMCv=
-mXLt,vN_1bAaUaE,VsyX7T9puZ" loading=3D"programmatic" data-prefix=3D"en-US/"=
->
+mXLt,vN_1bAaUaE,VsyX7T9puZ" loading=3D"programmatic" data-prefix=3D"en-US/">
    =20
   <!----></faceplate-loader>
     <faceplate-partial name=3D"CommunityStatusEditModal_cD18X7" src=3D"/svc=
@@ -1929,8 +1852,7 @@ rc=3D"concat:NI-ez5v8Qh" loading=3D"eager" data-prefix=3D"en-US/">
 4kEK9VR4I,Bbpnxo4uQB,BiXT3qRyAP,BMMtFuh02L,BP0RnCvxeY,BszMto8jkT,BvOWmaNPEJ=
 ,C_xPsidQ6K,Ce4RJitxvT,CefhySy2Qe,Chi1QBgkSt,CMcoPgXNg9,CoWeaNg06u,CxWsK3g2=
 4C,d8hYRG--8d,DVU-k27NnI,DW1uPpJWKs,Dyg3q1gB6W,Dyy3mu_xgA,DZDBx0nCO6,e2BBVa=
-CDgh,HpUs05vQlH,MCRen0IqK2" loading=3D"programmatic" data-prefix=3D"en-US/"=
->
+CDgh,HpUs05vQlH,MCRen0IqK2" loading=3D"programmatic" data-prefix=3D"en-US/">
    =20
   <!----></faceplate-loader>
     <faceplate-partial name=3D"DsaTransparencyModal_rt7cKM" src=3D"/svc/shr=
@@ -2232,45 +2154,45 @@ wW,xSHtTKKUIx" loading=3D"eager" data-prefix=3D"en-US/">
 mpleish_guide_for_178_expanded_part_3/" content-href=3D"https://www.reddit.=
 com/r/GameDevTycoon/comments/1otq1e4/simpleish_guide_for_178_expanded_part_=
 3/" view-context=3D"CommentsPage" comment-count=3D"5" award-count=3D"0" use=
-r-id=3D"t2_1d1re3dm" hide-awards-button=3D"" moderation-verdict=3D"" is-cro=
-sspostable=3D"" hide-share-menu-crosspost=3D"" uses-reddit-play-client-tab-=
-switching=3D"" is-embeddable=3D"" is-desktop-viewport=3D"" is-awardable=3D"=
-" share-button-ssr=3D"" show-full-content=3D"" user-logged-in=3D"" created-=
-timestamp=3D"2025-11-10T21:07:31.758000+0000" domain=3D"self.GameDevTycoon"=
- id=3D"t3_1otq1e4" post-title=3D"Simple(-ish) guide for 1.7.8 (Expanded) pa=
-rt 3" post-language=3D"en" post-type=3D"multi_media" score=3D"6" upvote-rat=
-io=3D"1" subreddit-id=3D"t5_2vru8" subreddit-prefixed-name=3D"r/GameDevTyco=
-on" author-id=3D"t2_sxhrw" author=3D"zioming" icon=3D"https://www.redditsta=
-tic.com/avatars/defaults/v2/avatar_default_4.png" data-expected-lcp=3D"" su=
-breddit-name=3D"GameDevTycoon" mod-tools-host=3D"" reduce-animations=3D"" i=
-tem-state=3D"UNMODERATED"><template shadowmode=3D"open"><!----> <slot name=
-=3D"full-post-link"></slot> <!--?lit$46225495$--> <slot name=3D"post-topper=
-"></slot> <slot name=3D"credit-bar"></slot> <!--?lit$46225495$--><!--?--> <=
-slot name=3D"ssr-post-content-header"> <div id=3D"content-tag-container" cl=
-ass=3D"flex justify-between gap-xs  px-md xs:px-0 "> <!--?lit$46225495$--><=
-shreddit-content-tags post-id=3D"t3_1otq1e4"><template shadowmode=3D"open">=
-<!----></template></shreddit-content-tags> <!--?lit$46225495$--> </div> </s=
-lot> <!--?lit$46225495$-->  <div class=3D"flex"> <div class=3D"flex flex-co=
-l grow max-w-full"> <!--?lit$46225495$--><slot name=3D"title"></slot> <!--?=
-lit$46225495$--><slot class=3D"pdp-flair-slot" name=3D"post-flair"></slot> =
-<slot name=3D"mod-content-state-indicators"></slot> <!--?lit$46225495$--> <=
-!--?lit$46225495$--> </div> <!--?lit$46225495$--><div><!--?lit$46225495$-->=
- <slot name=3D"thumbnail"></slot></div> </div> <!--?lit$46225495$--> <slot =
-name=3D"post-media-container" class=3D"xs:pt-md"></slot>  <!--?lit$46225495=
-$--><slot name=3D"text-body"></slot> <slot></slot> <!--?lit$46225495$--> <!=
---?lit$46225495$--> <!--?lit$46225495$--> <!--?lit$46225495$--> <slot name=
-=3D"post-archived-banner"></slot> <!--?lit$46225495$--><slot name=3D"post-r=
-emoved-banner"></slot> <!--?lit$46225495$-->  <slot name=3D"post-recovery-s=
-ection"></slot> <slot name=3D"mod-status"></slot> <!--?lit$46225495$--> <rp=
-l-action-bar class=3D"contents [&amp;_faceplate-loader]:contents" thing-id=
-=3D"t3_1otq1e4"> <div data-testid=3D"action-row" tabindex=3D"0" class=3D"sh=
-reddit-post-container flex flex-row items-center flex-nowrap justify-start =
-overflow-x-scroll scrollbar-hide overflow-y-hidden overscroll-x-contain xs:=
-overflow-x-hidden gap-sm h-2xl mt-lg px-md xs:px-0" aria-label=3D"Actions a=
-vailable for this post"> <!--?lit$46225495$--><!----><span class=3D"relativ=
-e leading-[0] "> <shreddit-vote-animations thing-id=3D"t3_1otq1e4" logged-i=
-n=3D"" reduce-animations=3D""><template shadowmode=3D"open"><!----><slot></=
-slot></template> <!--?lit$46225495$--><span rpl=3D"" class=3D"
+r-id=3D"t2_0" hide-awards-button=3D"" moderation-verdict=3D"" is-crossposta=
+ble=3D"" hide-share-menu-crosspost=3D"" uses-reddit-play-client-tab-switchi=
+ng=3D"" is-embeddable=3D"" is-desktop-viewport=3D"" is-awardable=3D"" share=
+-button-ssr=3D"" show-full-content=3D"" user-logged-in=3D"" created-timesta=
+mp=3D"2025-11-10T21:07:31.758000+0000" domain=3D"self.GameDevTycoon" id=3D"=
+t3_1otq1e4" post-title=3D"Simple(-ish) guide for 1.7.8 (Expanded) part 3" p=
+ost-language=3D"en" post-type=3D"multi_media" score=3D"6" upvote-ratio=3D"1=
+" subreddit-id=3D"t5_2vru8" subreddit-prefixed-name=3D"r/GameDevTycoon" aut=
+hor-id=3D"t2_sxhrw" author=3D"zioming" icon=3D"https://www.redditstatic.com=
+/avatars/defaults/v2/avatar_default_4.png" data-expected-lcp=3D"" subreddit=
+-name=3D"GameDevTycoon" mod-tools-host=3D"" reduce-animations=3D"" item-sta=
+te=3D"UNMODERATED"><template shadowmode=3D"open"><!----> <slot name=3D"full=
+-post-link"></slot> <!--?lit$46225495$--> <slot name=3D"post-topper"></slot=
+> <slot name=3D"credit-bar"></slot> <!--?lit$46225495$--><!--?--> <slot nam=
+e=3D"ssr-post-content-header"> <div id=3D"content-tag-container" class=3D"f=
+lex justify-between gap-xs  px-md xs:px-0 "> <!--?lit$46225495$--><shreddit=
+-content-tags post-id=3D"t3_1otq1e4"><template shadowmode=3D"open"><!----><=
+/template></shreddit-content-tags> <!--?lit$46225495$--> </div> </slot> <!-=
+-?lit$46225495$-->  <div class=3D"flex"> <div class=3D"flex flex-col grow m=
+ax-w-full"> <!--?lit$46225495$--><slot name=3D"title"></slot> <!--?lit$4622=
+5495$--><slot class=3D"pdp-flair-slot" name=3D"post-flair"></slot> <slot na=
+me=3D"mod-content-state-indicators"></slot> <!--?lit$46225495$--> <!--?lit$=
+46225495$--> </div> <!--?lit$46225495$--><div><!--?lit$46225495$--> <slot n=
+ame=3D"thumbnail"></slot></div> </div> <!--?lit$46225495$--> <slot name=3D"=
+post-media-container" class=3D"xs:pt-md"></slot>  <!--?lit$46225495$--><slo=
+t name=3D"text-body"></slot> <slot></slot> <!--?lit$46225495$--> <!--?lit$4=
+6225495$--> <!--?lit$46225495$--> <!--?lit$46225495$--> <slot name=3D"post-=
+archived-banner"></slot> <!--?lit$46225495$--><slot name=3D"post-removed-ba=
+nner"></slot> <!--?lit$46225495$-->  <slot name=3D"post-recovery-section"><=
+/slot> <slot name=3D"mod-status"></slot> <!--?lit$46225495$--> <rpl-action-=
+bar class=3D"contents [&amp;_faceplate-loader]:contents" thing-id=3D"t3_1ot=
+q1e4"> <div data-testid=3D"action-row" tabindex=3D"0" class=3D"shreddit-pos=
+t-container flex flex-row items-center flex-nowrap justify-start overflow-x=
+-scroll scrollbar-hide overflow-y-hidden overscroll-x-contain xs:overflow-x=
+-hidden gap-sm h-2xl mt-lg px-md xs:px-0" aria-label=3D"Actions available f=
+or this post"> <!--?lit$46225495$--><!----><span class=3D"relative leading-=
+[0] "> <shreddit-vote-animations thing-id=3D"t3_1otq1e4" logged-in=3D"" red=
+uce-animations=3D""><template shadowmode=3D"open"><!----><slot></slot></tem=
+plate> <!--?lit$46225495$--><span rpl=3D"" class=3D"
       rpl-vote-button-group p-0 button-shell overflow-visible font-semibold=
  flex items-center cursor-auto
       flex flex-row justify-center items-center h-xl font-semibold relative
@@ -2793,18 +2715,18 @@ erflow-menu" post-id=3D"t3_1otq1e4" author-id=3D"t2_sxhrw" author-name=3D"z=
 ioming" subreddit-id=3D"t5_2vru8" subreddit-prefixed-name=3D"r/GameDevTycoo=
 n" post-type=3D"multi_media" score=3D"6" comment-count=3D"5" permalink=3D"/=
 r/GameDevTycoon/comments/1otq1e4/simpleish_guide_for_178_expanded_part_3/" =
-post-view-context=3D"CommentsPage" current-user-id=3D"t2_1d1re3dm" is-logge=
-d-in=3D"" is-desktop-viewport=3D"" ama-state=3D"" ama-starts-at=3D"" ama-en=
-ds-at=3D"" should-render-follow-menu-item=3D"" is-post-awardable=3D"" shoul=
-d-render-award-menu-item=3D"" recommendation-context-json=3D"{}" translatio=
-n-state=3D"" data-faceplate-tracking-context=3D"{&quot;post&quot;:{&quot;id=
-&quot;:&quot;t3_1otq1e4&quot;,&quot;type&quot;:&quot;multi_media&quot;,&quo=
-t;score&quot;:6,&quot;number_comments&quot;:5},&quot;subreddit&quot;:{&quot=
-;id&quot;:&quot;t5_2vru8&quot;}}" award-count=3D"0" premium-ad-overflow-var=
-iant=3D"" item-state=3D"UNMODERATED"><template shadowmode=3D"open"><!----> =
-<div data-post-click-location=3D"overflow-button"> <!--?lit$46225495$--> <r=
-pl-dropdown placement=3D"bottom-end" class=3D"group/dropdown"><template sha=
-dowmode=3D"open"><!----> <rpl-popper part=3D"popper" exportparts=3D"
+post-view-context=3D"CommentsPage" current-user-id=3D"t2_0" is-logged-in=3D=
+"" is-desktop-viewport=3D"" ama-state=3D"" ama-starts-at=3D"" ama-ends-at=
+=3D"" should-render-follow-menu-item=3D"" is-post-awardable=3D"" should-ren=
+der-award-menu-item=3D"" recommendation-context-json=3D"{}" translation-sta=
+te=3D"" data-faceplate-tracking-context=3D"{&quot;post&quot;:{&quot;id&quot=
+;:&quot;t3_1otq1e4&quot;,&quot;type&quot;:&quot;multi_media&quot;,&quot;sco=
+re&quot;:6,&quot;number_comments&quot;:5},&quot;subreddit&quot;:{&quot;id&q=
+uot;:&quot;t5_2vru8&quot;}}" award-count=3D"0" premium-ad-overflow-variant=
+=3D"" item-state=3D"UNMODERATED"><template shadowmode=3D"open"><!----> <div=
+ data-post-click-location=3D"overflow-button"> <!--?lit$46225495$--> <rpl-d=
+ropdown placement=3D"bottom-end" class=3D"group/dropdown"><template shadowm=
+ode=3D"open"><!----> <rpl-popper part=3D"popper" exportparts=3D"
           popup:popper--popup,
           arrow:popper--arrow
         " flip=3D"" shift=3D"" safe-area=3D"" class=3D" hovercard " placeme=
@@ -2996,8 +2918,7 @@ me=3D"first-post-meaningful-paint"></faceplate-perfmark>
     </h1>
        =20
     <shreddit-post-flair slot=3D"post-flair" post-id=3D"t3_1otq1e4"><templa=
-te shadowmode=3D"open"><!----><slot></slot></template></shreddit-post-flair=
->
+te shadowmode=3D"open"><!----><slot></slot></template></shreddit-post-flair>
  =20
        =20
        =20
@@ -3130,8 +3051,7 @@ tor is enabled, render the sports status bar -->
        =20
          <rpl-dropdown class=3D"share-dropdown-menu relative" placement=3D"=
 bottom-start" trigger=3D"manual" hoist=3D"" slot=3D"ssr-share-button"><temp=
-late shadowmode=3D"open"><!----> <rpl-popper part=3D"popper" exportparts=3D=
-"
+late shadowmode=3D"open"><!----> <rpl-popper part=3D"popper" exportparts=3D"
           popup:popper--popup,
           arrow:popper--arrow
         " flip=3D"" shift=3D"" safe-area=3D"" class=3D" hovercard " placeme=
@@ -3600,19 +3520,18 @@ ot></slot></a></template></delegated-link>
       <shreddit-async-loader bundlename=3D"shreddit_post_overflow_menu"><te=
 mplate shadowmode=3D"open"><!----> <slot></slot> <slot name=3D"ready"></slo=
 t> <slot name=3D"error"></slot> </template>
-        <shreddit-post-overflow-menu current-user-id=3D"t2_1d1re3dm" is-des=
-ktop-viewport=3D"" is-logged-in=3D"" is-ad=3D"" ad-user-targeting-info=3D"{=
-&quot;adTransparencyEncodedData&quot;:&quot;GQgsABkVAgA=3D&quot;,&quot;gend=
-er&quot;:null,&quot;interests&quot;:null,&quot;locations&quot;:null,&quot;t=
-argetingCriteria&quot;:null}" is-pdp-ad=3D"" is-reportable-ad=3D"" post-id=
-=3D"t3_1x580if" impression-id=3D"6242291462151616071" author-name=3D"Elemen=
-torOfficial" author-id=3D"t2_igyg9991" is-hide-ad-enabled=3D"" placement=3D=
-"comments_page" premium-ad-overflow-variant=3D"enabled" award-count=3D"0" i=
-tem-state=3D"UNMODERATED" ama-state=3D"scheduled"><template shadowmode=3D"o=
-pen"><!----> <div data-post-click-location=3D"overflow-button"> <!--?lit$46=
-225495$--> <rpl-dropdown placement=3D"bottom-end" class=3D"group/dropdown">=
-<template shadowmode=3D"open"><!----> <rpl-popper part=3D"popper" exportpar=
-ts=3D"
+        <shreddit-post-overflow-menu current-user-id=3D"t2_0" is-desktop-vi=
+ewport=3D"" is-logged-in=3D"" is-ad=3D"" ad-user-targeting-info=3D"{&quot;a=
+dTransparencyEncodedData&quot;:&quot;GQgsABkVAgA=3D&quot;,&quot;gender&quot=
+;:null,&quot;interests&quot;:null,&quot;locations&quot;:null,&quot;targetin=
+gCriteria&quot;:null}" is-pdp-ad=3D"" is-reportable-ad=3D"" post-id=3D"t3_1=
+x580if" impression-id=3D"6242291462151616071" author-name=3D"ElementorOffic=
+ial" author-id=3D"t2_igyg9991" is-hide-ad-enabled=3D"" placement=3D"comment=
+s_page" premium-ad-overflow-variant=3D"enabled" award-count=3D"0" item-stat=
+e=3D"UNMODERATED" ama-state=3D"scheduled"><template shadowmode=3D"open"><!-=
+---> <div data-post-click-location=3D"overflow-button"> <!--?lit$46225495$-=
+-> <rpl-dropdown placement=3D"bottom-end" class=3D"group/dropdown"><templat=
+e shadowmode=3D"open"><!----> <rpl-popper part=3D"popper" exportparts=3D"
           popup:popper--popup,
           arrow:popper--arrow
         " flip=3D"" shift=3D"" safe-area=3D"" class=3D" hovercard " placeme=
@@ -4369,21 +4288,21 @@ text></template></faceplate-textarea-input>
   <!----></faceplate-tracker>
       <!----></faceplate-tracker>
       <comment-composer-host slot=3D"ready" class=3D"nd:hidden" post-id=3D"=
-t3_1otq1e4" user-id=3D"t2_1d1re3dm" is-check-comment-guidance-availability-=
-set=3D"" is-perform-comment-guidance-evaluation-set=3D""><template shadowmo=
-de=3D"open"><!----><!--?lit$46225495$--><slot></slot><!--?lit$46225495$--> =
-<!--?lit$46225495$--><rpl-dialog-sheet id=3D"draft-discard-dialog" label=3D=
-"Save Draft?" overlay-blur=3D"" dialog-id=3D"" dialog-classname=3D"" open-s=
-tate=3D"normal"><template shadowmode=3D"open"><!----><rpl-dialog overlay-bl=
-ur=3D"" dialog-id=3D"" dialog-classname=3D"" label=3D"Save Draft?" variant=
-=3D"default" style=3D"display: none;"> <slot></slot> </rpl-dialog></templat=
-e></rpl-dialog-sheet> <!--?lit$46225495$--><rpl-dialog-sheet id=3D"comment-=
-discard-dialog" label=3D"Discard comment?" overlay-blur=3D"" dialog-id=3D""=
- dialog-classname=3D"" open-state=3D"normal"><template shadowmode=3D"open">=
-<!----><rpl-dialog overlay-blur=3D"" dialog-id=3D"" dialog-classname=3D"" l=
-abel=3D"Discard comment?" variant=3D"default" style=3D"display: none;"> <sl=
-ot></slot> </rpl-dialog></template></rpl-dialog-sheet> <!--?lit$46225495$--=
-><!--?--></template>
+t3_1otq1e4" user-id=3D"t2_0" is-check-comment-guidance-availability-set=3D"=
+" is-perform-comment-guidance-evaluation-set=3D""><template shadowmode=3D"o=
+pen"><!----><!--?lit$46225495$--><slot></slot><!--?lit$46225495$--> <!--?li=
+t$46225495$--><rpl-dialog-sheet id=3D"draft-discard-dialog" label=3D"Save D=
+raft?" overlay-blur=3D"" dialog-id=3D"" dialog-classname=3D"" open-state=3D=
+"normal"><template shadowmode=3D"open"><!----><rpl-dialog overlay-blur=3D""=
+ dialog-id=3D"" dialog-classname=3D"" label=3D"Save Draft?" variant=3D"defa=
+ult" style=3D"display: none;"> <slot></slot> </rpl-dialog></template></rpl-=
+dialog-sheet> <!--?lit$46225495$--><rpl-dialog-sheet id=3D"comment-discard-=
+dialog" label=3D"Discard comment?" overlay-blur=3D"" dialog-id=3D"" dialog-=
+classname=3D"" open-state=3D"normal"><template shadowmode=3D"open"><!----><=
+rpl-dialog overlay-blur=3D"" dialog-id=3D"" dialog-classname=3D"" label=3D"=
+Discard comment?" variant=3D"default" style=3D"display: none;"> <slot></slo=
+t> </rpl-dialog></template></rpl-dialog-sheet> <!--?lit$46225495$--><!--?--=
+></template>
         <faceplate-tracker source=3D"comment_composer" action=3D"view" noun=
 =3D"add_comment_button" loading-modifier=3D"once">
     <faceplate-textarea-input data-testid=3D"trigger-button" appearance=3D"=
@@ -4706,8 +4625,7 @@ aria-describedby=3D"tooltip"></slot>  </rpl-popper> </template></rpl-toolti=
 p></template></rte-toolbar-button-bold> <rte-toolbar-button-italic ignore-f=
 ocus=3D""><template shadowmode=3D"open"><!----><!--?lit$46225495$--><button=
  rpl=3D"" aria-disabled=3D"false" aria-pressed=3D"false" class=3D"min-w-[2r=
-em] text-[color:var(--rte-toolbar-button-color,var(--color-secondary-weak))=
-]
+em] text-[color:var(--rte-toolbar-button-color,var(--color-secondary-weak))]
 button-small px-[calc(var(--rem10)-var(--button-border-width,0px))]
 button-plain
 
@@ -5509,8 +5427,7 @@ top" viewBox=3D"0 0 20 20" width=3D"20" xmlns=3D"http://www.w3.org/2000/svg=
 .82 0 3.3-1.48 3.3-3.3v-2.6a1.9 1.9 0 00-1.9-1.9ZM10 3.34l3.83 3.84H12v7.85=
 c0 1.1-.9 2-2 2s-2-.9-2-2V7.18H6.17L10 3.34ZM2.8 15.52v-2.6c0-.06.04-.1.1-.=
 1h3.3v2.2c0 .74.22 1.42.58 2H4.3c-.83 0-1.5-.67-1.5-1.5Zm14.4 0c0 .83-.67 1=
-.5-1.5 1.5h-2.48c.36-.58.58-1.26.58-2v-2.2h3.3c.05 0 .1.04.1.1v2.6Z"></path=
->
+.5-1.5 1.5h-2.48c.36-.58.58-1.26.58-2v-2.2h3.3c.05 0 .1.04.1.1v2.6Z"></path>
     </svg>
           </span>
      =20
@@ -6025,19 +5942,19 @@ aUaE,wtZVJ8LywW,xSHtTKKUIx" loading=3D"eager" data-prefix=3D"en-US/">
      =20
    =20
     =20
-    <shreddit-comment-action-row slot=3D"actionRow" user-id=3D"t2_1d1re3dm"=
- score=3D"2" is-desktop-viewport=3D"" is-user-logged-in=3D"" reduce-animati=
-ons=3D"" permalink=3D"/r/GameDevTycoon/comments/1otq1e4/comment/np4hyy9/" m=
-oderation-verdict=3D"" class=3D"block nd:hidden" comment-id=3D"t1_np4hyy9" =
-vote-state=3D"NONE" comment-depth=3D"0" author-name=3D"zioming" author-avat=
-ar-url=3D"https://www.redditstatic.com/avatars/defaults/v2/avatar_default_4=
-.png" tabindex=3D"0"><template shadowmode=3D"open"><!----><div class=3D"fle=
-x flex-col w-100"> <slot name=3D"mod-content-state-indicators"></slot> <div=
- class=3D"flex items-center max-h-2xl"> <div class=3D"flex items-center max=
--h-2xl shrink"> <!--?lit$46225495$--><shreddit-vote-animations slot=3D"vote=
--button" thing-id=3D"t1_np4hyy9" logged-in=3D"true" reduce-animations=3D"">=
-<template shadowmode=3D"open"><!----><slot></slot></template> <!--?lit$4622=
-5495$--><span rpl=3D"" class=3D"
+    <shreddit-comment-action-row slot=3D"actionRow" user-id=3D"t2_0" score=
+=3D"2" is-desktop-viewport=3D"" is-user-logged-in=3D"" reduce-animations=3D=
+"" permalink=3D"/r/GameDevTycoon/comments/1otq1e4/comment/np4hyy9/" moderat=
+ion-verdict=3D"" class=3D"block nd:hidden" comment-id=3D"t1_np4hyy9" vote-s=
+tate=3D"NONE" comment-depth=3D"0" author-name=3D"zioming" author-avatar-url=
+=3D"https://www.redditstatic.com/avatars/defaults/v2/avatar_default_4.png" =
+tabindex=3D"0"><template shadowmode=3D"open"><!----><div class=3D"flex flex=
+-col w-100"> <slot name=3D"mod-content-state-indicators"></slot> <div class=
+=3D"flex items-center max-h-2xl"> <div class=3D"flex items-center max-h-2xl=
+ shrink"> <!--?lit$46225495$--><shreddit-vote-animations slot=3D"vote-butto=
+n" thing-id=3D"t1_np4hyy9" logged-in=3D"true" reduce-animations=3D""><templ=
+ate shadowmode=3D"open"><!----><slot></slot></template> <!--?lit$46225495$-=
+-><span rpl=3D"" class=3D"
       rpl-vote-button-group p-0 button-shell overflow-visible font-semibold=
  flex items-center cursor-auto
      =20
@@ -6461,10 +6378,10 @@ aceholder" action=3D"click">
        =20
       </faceplate-tracker>
       <comment-composer-host slot=3D"ready" class=3D"nd:hidden" post-id=3D"=
-t3_1otq1e4" parent-id=3D"t1_np4hyy9" user-id=3D"t2_1d1re3dm" composer-sessi=
-on-id=3D"9b301514-db8d-4423-a03f-b4a61e4e2eb2" reply-mode=3D"" autofocus=3D=
-"" is-check-comment-guidance-availability-set=3D"" is-perform-comment-guida=
-nce-evaluation-set=3D"">
+t3_1otq1e4" parent-id=3D"t1_np4hyy9" user-id=3D"t2_0" composer-session-id=
+=3D"9b301514-db8d-4423-a03f-b4a61e4e2eb2" reply-mode=3D"" autofocus=3D"" is=
+-check-comment-guidance-availability-set=3D"" is-perform-comment-guidance-e=
+valuation-set=3D"">
        =20
         <faceplate-form class=3D"m-0" action=3D"/svc/shreddit/t3_1otq1e4/cr=
 eate-comment" target=3D"#t1_np4hyy9-next-reply" partial-mode=3D"replace" sl=
@@ -6753,8 +6670,7 @@ x-2xs max-w-full scalable-text [--emote-size:20px]" dir=3D"auto">
       Or you can release a custom console with 3Dv6 to stay 1 Tech Level ah=
 ead of the competition and then release another one with 3Dv7 and more extr=
 a features once other consoles with TL of 6 enter the market, since the gam=
-e seems to compare the TL of your next custom console to the previous one's=
-.
+e seems to compare the TL of your next custom console to the previous one's.
     </p>
     </div>
       </div>
@@ -6788,19 +6704,19 @@ aUaE,wtZVJ8LywW,xSHtTKKUIx" loading=3D"eager" data-prefix=3D"en-US/">
      =20
    =20
     =20
-    <shreddit-comment-action-row slot=3D"actionRow" user-id=3D"t2_1d1re3dm"=
- score=3D"2" is-desktop-viewport=3D"" is-user-logged-in=3D"" reduce-animati=
-ons=3D"" permalink=3D"/r/GameDevTycoon/comments/1otq1e4/comment/np4jd6b/" m=
-oderation-verdict=3D"" class=3D"block nd:hidden" comment-id=3D"t1_np4jd6b" =
-vote-state=3D"NONE" comment-depth=3D"1" author-name=3D"zioming" author-avat=
-ar-url=3D"https://www.redditstatic.com/avatars/defaults/v2/avatar_default_4=
-.png" tabindex=3D"0"><template shadowmode=3D"open"><!----><div class=3D"fle=
-x flex-col w-100"> <slot name=3D"mod-content-state-indicators"></slot> <div=
- class=3D"flex items-center max-h-2xl"> <div class=3D"flex items-center max=
--h-2xl shrink"> <!--?lit$46225495$--><shreddit-vote-animations slot=3D"vote=
--button" thing-id=3D"t1_np4jd6b" logged-in=3D"true" reduce-animations=3D"">=
-<template shadowmode=3D"open"><!----><slot></slot></template> <!--?lit$4622=
-5495$--><span rpl=3D"" class=3D"
+    <shreddit-comment-action-row slot=3D"actionRow" user-id=3D"t2_0" score=
+=3D"2" is-desktop-viewport=3D"" is-user-logged-in=3D"" reduce-animations=3D=
+"" permalink=3D"/r/GameDevTycoon/comments/1otq1e4/comment/np4jd6b/" moderat=
+ion-verdict=3D"" class=3D"block nd:hidden" comment-id=3D"t1_np4jd6b" vote-s=
+tate=3D"NONE" comment-depth=3D"1" author-name=3D"zioming" author-avatar-url=
+=3D"https://www.redditstatic.com/avatars/defaults/v2/avatar_default_4.png" =
+tabindex=3D"0"><template shadowmode=3D"open"><!----><div class=3D"flex flex=
+-col w-100"> <slot name=3D"mod-content-state-indicators"></slot> <div class=
+=3D"flex items-center max-h-2xl"> <div class=3D"flex items-center max-h-2xl=
+ shrink"> <!--?lit$46225495$--><shreddit-vote-animations slot=3D"vote-butto=
+n" thing-id=3D"t1_np4jd6b" logged-in=3D"true" reduce-animations=3D""><templ=
+ate shadowmode=3D"open"><!----><slot></slot></template> <!--?lit$46225495$-=
+-><span rpl=3D"" class=3D"
       rpl-vote-button-group p-0 button-shell overflow-visible font-semibold=
  flex items-center cursor-auto
      =20
@@ -7224,10 +7140,10 @@ aceholder" action=3D"click">
        =20
       </faceplate-tracker>
       <comment-composer-host slot=3D"ready" class=3D"nd:hidden" post-id=3D"=
-t3_1otq1e4" parent-id=3D"t1_np4jd6b" user-id=3D"t2_1d1re3dm" composer-sessi=
-on-id=3D"14b47335-f76e-44e4-846c-1ccd918102cb" reply-mode=3D"" autofocus=3D=
-"" is-check-comment-guidance-availability-set=3D"" is-perform-comment-guida=
-nce-evaluation-set=3D"">
+t3_1otq1e4" parent-id=3D"t1_np4jd6b" user-id=3D"t2_0" composer-session-id=
+=3D"14b47335-f76e-44e4-846c-1ccd918102cb" reply-mode=3D"" autofocus=3D"" is=
+-check-comment-guidance-availability-set=3D"" is-perform-comment-guidance-e=
+valuation-set=3D"">
        =20
         <faceplate-form class=3D"m-0" action=3D"/svc/shreddit/t3_1otq1e4/cr=
 eate-comment" target=3D"#t1_np4jd6b-next-reply" partial-mode=3D"replace" sl=
@@ -7600,19 +7516,19 @@ aUaE,wtZVJ8LywW,xSHtTKKUIx" loading=3D"eager" data-prefix=3D"en-US/">
      =20
    =20
     =20
-    <shreddit-comment-action-row slot=3D"actionRow" user-id=3D"t2_1d1re3dm"=
- score=3D"1" is-desktop-viewport=3D"" is-user-logged-in=3D"" reduce-animati=
-ons=3D"" permalink=3D"/r/GameDevTycoon/comments/1otq1e4/comment/nogbju2/" m=
-oderation-verdict=3D"" class=3D"block nd:hidden" comment-id=3D"t1_nogbju2" =
-vote-state=3D"NONE" comment-depth=3D"0" author-name=3D"zioming" author-avat=
-ar-url=3D"https://www.redditstatic.com/avatars/defaults/v2/avatar_default_4=
-.png" tabindex=3D"0"><template shadowmode=3D"open"><!----><div class=3D"fle=
-x flex-col w-100"> <slot name=3D"mod-content-state-indicators"></slot> <div=
- class=3D"flex items-center max-h-2xl"> <div class=3D"flex items-center max=
--h-2xl shrink"> <!--?lit$46225495$--><shreddit-vote-animations slot=3D"vote=
--button" thing-id=3D"t1_nogbju2" logged-in=3D"true" reduce-animations=3D"">=
-<template shadowmode=3D"open"><!----><slot></slot></template> <!--?lit$4622=
-5495$--><span rpl=3D"" class=3D"
+    <shreddit-comment-action-row slot=3D"actionRow" user-id=3D"t2_0" score=
+=3D"1" is-desktop-viewport=3D"" is-user-logged-in=3D"" reduce-animations=3D=
+"" permalink=3D"/r/GameDevTycoon/comments/1otq1e4/comment/nogbju2/" moderat=
+ion-verdict=3D"" class=3D"block nd:hidden" comment-id=3D"t1_nogbju2" vote-s=
+tate=3D"NONE" comment-depth=3D"0" author-name=3D"zioming" author-avatar-url=
+=3D"https://www.redditstatic.com/avatars/defaults/v2/avatar_default_4.png" =
+tabindex=3D"0"><template shadowmode=3D"open"><!----><div class=3D"flex flex=
+-col w-100"> <slot name=3D"mod-content-state-indicators"></slot> <div class=
+=3D"flex items-center max-h-2xl"> <div class=3D"flex items-center max-h-2xl=
+ shrink"> <!--?lit$46225495$--><shreddit-vote-animations slot=3D"vote-butto=
+n" thing-id=3D"t1_nogbju2" logged-in=3D"true" reduce-animations=3D""><templ=
+ate shadowmode=3D"open"><!----><slot></slot></template> <!--?lit$46225495$-=
+-><span rpl=3D"" class=3D"
       rpl-vote-button-group p-0 button-shell overflow-visible font-semibold=
  flex items-center cursor-auto
      =20
@@ -8036,10 +7952,10 @@ aceholder" action=3D"click">
        =20
       </faceplate-tracker>
       <comment-composer-host slot=3D"ready" class=3D"nd:hidden" post-id=3D"=
-t3_1otq1e4" parent-id=3D"t1_nogbju2" user-id=3D"t2_1d1re3dm" composer-sessi=
-on-id=3D"ae66cedd-cede-4b12-ba9a-356248384cc3" reply-mode=3D"" autofocus=3D=
-"" is-check-comment-guidance-availability-set=3D"" is-perform-comment-guida=
-nce-evaluation-set=3D"">
+t3_1otq1e4" parent-id=3D"t1_nogbju2" user-id=3D"t2_0" composer-session-id=
+=3D"ae66cedd-cede-4b12-ba9a-356248384cc3" reply-mode=3D"" autofocus=3D"" is=
+-check-comment-guidance-availability-set=3D"" is-perform-comment-guidance-e=
+valuation-set=3D"">
        =20
         <faceplate-form class=3D"m-0" action=3D"/svc/shreddit/t3_1otq1e4/cr=
 eate-comment" target=3D"#t1_nogbju2-next-reply" partial-mode=3D"replace" sl=
@@ -8357,19 +8273,19 @@ aUaE,wtZVJ8LywW,xSHtTKKUIx" loading=3D"eager" data-prefix=3D"en-US/">
      =20
    =20
     =20
-    <shreddit-comment-action-row slot=3D"actionRow" user-id=3D"t2_1d1re3dm"=
- score=3D"1" is-desktop-viewport=3D"" is-user-logged-in=3D"" reduce-animati=
-ons=3D"" permalink=3D"/r/GameDevTycoon/comments/1otq1e4/comment/nyhwcu4/" m=
-oderation-verdict=3D"" class=3D"block nd:hidden" comment-id=3D"t1_nyhwcu4" =
-vote-state=3D"NONE" comment-depth=3D"0" author-name=3D"vangstampede" author=
--avatar-url=3D"https://www.redditstatic.com/avatars/defaults/v2/avatar_defa=
-ult_7.png" tabindex=3D"0"><template shadowmode=3D"open"><!----><div class=
-=3D"flex flex-col w-100"> <slot name=3D"mod-content-state-indicators"></slo=
-t> <div class=3D"flex items-center max-h-2xl"> <div class=3D"flex items-cen=
-ter max-h-2xl shrink"> <!--?lit$46225495$--><shreddit-vote-animations slot=
-=3D"vote-button" thing-id=3D"t1_nyhwcu4" logged-in=3D"true" reduce-animatio=
-ns=3D""><template shadowmode=3D"open"><!----><slot></slot></template> <!--?=
-lit$46225495$--><span rpl=3D"" class=3D"
+    <shreddit-comment-action-row slot=3D"actionRow" user-id=3D"t2_0" score=
+=3D"1" is-desktop-viewport=3D"" is-user-logged-in=3D"" reduce-animations=3D=
+"" permalink=3D"/r/GameDevTycoon/comments/1otq1e4/comment/nyhwcu4/" moderat=
+ion-verdict=3D"" class=3D"block nd:hidden" comment-id=3D"t1_nyhwcu4" vote-s=
+tate=3D"NONE" comment-depth=3D"0" author-name=3D"vangstampede" author-avata=
+r-url=3D"https://www.redditstatic.com/avatars/defaults/v2/avatar_default_7.=
+png" tabindex=3D"0"><template shadowmode=3D"open"><!----><div class=3D"flex=
+ flex-col w-100"> <slot name=3D"mod-content-state-indicators"></slot> <div =
+class=3D"flex items-center max-h-2xl"> <div class=3D"flex items-center max-=
+h-2xl shrink"> <!--?lit$46225495$--><shreddit-vote-animations slot=3D"vote-=
+button" thing-id=3D"t1_nyhwcu4" logged-in=3D"true" reduce-animations=3D""><=
+template shadowmode=3D"open"><!----><slot></slot></template> <!--?lit$46225=
+495$--><span rpl=3D"" class=3D"
       rpl-vote-button-group p-0 button-shell overflow-visible font-semibold=
  flex items-center cursor-auto
      =20
@@ -8793,10 +8709,10 @@ aceholder" action=3D"click">
        =20
       </faceplate-tracker>
       <comment-composer-host slot=3D"ready" class=3D"nd:hidden" post-id=3D"=
-t3_1otq1e4" parent-id=3D"t1_nyhwcu4" user-id=3D"t2_1d1re3dm" composer-sessi=
-on-id=3D"a48ff05d-51df-4da2-b295-7e7d18534857" reply-mode=3D"" autofocus=3D=
-"" is-check-comment-guidance-availability-set=3D"" is-perform-comment-guida=
-nce-evaluation-set=3D"">
+t3_1otq1e4" parent-id=3D"t1_nyhwcu4" user-id=3D"t2_0" composer-session-id=
+=3D"a48ff05d-51df-4da2-b295-7e7d18534857" reply-mode=3D"" autofocus=3D"" is=
+-check-comment-guidance-availability-set=3D"" is-perform-comment-guidance-e=
+valuation-set=3D"">
        =20
         <faceplate-form class=3D"m-0" action=3D"/svc/shreddit/t3_1otq1e4/cr=
 eate-comment" target=3D"#t1_nyhwcu4-next-reply" partial-mode=3D"replace" sl=
@@ -9122,19 +9038,19 @@ aUaE,wtZVJ8LywW,xSHtTKKUIx" loading=3D"eager" data-prefix=3D"en-US/">
      =20
    =20
     =20
-    <shreddit-comment-action-row slot=3D"actionRow" user-id=3D"t2_1d1re3dm"=
- score=3D"1" is-desktop-viewport=3D"" is-user-logged-in=3D"" reduce-animati=
-ons=3D"" permalink=3D"/r/GameDevTycoon/comments/1otq1e4/comment/nyi2ada/" m=
-oderation-verdict=3D"" class=3D"block nd:hidden" comment-id=3D"t1_nyi2ada" =
-vote-state=3D"NONE" comment-depth=3D"1" author-name=3D"zioming" author-avat=
-ar-url=3D"https://www.redditstatic.com/avatars/defaults/v2/avatar_default_4=
-.png" tabindex=3D"0"><template shadowmode=3D"open"><!----><div class=3D"fle=
-x flex-col w-100"> <slot name=3D"mod-content-state-indicators"></slot> <div=
- class=3D"flex items-center max-h-2xl"> <div class=3D"flex items-center max=
--h-2xl shrink"> <!--?lit$46225495$--><shreddit-vote-animations slot=3D"vote=
--button" thing-id=3D"t1_nyi2ada" logged-in=3D"true" reduce-animations=3D"">=
-<template shadowmode=3D"open"><!----><slot></slot></template> <!--?lit$4622=
-5495$--><span rpl=3D"" class=3D"
+    <shreddit-comment-action-row slot=3D"actionRow" user-id=3D"t2_0" score=
+=3D"1" is-desktop-viewport=3D"" is-user-logged-in=3D"" reduce-animations=3D=
+"" permalink=3D"/r/GameDevTycoon/comments/1otq1e4/comment/nyi2ada/" moderat=
+ion-verdict=3D"" class=3D"block nd:hidden" comment-id=3D"t1_nyi2ada" vote-s=
+tate=3D"NONE" comment-depth=3D"1" author-name=3D"zioming" author-avatar-url=
+=3D"https://www.redditstatic.com/avatars/defaults/v2/avatar_default_4.png" =
+tabindex=3D"0"><template shadowmode=3D"open"><!----><div class=3D"flex flex=
+-col w-100"> <slot name=3D"mod-content-state-indicators"></slot> <div class=
+=3D"flex items-center max-h-2xl"> <div class=3D"flex items-center max-h-2xl=
+ shrink"> <!--?lit$46225495$--><shreddit-vote-animations slot=3D"vote-butto=
+n" thing-id=3D"t1_nyi2ada" logged-in=3D"true" reduce-animations=3D""><templ=
+ate shadowmode=3D"open"><!----><slot></slot></template> <!--?lit$46225495$-=
+-><span rpl=3D"" class=3D"
       rpl-vote-button-group p-0 button-shell overflow-visible font-semibold=
  flex items-center cursor-auto
      =20
@@ -9558,10 +9474,10 @@ aceholder" action=3D"click">
        =20
       </faceplate-tracker>
       <comment-composer-host slot=3D"ready" class=3D"nd:hidden" post-id=3D"=
-t3_1otq1e4" parent-id=3D"t1_nyi2ada" user-id=3D"t2_1d1re3dm" composer-sessi=
-on-id=3D"8bce5885-88f8-4240-927a-06a667f67fd2" reply-mode=3D"" autofocus=3D=
-"" is-check-comment-guidance-availability-set=3D"" is-perform-comment-guida=
-nce-evaluation-set=3D"">
+t3_1otq1e4" parent-id=3D"t1_nyi2ada" user-id=3D"t2_0" composer-session-id=
+=3D"8bce5885-88f8-4240-927a-06a667f67fd2" reply-mode=3D"" autofocus=3D"" is=
+-check-comment-guidance-availability-set=3D"" is-perform-comment-guidance-e=
+valuation-set=3D"">
        =20
         <faceplate-form class=3D"m-0" action=3D"/svc/shreddit/t3_1otq1e4/cr=
 eate-comment" target=3D"#t1_nyi2ada-next-reply" partial-mode=3D"replace" sl=
@@ -10014,242 +9930,10 @@ er" data-prefix=3D"en-US/">
    =20
        =20
      =20
-  <!----></faceplate-loader> <community-author-flair class=3D"nd:visible [&=
-amp;:not(:defined)&gt;[slot]]:hidden block mb-md" enctype=3D"application/js=
-on" method=3D"post" action=3D"/svc/shreddit/graphql" is-desktop=3D"" subred=
-dit-id=3D"t5_2vru8" user-id=3D"t2_1d1re3dm" username=3D"17O8" subreddit-nam=
-e=3D"GameDevTycoon"><template shadowmode=3D"open"><!----> <div class=3D"aut=
-hor flex flex-row flex-nowrap items-center gap-xs" tabindex=3D"0" role=3D"b=
-utton" aria-haspopup=3D"true" aria-expanded=3D"false"> <slot class=3D"block=
- overflow-hidden w-full"></slot> <!--?lit$46225495$--><slot class=3D"toggle=
-" name=3D"toggle" part=3D"toggle-slot"></slot> </div> <!--?lit$46225495$-->=
- </template>
-    <div class=3D"flex flex-row flex-nowrap items-center w-100 gap-xs py-2x=
-s text-12">
-      <div class=3D"basis-auto shrink-0 grow-0 inline-flex">
-        <div class=3D"flex items-center justify-center"><span class=3D"inli=
-ne-flex items-center justify-center w-xl h-xl relative " rpl=3D"" avatar=3D=
-"">
-   =20
-    <span class=3D"inline-flex snoovatar relative  fp-avatar-container roun=
-ded-full w-xl h-xl min-w-[2rem] min-h-[2rem] isolate box-content">=20
-    <span class=3D"absolute start-0 end-0 bottom-0 mx-auto inline-flex shri=
-nk-0 justify-center box-border h-full w-full">
-       <span style=3D"background: var(--color-avatar-gradient)" class=3D"ro=
-unded-full absolute h-full w-full inline-flex justify-center ">
-   =20
-  </span>
-    <svg viewBox=3D"0 0 121 122" xmlns=3D"http://www.w3.org/2000/svg" class=
-=3D"overflow-hidden absolute bottom-0 w-xl h-xl">
-      <defs>
-        <clipPath id=3D"05605294ac319">
-          <path d=3D"M0 0V79L28.1628 105.5C35.013 115.465 46.4934 122 59.5 =
-122C72.5066 122 83.987 115.465 90.8372 105.5L120.5 79V0H0Z"></path>
-        </clipPath>
-      </defs>
-      <image href=3D"https://styles.redditmedia.com/t5_j54tv/styles/profile=
-Icon_snoo9c10f188-49fc-4357-88e4-9ce051972907-headshot.png?width=3D128&amp;=
-height=3D128&amp;frame=3D1&amp;auto=3Dwebp&amp;crop=3D128%3A128%2Csmart&amp=
-;s=3Da559decc7ae103133b28a544002fab23e4f1fe0f" alt=3D"User Avatar" clip-pat=
-h=3D"url(#05605294ac319)" height=3D"100%" width=3D"100%"></image>
-    </svg>
-    </span>
-  </span></span></div>
-      </div>
-      <div class=3D"flex-1 overflow-hidden">
-        <div class=3D"author-username font-semibold text-neutral-content-we=
-ak ">
-          17O8
-        </div>
-        <div class=3D"flair">
-         =20
-        </div>
-      </div>
-    </div>
-    <div slot=3D"toggle" actioned=3D"">
-         =20
-          <button rpl=3D"" aria-label=3D"Edit user flair" class=3D"
-button-small px-[calc(var(--rem10)-var(--button-border-width,0px))]
-button-secondary
-
-
-icon
-items-center justify-center
-button inline-flex " type=3D"button">
-      <span class=3D"flex items-center justify-center">
-      <span class=3D"flex"><svg rpl=3D"" fill=3D"currentColor" height=3D"16=
-" icon-name=3D"edit" viewBox=3D"0 0 20 20" width=3D"16" xmlns=3D"http://www=
-.w3.org/2000/svg">
-      <path d=3D"M14.016 3.8c.583 0 1.132.227 1.545.64.413.413.64.961.64 1.=
-545a2.17 2.17 0 01-.64 1.545l-8.67 8.67-3.079-.01-.01-3.079 8.669-8.671c.41=
-3-.413.962-.64 1.545-.64Zm0-1.8a3.97 3.97 0 00-2.817 1.167l-8.948 8.947a.85=
-8.858 0 00-.251.609l.014 4.408a.858.858 0 00.855.855L7.277 18h.003c.227 0 .=
-446-.09.606-.251l8.947-8.947A3.985 3.985 0 0014.016 2Z"></path>
-    </svg></span>
-     =20
-    </span>
-   =20
-    </button>
-        </div>
-    <div slot=3D"selector" class=3D"text-12 my-md">
-      <div class=3D"py-2xs font-semibold text-neutral-content-weak mb-xs">
-        Select your community flair
-      </div>
-      <div class=3D"styled-scrollbars overflow-y-auto max-h-[320px]">
-       =20
-              <faceplate-radio-input class=3D"mt-2xs m-0 p-2xs" ellipsis=3D=
-"" name=3D"flairTemplateId" value=3D"02571666-3380-11e8-b56e-0ebfedb4a6c4" =
-role=3D"radio" tabindex=3D"0" aria-disabled=3D"false" actioned=3D""><templa=
-te shadowmode=3D"open"><!----> <slot name=3D"placeholder"></slot> <!--?lit$=
-46225495$--><svg rpl=3D"" class=3D"icon" fill=3D"currentColor" height=3D"20=
-" icon-name=3D"radio-button" viewBox=3D"0 0 20 20" width=3D"20" xmlns=3D"ht=
-tp://www.w3.org/2000/svg"> <!--?lit$46225495$--><!--?lit$46225495$--><path =
-d=3D"M10 2.8c3.97 0 7.2 3.23 7.2 7.2s-3.23 7.2-7.2 7.2-7.2-3.23-7.2-7.2S6.0=
-3 2.8 10 2.8ZM10 1a9 9 0 10.001 18.001A9 9 0 0010 1Z"></path><!--?--> </svg=
-> <!--?lit$46225495$--> <!--?lit$46225495$--> <!--?lit$46225495$-->  <label=
-> <slot></slot> </label>  </template>
-                <div class=3D"inline-flex w-100">
-                  <data class=3D"inline-flex overflow-hidden">
-                   =20
-    <span class=3D"bg-tone-4 inline-block truncate max-w-full text-12 font-=
-normal align-text-bottom box-border px-[6px] rounded-5 leading-4 text-globa=
-l-white  " style=3D"background-color: #46D160;">
-      <div class=3D"flair-content [&amp;_.flair-image]:align-bottom max-w-f=
-ull overflow-hidden whitespace-nowrap text-ellipsis">
-    Pro Player
-  </div>
-    </span>
- =20
-                  </data>
-                 =20
-                </div>
-              </faceplate-radio-input>
-             =20
-           =20
-      </div>
-    </div>
-    <hr slot=3D"divider" class=3D"border-neutral-border-weak mt-md">
-    <div class=3D"py-2xs font-semibold text-neutral-content-weak mt-md" slo=
-t=3D"flair-editor-label">
-      Edit flair
-    </div>
-    <flair-editor class=3D"[&amp;_.emote]:leading-[1.25rem] [&amp;_.emote]:=
-whitespace-pre" slot=3D"flair-editor" namespace=3D"t5_2vru8-17O8"><template=
- shadowmode=3D"open"><!----> <div class=3D"relative ps-md pe-2xs py-[3px] b=
-ox-border min-h-[40px] rounded-5 border-sm border-solid border-secondary-ba=
-ckground"> <div class=3D"flex flex-row flex-nowrap items-center focus-withi=
-n:border-neutral-border-strong cursor-text"> <slot class=3D"block py-2xs te=
-xt-16 text-tone-1 flex-1" name=3D"editor"></slot> <!--?lit$46225495$--> <!-=
--?lit$46225495$--><button rpl=3D"" aria-label=3D"Open emoji picker" class=
-=3D"emoji-picker-button hidden flex-initial
-button-small px-[calc(var(--rem10)-var(--button-border-width,0px))]
-button-plain
-
-
-icon
-items-center justify-center
-button inline-flex " type=3D"button"> <!--?lit$46225495$--><!----><span cla=
-ss=3D"flex items-center justify-center"> <!--?lit$46225495$--><span class=
-=3D"flex"><!--?lit$46225495$--><svg rpl=3D"" fill=3D"currentColor" height=
-=3D"16" icon-name=3D"sentiment-good" viewBox=3D"0 0 20 20" width=3D"16" xml=
-ns=3D"http://www.w3.org/2000/svg"> <!--?lit$46225495$--><!--?lit$46225495$-=
--><path d=3D"M10 1a9 9 0 00-9 9 9 9 0 009 9 9 9 0 009-9 9 9 0 00-9-9Zm0 16.=
-2c-3.97 0-7.2-3.23-7.2-7.2S6.03 2.8 10 2.8s7.2 3.23 7.2 7.2-3.23 7.2-7.2 7.=
-2Zm-3-6.728a1.5 1.5 0 11.001-3.001A1.5 1.5 0 017 10.472Zm7.5-1.5a1.5 1.5 0 =
-11-3.001-.001 1.5 1.5 0 013.001.001ZM10 15.15c-1.532 0-2.928-.687-3.736-1.8=
-36l1.473-1.035c.464.661 1.332 1.072 2.264 1.072.932 0 1.799-.411 2.264-1.07=
-2l1.473 1.035c-.808 1.15-2.205 1.836-3.736 1.836H10Z"></path><!--?--> </svg=
-></span> <!--?lit$46225495$--> </span> <!--?lit$46225495$--><!--?--><!---->=
-<!----><faceplate-screen-reader-content><template shadowmode=3D"open"><!---=
--> <slot></slot> </template><!--?lit$46225495$-->open emoji picker</facepla=
-te-screen-reader-content><!----> </button> <!--?lit$46225495$--><button rpl=
-=3D"" disabled=3D"" aria-label=3D"Clear" class=3D"clear-button flex-initial
-button-small px-[calc(var(--rem10)-var(--button-border-width,0px))]
-button-plain
-
-
-icon
-items-center justify-center
-button inline-flex " type=3D"button"> <!--?lit$46225495$--><!----><span cla=
-ss=3D"flex items-center justify-center"> <!--?lit$46225495$--><span class=
-=3D"flex"><!--?lit$46225495$--><svg rpl=3D"" fill=3D"currentColor" height=
-=3D"16" icon-name=3D"clear" viewBox=3D"0 0 20 20" width=3D"16" xmlns=3D"htt=
-p://www.w3.org/2000/svg"> <!--?lit$46225495$--><!--?lit$46225495$--><path d=
-=3D"M10 1a9 9 0 10.001 18.001A9 9 0 0010 1Zm0 16.2c-3.97 0-7.2-3.23-7.2-7.2=
-S6.03 2.8 10 2.8s7.2 3.23 7.2 7.2-3.23 7.2-7.2 7.2Z"></path><path d=3D"M12.=
-66 6.06 10 8.73 7.34 6.06 6.06 7.34 8.73 10l-2.67 2.66 1.28 1.28L10 11.27l2=
-.66 2.67 1.28-1.28L11.27 10l2.67-2.66-1.28-1.28Z"></path><!--?--> </svg></s=
-pan> <!--?lit$46225495$--> </span> <!--?lit$46225495$--><!--?--><!----><!--=
---><faceplate-screen-reader-content><template shadowmode=3D"open"><!----> <=
-slot></slot> </template><!--?lit$46225495$-->clear</faceplate-screen-reader=
--content><!----> </button>  </div> </div> <div class=3D"flex justify-betwee=
-n items-center pt-2xs px-md"> <!--?lit$46225495$--><span class=3D"text-12">=
-<!--?lit$46225495$-->Allows text</span> <div class=3D"flair-length flex-1 t=
-ext-end text-secondary-weak"> <!--?lit$46225495$-->64 </div> </div> </templ=
-ate>
-      <div slot=3D"editor" contenteditable=3D"true" role=3D"textbox" class=
-=3D"outline-none relative" tabindex=3D"1" data-lexical-editor=3D"true" styl=
-e=3D"user-select: text; white-space: pre-wrap; word-break: break-word;" dir=
-=3D"ltr"><p class=3D"m-0"><br></p></div>
-      <faceplate-partial slot=3D"emojis" loading=3D"programmatic" src=3D"/s=
-vc/shreddit/GameDevTycoon/emojis/USER_FLAIR"><template shadowmode=3D"open">=
-<!----> <div> <slot></slot> </div> </template></faceplate-partial>
-    </flair-editor>
-    <div slot=3D"settings" class=3D"p-2x mt-md">
-      <faceplate-checkbox-input class=3D"mb-xs " faceplate-focusable=3D"" n=
-ame=3D"flairEnabled" role=3D"checkbox" tabindex=3D"0" aria-disabled=3D"fals=
-e"><template shadowmode=3D"open"><!----> <!--?lit$46225495$--><svg rpl=3D""=
- class=3D"icon" fill=3D"currentColor" height=3D"16" icon-name=3D"checkbox" =
-viewBox=3D"0 0 20 20" width=3D"16" xmlns=3D"http://www.w3.org/2000/svg"> <!=
---?lit$46225495$--><!--?lit$46225495$--><path d=3D"M14.7 18H5.3C3.48 18 2 1=
-6.52 2 14.7V5.3C2 3.48 3.48 2 5.3 2h9.4C16.52 2 18 3.48 18 5.3v9.4c0 1.82-1=
-.48 3.3-3.3 3.3ZM5.3 3.8c-.83 0-1.5.67-1.5 1.5v9.4c0 .83.67 1.5 1.5 1.5h9.4=
-c.83 0 1.5-.67 1.5-1.5V5.3c0-.83-.67-1.5-1.5-1.5H5.3Z"></path><!--?--> </sv=
-g> <!--?lit$46225495$--> <!--?lit$46225495$--> <!--?lit$46225495$-->  <labe=
-l> <slot></slot> </label>  </template>
-        Show my user flair on this community
-      </faceplate-checkbox-input>
-    </div>
-    <div slot=3D"actions" class=3D"flex flex-row flex-nowrap gap-md justify=
--stretch mt-md">
-      <button rpl=3D"" class=3D"clear-flair w-100
-button-small px-[calc(var(--rem10)-var(--button-border-width,0px))]
-button-secondary
-
-
-
-items-center justify-center
-button inline-flex " type=3D"button">
-      <span class=3D"flex items-center justify-center">
-     =20
-      <span class=3D"flex items-center gap-xs">Clear Flair</span>
-    </span>
-   =20
-    </button>
-      <button rpl=3D"" class=3D"w-100
-button-small px-[calc(var(--rem10)-var(--button-border-width,0px))]
-button-primary
-
-
-
-items-center justify-center
-button inline-flex " type=3D"submit" actioned=3D"">
-      <span class=3D"flex items-center justify-center">
-     =20
-      <span class=3D"flex items-center gap-xs">Apply</span>
-    </span>
-   =20
-    </button>
-     =20
-    </div>
-  </community-author-flair>
+  <!----></faceplate-loader>=20
   </div>
        =20
-       <achievements-entrypoint username=3D"17O8" source=3D"community" clas=
-s=3D"w-full"><template shadowmode=3D"open"><!----><div class=3D"flex flex-c=
-ol w-full px-md box-border">
-        <!--?lit$46225495$-->
-      </div></template></achievements-entrypoint>
+      =20
       <hr class=3D"border-neutral-border-weak my-md"> <div class=3D"px-md t=
 ext-neutral-content-weak">
     <div class=3D"flex justify-between items-center mb-sm">
@@ -11032,8 +10716,7 @@ button inline-flex " id=3D"flex-nav-expand-button">
      =20
     </span>
     <faceplate-screen-reader-content><template shadowmode=3D"open"><!----> =
-<slot></slot> </template>Expand Navigation</faceplate-screen-reader-content=
->
+<slot></slot> </template>Expand Navigation</faceplate-screen-reader-content>
     </button>
   </rpl-tooltip>
     <rpl-tooltip style=3D"--show-delay: 750ms; --hide-delay: 50ms" placemen=
@@ -11099,16 +10782,16 @@ data-prefix=3D"en-US/">
    =20
        =20
      =20
-  <!----></faceplate-loader><achievement-events user-id=3D"t2_1d1re3dm"><te=
-mplate shadowmode=3D"open"><!----><!--?--></template></achievement-events> =
- <faceplate-loader name=3D"AchievementsModal_W1BJpN" src=3D"concat:BB2p-R5Y=
-d8,BDs_cWiwHu,BF6vQonc3O,BFNqxF-3dz,BggZxJEwqQ,bh_nlrZcTR,BMD7NV4B-m,BMMtFu=
-h02L,BP0RnCvxeY,BpQfmIpEJg,BR7V0LXwYv,BvOWmaNPEJ,BYw1SYCXPD,BziYTKaRKM,C_Cv=
-suU11w,C_xPsidQ6K,C6ucJ2fhHB,CCRS4pw1wD,Ce4RJitxvT,Chi1QBgkSt,CI1Gx7ADUb,Ck=
-m5xJ4CLN,CMcoPgXNg9,CyXhK6qfkC,D3j26I9nFT,D9hOi8kuCY,DVU-k27NnI,Dyg3q1gB6W,=
-DYOvFHTccS,DyxBJ38gU-,Dyy3mu_xgA,DZDBx0nCO6,iuk9o3jZtz,lKGfoOSvT_,o-ezTr6N-=
-m,P8SK0eHPM4,RFZxLpOmMk,wcCP1nQpHX,Zwh8uDsVGk" loading=3D"programmatic" dat=
-a-prefix=3D"en-US/">
+  <!----></faceplate-loader><achievement-events user-id=3D"t2_0"><template =
+shadowmode=3D"open"><!----><!--?--></template></achievement-events>  <facep=
+late-loader name=3D"AchievementsModal_W1BJpN" src=3D"concat:BB2p-R5Yd8,BDs_=
+cWiwHu,BF6vQonc3O,BFNqxF-3dz,BggZxJEwqQ,bh_nlrZcTR,BMD7NV4B-m,BMMtFuh02L,BP=
+0RnCvxeY,BpQfmIpEJg,BR7V0LXwYv,BvOWmaNPEJ,BYw1SYCXPD,BziYTKaRKM,C_CvsuU11w,=
+C_xPsidQ6K,C6ucJ2fhHB,CCRS4pw1wD,Ce4RJitxvT,Chi1QBgkSt,CI1Gx7ADUb,Ckm5xJ4CL=
+N,CMcoPgXNg9,CyXhK6qfkC,D3j26I9nFT,D9hOi8kuCY,DVU-k27NnI,Dyg3q1gB6W,DYOvFHT=
+ccS,DyxBJ38gU-,Dyy3mu_xgA,DZDBx0nCO6,iuk9o3jZtz,lKGfoOSvT_,o-ezTr6N-m,P8SK0=
+eHPM4,RFZxLpOmMk,wcCP1nQpHX,Zwh8uDsVGk" loading=3D"programmatic" data-prefi=
+x=3D"en-US/">
    =20
   <!----></faceplate-loader>
     <faceplate-partial name=3D"AchievementsModal_W1BJpN" src=3D"/svc/shredd=
@@ -11245,14 +10928,12 @@ EJ,Dyg3q1gB6W,DZDBx0nCO6,hyQ0ZvVQBc" loading=3D"eager" data-prefix=3D"en-US=
    =20
        =20
      =20
-  <!----></faceplate-loader><after-login-toast-dispatcher username=3D"17O8"=
-><template shadowmode=3D"open"><!----><!--?--></template></after-login-toas=
-t-dispatcher><!-- routable page end --><faceplate-partial name=3D"DataProte=
-ctionConsent_qBKqbZ" src=3D"/svc/shreddit/data-protection-consent" loading=
-=3D"eager"><template shadowmode=3D"open"><!----> <div> <slot></slot> </div>=
- </template></faceplate-partial><faceplate-perfmetric-collector endpoint=3D=
-"/svc/shreddit/perfMetrics"><template shadowmode=3D"open"><!---->  </templa=
-te>
+  <!----></faceplate-loader><!-- routable page end --><faceplate-partial na=
+me=3D"DataProtectionConsent_qBKqbZ" src=3D"/svc/shreddit/data-protection-co=
+nsent" loading=3D"eager"><template shadowmode=3D"open"><!----> <div> <slot>=
+</slot> </div> </template></faceplate-partial><faceplate-perfmetric-collect=
+or endpoint=3D"/svc/shreddit/perfMetrics"><template shadowmode=3D"open"><!-=
+--->  </template>
      <data value=3D"first-post-meaningful-paint"></data> <data value=3D"fir=
 st-comment-meaningful-paint"></data> <data value=3D"first-contentful-paint"=
 ></data> <data value=3D"time-to-first-byte"></data> <data value=3D"largest-=
@@ -11763,1284 +11444,7 @@ e"></div>
     </div>
   </rpl-modal-card>
 
-    </div><div><template shadowmode=3D"open"><!----> <!--?lit$46225495$--> =
-<div id=3D"resizable" class=3D"group overflow-hidden rounded-ss-4 rounded-s=
-e-4 border-sm border-solid border-neutral-border-weak border-b-0 shadow-md =
-"> <!--?lit$46225495$--> <div data-testid=3D"reddit-chat-client" class=3D"h=
-idden"> <div class=3D"hidden"> <faceplate-alert-reporter class=3D"!relative=
- h-full"><template shadowmode=3D"open"><!----> <slot></slot> </template> <!=
---?lit$46225495$--><!--?lit$46225495$-->
-   =20
-          <div class=3D"rs-app-container isolate h-full">
-    <rs-app class=3D"w-full h-full" embedded=3D"" locale=3D"en-US" token-re=
-fresh-url=3D"/svc/shreddit/token" telemetry-event-delivery-method=3D"propag=
-ation" telemetry-event-app-name=3D"web3x" correlation-id=3D"2ce5ddaa-016c-4=
-385-92e7-ade24398cd4e" session-id=3D"qbrlrjrkjrflebbgal" data-faceplate-tra=
-cking-context=3D"{&quot;correlation_id&quot;:&quot;2ce5ddaa-016c-4385-92e7-=
-ade24398cd4e&quot;}" blockedusers=3D"t2_6l4z3,t2_55mv77ab,t2_13rg90sops,t2_=
-qwuapbl6,t2_1ohrou59ge,t2_1dd1tcwb9q,t2_1po73gqh3w" device=3D"desktop" back=
-ground=3D"true" initial-ui-state=3D"closed"><template shadowmode=3D"open"><=
-!---->
-      <div>
-        <slot></slot>
-      </div>
-      <!--?lit$46225495$--><rs-alerts-banner class=3D"alerts-banner"><templ=
-ate shadowmode=3D"open"><!----></template></rs-alerts-banner>
-      <!--?lit$46225495$-->
-      <div class=3D"rs-app-container">
-        <!--?lit$46225495$--><!--?lit$46225495$-->
-      <!--?lit$46225495$--><rs-rooms-nav activeroom=3D"!wauqgS2iTs-lRVn5Ygt=
-w6Q:reddit.com"><template shadowmode=3D"open"><!----><!--?lit$46225495$--><=
-a rpl=3D"" aria-label=3D"Skip to main chat content" class=3D"sr-only focus:=
-not-sr-only a
- =20
- =20
- =20
- =20
-  hover:underline
- =20
-  cursor-pointer" href=3D"https://www.reddit.com/r/GameDevTycoon/comments/1=
-otq1e4/simpleish_guide_for_178_expanded_part_3/#main-right-content" id=3D"s=
-kip-to-main-chat-content-link"><!--?lit$46225495$--><!--?lit$46225495$--><!=
---?lit$46225495$-->Skip to main chat content<!--?lit$46225495$--><!--?--></=
-a>
-      <!--?lit$46225495$-->
-      <div class=3D"flex items-center px-md py-sm">
-        <!--?lit$46225495$--> <span class=3D"me-xs h-lg"><!--?lit$46225495$=
---><span class=3D"w-lg h-lg"><!--?lit$46225495$-->
-    <svg xmlns=3D"http://www.w3.org/2000/svg" width=3D"20px" height=3D"20px=
-" viewBox=3D"0 0 216 216" xml:space=3D"preserve" class=3D"block w-full h-fu=
-ll">
-      <!--?lit$46225495$-->
-    <defs>
-      <style>
-        .snoo-cls-1 { fill: url(#snoo-radial-gragient); }
-        .snoo-cls-1, .snoo-cls-2, .snoo-cls-3, .snoo-cls-4, .snoo-cls-5, .s=
-noo-cls-6, .snoo-cls-7, .snoo-cls-8, .snoo-cls-9, .snoo-cls-10, .snoo-cls-1=
-1 {
-          stroke-width: 0px;
-        }
-        .snoo-cls-2 { fill: url(#snoo-radial-gragient-2); }
-        .snoo-cls-3 { fill: url(#snoo-radial-gragient-3); }
-        .snoo-cls-4 { fill: url(#snoo-radial-gragient-4); }
-        .snoo-cls-5 { fill: url(#snoo-radial-gragient-6); }
-        .snoo-cls-6 { fill: url(#snoo-radial-gragient-8); }
-        .snoo-cls-7 { fill: url(#snoo-radial-gragient-5); }
-        .snoo-cls-8 { fill: url(#snoo-radial-gragient-7); }
-        .snoo-cls-9 { fill: #842123; }
-        .snoo-cls-10 { fill: #ff4500; }
-        .snoo-cls-11 { fill: #ffc49c; }
-      </style>
-      <radialGradient id=3D"snoo-radial-gragient" cx=3D"169.75" cy=3D"92.19=
-" fx=3D"169.75" fy=3D"92.19" r=3D"50.98" gradientTransform=3D"translate(0 1=
-1.64) scale(1 .87)" gradientUnits=3D"userSpaceOnUse">
-        <stop offset=3D"0" stop-color=3D"#feffff"></stop>
-        <stop offset=3D".4" stop-color=3D"#feffff"></stop>
-        <stop offset=3D".51" stop-color=3D"#f9fcfc"></stop>
-        <stop offset=3D".62" stop-color=3D"#edf3f5"></stop>
-        <stop offset=3D".7" stop-color=3D"#dee9ec"></stop>
-        <stop offset=3D".72" stop-color=3D"#d8e4e8"></stop>
-        <stop offset=3D".76" stop-color=3D"#ccd8df"></stop>
-        <stop offset=3D".8" stop-color=3D"#c8d5dd"></stop>
-        <stop offset=3D".83" stop-color=3D"#ccd6de"></stop>
-        <stop offset=3D".85" stop-color=3D"#d8dbe2"></stop>
-        <stop offset=3D".88" stop-color=3D"#ede3e9"></stop>
-        <stop offset=3D".9" stop-color=3D"#ffebef"></stop>
-      </radialGradient>
-      <radialGradient id=3D"snoo-radial-gragient-2" cx=3D"47.31" fx=3D"47.3=
-1" r=3D"50.98" xlink:href=3D"#snoo-radial-gragient"></radialGradient>
-      <radialGradient id=3D"snoo-radial-gragient-3" cx=3D"109.61" cy=3D"85.=
-59" fx=3D"109.61" fy=3D"85.59" r=3D"153.78" gradientTransform=3D"translate(=
-0 25.56) scale(1 .7)" xlink:href=3D"#snoo-radial-gragient"></radialGradient=
->
-      <radialGradient id=3D"snoo-radial-gragient-4" cx=3D"-6.01" cy=3D"64.6=
-8" fx=3D"-6.01" fy=3D"64.68" r=3D"12.85" gradientTransform=3D"translate(81.=
-08 27.26) scale(1.07 1.55)" gradientUnits=3D"userSpaceOnUse">
-        <stop offset=3D"0" stop-color=3D"#f60"></stop>
-        <stop offset=3D".5" stop-color=3D"#ff4500"></stop>
-        <stop offset=3D".7" stop-color=3D"#fc4301"></stop>
-        <stop offset=3D".82" stop-color=3D"#f43f07"></stop>
-        <stop offset=3D".92" stop-color=3D"#e53812"></stop>
-        <stop offset=3D"1" stop-color=3D"#d4301f"></stop>
-      </radialGradient>
-      <radialGradient id=3D"snoo-radial-gragient-5" cx=3D"-73.55" cy=3D"64.=
-68" fx=3D"-73.55" fy=3D"64.68" r=3D"12.85" gradientTransform=3D"translate(6=
-2.87 27.26) rotate(-180) scale(1.07 -1.55)" xlink:href=3D"#snoo-radial-grag=
-ient-4"></radialGradient>
-      <radialGradient id=3D"snoo-radial-gragient-6" cx=3D"107.93" cy=3D"166=
-.96" fx=3D"107.93" fy=3D"166.96" r=3D"45.3" gradientTransform=3D"translate(=
-0 57.4) scale(1 .66)" gradientUnits=3D"userSpaceOnUse">
-        <stop offset=3D"0" stop-color=3D"#172e35"></stop>
-        <stop offset=3D".29" stop-color=3D"#0e1c21"></stop>
-        <stop offset=3D".73" stop-color=3D"#030708"></stop>
-        <stop offset=3D"1" stop-color=3D"#000"></stop>
-      </radialGradient>
-      <radialGradient id=3D"snoo-radial-gragient-7" cx=3D"147.88" cy=3D"32.=
-94" fx=3D"147.88" fy=3D"32.94" r=3D"39.77" gradientTransform=3D"translate(0=
- .54) scale(1 .98)" xlink:href=3D"#snoo-radial-gragient"></radialGradient>
-      <radialGradient id=3D"snoo-radial-gragient-8" cx=3D"131.31" cy=3D"73.=
-08" fx=3D"131.31" fy=3D"73.08" r=3D"32.6" gradientUnits=3D"userSpaceOnUse">
-        <stop offset=3D".48" stop-color=3D"#7a9299"></stop>
-        <stop offset=3D".67" stop-color=3D"#172e35"></stop>
-        <stop offset=3D".75" stop-color=3D"#000"></stop>
-        <stop offset=3D".82" stop-color=3D"#172e35"></stop>
-      </radialGradient>
-    </defs>
-    <path class=3D"snoo-cls-10" d=3D"m108,0h0C48.35,0,0,48.35,0,108h0c0,29.=
-82,12.09,56.82,31.63,76.37l-20.57,20.57c-4.08,4.08-1.19,11.06,4.58,11.06h92=
-.36s0,0,0,0c59.65,0,108-48.35,108-108h0C216,48.35,167.65,0,108,0Z"></path>
-    <circle class=3D"snoo-cls-1" cx=3D"169.22" cy=3D"106.98" r=3D"25.22"></=
-circle>
-    <circle class=3D"snoo-cls-2" cx=3D"46.78" cy=3D"106.98" r=3D"25.22"></c=
-ircle>
-    <ellipse class=3D"snoo-cls-3" cx=3D"108.06" cy=3D"128.64" rx=3D"72" ry=
-=3D"54"></ellipse>
-    <path class=3D"snoo-cls-4" d=3D"m86.78,123.48c-.42,9.08-6.49,12.38-13.5=
-6,12.38s-12.46-4.93-12.04-14.01c.42-9.08,6.49-15.02,13.56-15.02s12.46,7.58,=
-12.04,16.66Z"></path>
-    <path class=3D"snoo-cls-7" d=3D"m129.35,123.48c.42,9.08,6.49,12.38,13.5=
-6,12.38s12.46-4.93,12.04-14.01c-.42-9.08-6.49-15.02-13.56-15.02s-12.46,7.58=
--12.04,16.66Z"></path>
-    <ellipse class=3D"snoo-cls-11" cx=3D"79.63" cy=3D"116.37" rx=3D"2.8" ry=
-=3D"3.05"></ellipse>
-    <ellipse class=3D"snoo-cls-11" cx=3D"146.21" cy=3D"116.37" rx=3D"2.8" r=
-y=3D"3.05"></ellipse>
-    <path class=3D"snoo-cls-5" d=3D"m108.06,142.92c-8.76,0-17.16.43-24.92,1=
-.22-1.33.13-2.17,1.51-1.65,2.74,4.35,10.39,14.61,17.69,26.57,17.69s22.23-7.=
-3,26.57-17.69c.52-1.23-.33-2.61-1.65-2.74-7.77-.79-16.16-1.22-24.92-1.22Z">=
-</path>
-    <circle class=3D"snoo-cls-8" cx=3D"147.49" cy=3D"49.43" r=3D"17.87"></c=
-ircle>
-    <path class=3D"snoo-cls-6" d=3D"m107.8,76.92c-2.14,0-3.87-.89-3.87-2.27=
-,0-16.01,13.03-29.04,29.04-29.04,2.14,0,3.87,1.73,3.87,3.87s-1.73,3.87-3.87=
-,3.87c-11.74,0-21.29,9.55-21.29,21.29,0,1.38-1.73,2.27-3.87,2.27Z"></path>
-    <path class=3D"snoo-cls-9" d=3D"m62.82,122.65c.39-8.56,6.08-14.16,12.69=
--14.16,6.26,0,11.1,6.39,11.28,14.33.17-8.88-5.13-15.99-12.05-15.99s-13.14,6=
-.05-13.56,15.2c-.42,9.15,4.97,13.83,12.04,13.83.17,0,.35,0,.52,0-6.44-.16-1=
-1.3-4.79-10.91-13.2Z"></path>
-    <path class=3D"snoo-cls-9" d=3D"m153.3,122.65c-.39-8.56-6.08-14.16-12.6=
-9-14.16-6.26,0-11.1,6.39-11.28,14.33-.17-8.88,5.13-15.99,12.05-15.99,7.07,0=
-,13.14,6.05,13.56,15.2.42,9.15-4.97,13.83-12.04,13.83-.17,0-.35,0-.52,0,6.4=
-4-.16,11.3-4.79,10.91-13.2Z"></path>
-
-
-    </svg>
-  </span></span>
-        <span class=3D"font-bold text-18 leading-6 truncate select-none">
-          <!--?lit$46225495$-->Chats
-        </span>
-        <div class=3D"flex ms-auto">
-          <!--?lit$46225495$--><rpl-tooltip placement=3D"bottom" appearance=
-=3D"neutral"><template shadowmode=3D"open"><!----> <rpl-popper part=3D"popp=
-er" exportparts=3D"
-          popup:popper--popup,
-          arrow:popper--arrow
-        " flip=3D"" shift=3D"" arrow=3D"" safe-area=3D"" no-screen-reader=
-=3D"" class=3D" tooltip " placement=3D"bottom" distance=3D"4" skidding=3D"0=
-" strategy=3D"absolute"><template shadowmode=3D"open"><!----> <slot name=3D=
-"anchor"></slot> <span part=3D"safe-area" class=3D" popup-safe-area "></spa=
-n> <div part=3D"popup" class=3D" popup popup--has-arrow " aria-hidden=3D"tr=
-ue"> <slot></slot> <!--?lit$46225495$--><div part=3D"arrow" class=3D"popup-=
--arrow" role=3D"presentation"></div> </div> </template> <slot slot=3D"ancho=
-r" aria-describedby=3D"tooltip"></slot>  </rpl-popper> </template>
-      <!--?lit$46225495$--><button rpl=3D"" aria-label=3D"Mark all messages=
- as read" class=3D"
-button-small px-[calc(var(--rem10)-var(--button-border-width,0px))]
-button-plain
-
-
-icon
-items-center justify-center
-button inline-flex " type=3D"button"> <!--?lit$46225495$--><!----><span cla=
-ss=3D"flex items-center justify-center"> <!--?lit$46225495$--><span class=
-=3D"flex"><!--?lit$46225495$--><svg rpl=3D"" fill=3D"currentColor" height=
-=3D"16" icon-name=3D"mark-read" viewBox=3D"0 0 20 20" width=3D"16" xmlns=3D=
-"http://www.w3.org/2000/svg"> <!--?lit$46225495$--><!--?lit$46225495$--><pa=
-th d=3D"M15.7 18H4.3A3.305 3.305 0 011 14.699V8.374c0-.885.405-1.699 1.111-=
-2.234l6.162-4.566a2.883 2.883 0 013.453 0l6.058 4.491A2.8 2.8 0 0119 8.375V=
-14.7c0 1.82-1.48 3.3-3.3 3.3ZM10 2.803c-.229 0-.459.072-.654.217L3.19 7.582=
-a.991.991 0 00-.39.793V14.7c0 .827.672 1.5 1.499 1.5h11.4c.827 0 1.499-.673=
- 1.499-1.5V8.375c0-.333-.165-.643-.441-.831l-.031-.022-6.072-4.501A1.096 1.=
-096 0 0010 2.803Zm-.278 10.771 4.959-4.959-1.273-1.272-4.718 4.718-2.097-2.=
-097-1.273 1.272 2.339 2.339c.284.284.657.425 1.031.425.374 0 .747-.142 1.03=
-2-.426Z"></path><!--?--> </svg></span> <!--?lit$46225495$--> </span> <!--?l=
-it$46225495$--><!--?--><!----><!----><!----> </button> <span slot=3D"conten=
-t"><!--?lit$46225495$-->Mark all messages as read</span>
-    </rpl-tooltip>
-          <rs-room-creation-button><template shadowmode=3D"open"><!----><rp=
-l-tooltip placement=3D"top" appearance=3D"neutral"><template shadowmode=3D"=
-open"><!----> <rpl-popper part=3D"popper" exportparts=3D"
-          popup:popper--popup,
-          arrow:popper--arrow
-        " flip=3D"" shift=3D"" arrow=3D"" safe-area=3D"" no-screen-reader=
-=3D"" class=3D" tooltip " placement=3D"top" distance=3D"4" skidding=3D"0" s=
-trategy=3D"absolute"><template shadowmode=3D"open"><!----> <slot name=3D"an=
-chor"></slot> <span part=3D"safe-area" class=3D" popup-safe-area "></span> =
-<div part=3D"popup" class=3D" popup popup--has-arrow " aria-hidden=3D"true"=
-> <slot></slot> <!--?lit$46225495$--><div part=3D"arrow" class=3D"popup--ar=
-row" role=3D"presentation"></div> </div> </template> <slot slot=3D"anchor" =
-aria-describedby=3D"tooltip"></slot>  </rpl-popper> </template>
-        <!--?lit$46225495$--><a rpl=3D"" aria-label=3D"Create new chat" cla=
-ss=3D"
-button-small px-[calc(var(--rem10)-var(--button-border-width,0px))]
-button-plain
-
-
-icon
-items-center justify-center
-button inline-flex " href=3D"https://www.reddit.com/room/create"><!--?lit$4=
-6225495$--><!----><span class=3D"flex items-center justify-center"> <!--?li=
-t$46225495$--><span class=3D"flex"><!--?lit$46225495$--><svg rpl=3D"" class=
-=3D"rpl-rtl-icon" fill=3D"currentColor" height=3D"16" icon-name=3D"new-chat=
-" viewBox=3D"0 0 20 20" width=3D"16" xmlns=3D"http://www.w3.org/2000/svg"> =
-<!--?lit$46225495$--><!--?lit$46225495$--><path d=3D"M10 1a9 9 0 00-9 9c0 1=
-.947.79 3.58 1.935 4.957L.231 17.661A.784.784 0 00.785 19H10a9 9 0 009-9 9 =
-9 0 00-9-9Zm0 16.2H6.162c-.994.004-1.907.053-3.045.144l-.076-.188a36.981 36=
-.981 0 002.328-2.087l-1.05-1.263C3.297 12.576 2.8 11.331 2.8 10c0-3.97 3.23=
--7.2 7.2-7.2s7.2 3.23 7.2 7.2-3.23 7.2-7.2 7.2Zm4.4-6.3h-3.5v3.5H9.1v-3.5H5=
-.6V9.1h3.5V5.6h1.8v3.5h3.5v1.8Z"></path><!--?--> </svg></span> <!--?lit$462=
-25495$--> </span> <!--?lit$46225495$--><!--?--><!----><!----><!----></a> <s=
-pan slot=3D"content"><!--?lit$46225495$-->Create new chat</span>
-      </rpl-tooltip></template></rs-room-creation-button>
-          <rs-rooms-nav-filter><template shadowmode=3D"open"><!---->
-      <rpl-dropdown placement=3D"bottom-start" class=3D"z-[var(--layer-filt=
-er)]"><template shadowmode=3D"open"><!----> <rpl-popper part=3D"popper" exp=
-ortparts=3D"
-          popup:popper--popup,
-          arrow:popper--arrow
-        " flip=3D"" shift=3D"" safe-area=3D"" class=3D" hovercard " placeme=
-nt=3D"bottom-start" distance=3D"4" skidding=3D"0" strategy=3D"absolute"><te=
-mplate shadowmode=3D"open"><!----> <slot name=3D"anchor"></slot> <span part=
-=3D"safe-area" class=3D" popup-safe-area "></span> <div part=3D"popup" clas=
-s=3D" popup " aria-hidden=3D"false"> <slot></slot> <!--?lit$46225495$--> </=
-div> </template> <slot slot=3D"anchor" aria-describedby=3D"hovercard"></slo=
-t>  </rpl-popper> </template>
-        <!--?lit$46225495$--> <rpl-tooltip placement=3D"bottom" class=3D"fl=
-ex" appearance=3D"neutral"><template shadowmode=3D"open"><!----> <rpl-poppe=
-r part=3D"popper" exportparts=3D"
-          popup:popper--popup,
-          arrow:popper--arrow
-        " flip=3D"" shift=3D"" arrow=3D"" safe-area=3D"" no-screen-reader=
-=3D"" class=3D" tooltip " placement=3D"bottom" distance=3D"4" skidding=3D"0=
-" strategy=3D"absolute"><template shadowmode=3D"open"><!----> <slot name=3D=
-"anchor"></slot> <span part=3D"safe-area" class=3D" popup-safe-area "></spa=
-n> <div part=3D"popup" class=3D" popup popup--has-arrow " aria-hidden=3D"tr=
-ue"> <slot></slot> <!--?lit$46225495$--><div part=3D"arrow" class=3D"popup-=
--arrow" role=3D"presentation"></div> </div> </template> <slot slot=3D"ancho=
-r" aria-describedby=3D"tooltip"></slot>  </rpl-popper> </template>
-        <!--?lit$46225495$--><button rpl=3D"" aria-label=3D"Filter chat inb=
-ox" class=3D"overflow-visible
-button-small px-[calc(var(--rem10)-var(--button-border-width,0px))]
-button-plain
-
-
-
-items-center justify-center
-button inline-flex " data-testid=3D"dropdown-button" aria-haspopup=3D"menu"=
- aria-expanded=3D"false"> <!--?lit$46225495$--><!----><span class=3D"flex i=
-tems-center justify-center"> <!--?lit$46225495$--> <!--?lit$46225495$--><sp=
-an class=3D"flex items-center gap-xs"><!--?lit$46225495$--><span class=3D"r=
-elative flex">
-        <!--?lit$46225495$--><svg rpl=3D"" fill=3D"currentColor" height=3D"=
-16" icon-name=3D"filter" viewBox=3D"0 0 20 20" width=3D"16" xmlns=3D"http:/=
-/www.w3.org/2000/svg"> <!--?lit$46225495$--><!--?lit$46225495$--><path d=3D=
-"M3 6.9h7.11A4 4 0 0014 10c2.21 0 4-1.79 4-4s-1.79-4-4-4a4 4 0 00-3.89 3.1H=
-3c-.5 0-.9.4-.9.9s.4.9.9.9Zm11-3.1c1.21 0 2.2.99 2.2 2.2 0 1.21-.99 2.2-2.2=
- 2.2-1.21 0-2.2-.99-2.2-2.2 0-1.21.99-2.2 2.2-2.2Zm3 9.3H9.89A4 4 0 006 10c=
--2.21 0-4 1.79-4 4s1.79 4 4 4a4 4 0 003.89-3.1H17c.5 0 .9-.4.9-.9s-.4-.9-.9=
--.9ZM6 16.2c-1.21 0-2.2-.99-2.2-2.2 0-1.21.99-2.2 2.2-2.2 1.21 0 2.2.99 2.2=
- 2.2 0 1.21-.99 2.2-2.2 2.2Z"></path><!--?--> </svg>
-        <rs-notifications-badge class=3D"absolute end-[-6px] top-[-6px]" co=
-unt=3D"0"><template shadowmode=3D"open"><!----></template></rs-notification=
-s-badge>
-      </span></span> </span> <!--?lit$46225495$--><span class=3D"flex ms-2x=
-s me-[-2px]"><!--?lit$46225495$--><svg rpl=3D"" fill=3D"currentColor" heigh=
-t=3D"16" icon-name=3D"caret-down" role=3D"presentation" viewBox=3D"0 0 20 2=
-0" width=3D"16" xmlns=3D"http://www.w3.org/2000/svg"> <!--?lit$46225495$-->=
-<!--?lit$46225495$--><path d=3D"M10 13.7a.897.897 0 01-.636-.264l-4.6-4.6a.=
-9.9 0 111.272-1.273L10 11.526l3.964-3.963a.9.9 0 011.272 1.273l-4.6 4.6A.89=
-7.897 0 0110 13.7Z"></path><!--?--> </svg></span><!--?--><!----><!----><!--=
---> </button> <span slot=3D"content"><!--?lit$46225495$-->Filter chat inbox=
-</span>
-      </rpl-tooltip>
-        <rpl-menu slot=3D"content" class=3D"w-[280px] py-xs" role=3D"menu" =
-wrap=3D"" label=3D""><template shadowmode=3D"open"><!----> <rpl-scrollbox p=
-art=3D"scrollbox"><template shadowmode=3D"open"><!----> <div class=3D"top-o=
-verlay"></div> <div class=3D"visibility-ref-top" data-position=3D"top"></di=
-v> <slot></slot> <div class=3D"visibility-ref-bottom" data-position=3D"bott=
-om"></div> <div class=3D"bottom-overlay"></div> </template> <slot name=3D"t=
-itle" part=3D"title-slot" class=3D"  "></slot> <slot part=3D"default-slot">=
-</slot> </rpl-scrollbox> </template>
-          <!--?lit$46225495$--> <rs-rooms-nav-filter-item input-role=3D"che=
-ckbox" label=3D"Group chats" notification-count=3D"0" checked=3D"">
-      <!----><li rpl=3D"" class=3D"relative list-none mt-0 " role=3D"presen=
-tation"> <!--?lit$46225495$--><!--?lit$46225495$--><div role=3D"checkbox" t=
-abindex=3D"0" class=3D"flex justify-between relative px-md gap-xs text-seco=
-ndary-plain hover:text-secondary-plain-hover active:bg-interactive-pressed =
-hover:bg-neutral-background-hover hover:no-underline cursor-pointer  py-xs =
- -outline-offset-1 " style=3D"padding-inline-end:16px" aria-checked=3D"true=
-"> <!--?lit$46225495$--> <span class=3D"flex items-center gap-xs min-w-0 sh=
-rink"> <!--?lit$46225495$--> <!--?lit$46225495$--> <span class=3D"flex flex=
--col justify-center min-w-0 shrink py-[0.375rem]"> <span class=3D"text-body=
--2"><!--?lit$46225495$--><span class=3D"text-tone-1"> <!--?lit$46225495$-->=
-Group chats </span></span> <span class=3D"text-caption-1 text-secondary-pla=
-in-weak"><!--?lit$46225495$--></span> </span> </span> <!--?lit$46225495$-->=
-<span class=3D"flex items-center shrink-0"> <span class=3D"flex items-cente=
-r justify-center h-lg"><!--?lit$46225495$--><rs-notifications-badge class=
-=3D"me-xs" count=3D"0"><template shadowmode=3D"open"><!----></template></rs=
--notifications-badge><!--?lit$46225495$--><svg rpl=3D"" class=3D"text-prima=
-ry-background" fill=3D"currentColor" height=3D"16" icon-name=3D"checkbox-fi=
-ll" viewBox=3D"0 0 20 20" width=3D"16" xmlns=3D"http://www.w3.org/2000/svg"=
-> <!--?lit$46225495$--><!--?lit$46225495$--><path d=3D"M14.698 2h-9.4a3.304=
- 3.304 0 00-3.3 3.3v9.4c0 1.82 1.48 3.301 3.3 3.301h9.4c1.82 0 3.3-1.48 3.3=
--3.301V5.3c0-1.819-1.48-3.3-3.3-3.3ZM9.177 13.236a.899.899 0 01-1.274 0l-2.=
-545-2.545 1.275-1.275 1.908 1.909L13.365 6.5l1.275 1.275-5.462 5.462-.001-.=
-001Z"></path><!--?--> </svg><!--?--></span> </span>  </div> <!--?lit$462254=
-95$--><!--?--> </li></rs-rooms-nav-filter-item>
-      <rs-rooms-nav-filter-item input-role=3D"checkbox" label=3D"Direct cha=
-ts" notification-count=3D"0" checked=3D"">
-      <!----><li rpl=3D"" class=3D"relative list-none mt-0 " role=3D"presen=
-tation"> <!--?lit$46225495$--><!--?lit$46225495$--><div role=3D"checkbox" t=
-abindex=3D"0" class=3D"flex justify-between relative px-md gap-xs text-seco=
-ndary-plain hover:text-secondary-plain-hover active:bg-interactive-pressed =
-hover:bg-neutral-background-hover hover:no-underline cursor-pointer  py-xs =
- -outline-offset-1 " style=3D"padding-inline-end:16px" aria-checked=3D"true=
-"> <!--?lit$46225495$--> <span class=3D"flex items-center gap-xs min-w-0 sh=
-rink"> <!--?lit$46225495$--> <!--?lit$46225495$--> <span class=3D"flex flex=
--col justify-center min-w-0 shrink py-[0.375rem]"> <span class=3D"text-body=
--2"><!--?lit$46225495$--><span class=3D"text-tone-1"> <!--?lit$46225495$-->=
-Direct chats </span></span> <span class=3D"text-caption-1 text-secondary-pl=
-ain-weak"><!--?lit$46225495$--></span> </span> </span> <!--?lit$46225495$--=
-><span class=3D"flex items-center shrink-0"> <span class=3D"flex items-cent=
-er justify-center h-lg"><!--?lit$46225495$--><rs-notifications-badge class=
-=3D"me-xs" count=3D"0"><template shadowmode=3D"open"><!----></template></rs=
--notifications-badge><!--?lit$46225495$--><svg rpl=3D"" class=3D"text-prima=
-ry-background" fill=3D"currentColor" height=3D"16" icon-name=3D"checkbox-fi=
-ll" viewBox=3D"0 0 20 20" width=3D"16" xmlns=3D"http://www.w3.org/2000/svg"=
-> <!--?lit$46225495$--><!--?lit$46225495$--><path d=3D"M14.698 2h-9.4a3.304=
- 3.304 0 00-3.3 3.3v9.4c0 1.82 1.48 3.301 3.3 3.301h9.4c1.82 0 3.3-1.48 3.3=
--3.301V5.3c0-1.819-1.48-3.3-3.3-3.3ZM9.177 13.236a.899.899 0 01-1.274 0l-2.=
-545-2.545 1.275-1.275 1.908 1.909L13.365 6.5l1.275 1.275-5.462 5.462-.001-.=
-001Z"></path><!--?--> </svg><!--?--></span> </span>  </div> <!--?lit$462254=
-95$--><!--?--> </li></rs-rooms-nav-filter-item>
-      <rs-rooms-nav-filter-item input-role=3D"checkbox" label=3D"Mod mail" =
-notification-count=3D"0" checked=3D"">
-      <!----><li rpl=3D"" class=3D"relative list-none mt-0 " role=3D"presen=
-tation"> <!--?lit$46225495$--><!--?lit$46225495$--><div role=3D"checkbox" t=
-abindex=3D"0" class=3D"flex justify-between relative px-md gap-xs text-seco=
-ndary-plain hover:text-secondary-plain-hover active:bg-interactive-pressed =
-hover:bg-neutral-background-hover hover:no-underline cursor-pointer  py-xs =
- -outline-offset-1 " style=3D"padding-inline-end:16px" aria-checked=3D"true=
-"> <!--?lit$46225495$--> <span class=3D"flex items-center gap-xs min-w-0 sh=
-rink"> <!--?lit$46225495$--> <!--?lit$46225495$--> <span class=3D"flex flex=
--col justify-center min-w-0 shrink py-[0.375rem]"> <span class=3D"text-body=
--2"><!--?lit$46225495$--><span class=3D"text-tone-1"> <!--?lit$46225495$-->=
-Mod mail </span></span> <span class=3D"text-caption-1 text-secondary-plain-=
-weak"><!--?lit$46225495$--></span> </span> </span> <!--?lit$46225495$--><sp=
-an class=3D"flex items-center shrink-0"> <span class=3D"flex items-center j=
-ustify-center h-lg"><!--?lit$46225495$--><rs-notifications-badge class=3D"m=
-e-xs" count=3D"0"><template shadowmode=3D"open"><!----></template></rs-noti=
-fications-badge><!--?lit$46225495$--><svg rpl=3D"" class=3D"text-primary-ba=
-ckground" fill=3D"currentColor" height=3D"16" icon-name=3D"checkbox-fill" v=
-iewBox=3D"0 0 20 20" width=3D"16" xmlns=3D"http://www.w3.org/2000/svg"> <!-=
--?lit$46225495$--><!--?lit$46225495$--><path d=3D"M14.698 2h-9.4a3.304 3.30=
-4 0 00-3.3 3.3v9.4c0 1.82 1.48 3.301 3.3 3.301h9.4c1.82 0 3.3-1.48 3.3-3.30=
-1V5.3c0-1.819-1.48-3.3-3.3-3.3ZM9.177 13.236a.899.899 0 01-1.274 0l-2.545-2=
-.545 1.275-1.275 1.908 1.909L13.365 6.5l1.275 1.275-5.462 5.462-.001-.001Z"=
-></path><!--?--> </svg><!--?--></span> </span>  </div> <!--?lit$46225495$--=
-><!--?--> </li></rs-rooms-nav-filter-item>
-      <rs-rooms-nav-filter-item input-role=3D"switch" label=3D"Unread">
-      <!----><li rpl=3D"" class=3D"relative list-none mt-0 " role=3D"presen=
-tation"> <!--?lit$46225495$--><!--?lit$46225495$--><div role=3D"switch" tab=
-index=3D"0" class=3D"flex justify-between relative px-md gap-xs text-second=
-ary-plain hover:text-secondary-plain-hover active:bg-interactive-pressed ho=
-ver:bg-neutral-background-hover hover:no-underline cursor-pointer  py-xs  -=
-outline-offset-1 " style=3D"padding-inline-end:16px" aria-checked=3D"false"=
-> <!--?lit$46225495$--> <span class=3D"flex items-center gap-xs min-w-0 shr=
-ink"> <!--?lit$46225495$--> <!--?lit$46225495$--> <span class=3D"flex flex-=
-col justify-center min-w-0 shrink py-[0.375rem]"> <span class=3D"text-body-=
-2"><!--?lit$46225495$--><span class=3D"text-tone-1"> <!--?lit$46225495$-->U=
-nread </span></span> <span class=3D"text-caption-1 text-secondary-plain-wea=
-k"><!--?lit$46225495$--></span> </span> </span> <!--?lit$46225495$--><span =
-class=3D"flex items-center shrink-0"> <span class=3D"flex items-center just=
-ify-center h-lg"><!--?lit$46225495$--><rs-notifications-badge class=3D"me-x=
-s" count=3D"0"><template shadowmode=3D"open"><!----></template></rs-notific=
-ations-badge><!--?lit$46225495$--><faceplate-switch-input class=3D"inline-g=
-rid" role=3D"switch" tabindex=3D"0" aria-disabled=3D"false"><template shado=
-wmode=3D"open"><!----> <span class=3D"outer"> <span class=3D"knob"> <!--?li=
-t$46225495$--><svg rpl=3D"" aria-hidden=3D"true" fill=3D"currentColor" heig=
-ht=3D"12" icon-name=3D"checkmark-12" viewBox=3D"0 0 12 12" width=3D"12" xml=
-ns=3D"http://www.w3.org/2000/svg"> <!--?lit$46225495$--><!--?lit$46225495$-=
--><path d=3D"M4.21 9.95c-.31 0-.61-.12-.85-.35L.58 6.82a.706.706 0 010-.99c=
-.27-.27.72-.27.99 0l2.64 2.64 6.22-6.22c.27-.27.72-.27.99 0s.27.72 0 .99L5.=
-06 9.6c-.23.23-.54.35-.85.35Z"></path><!--?--> </svg> </span> </span> <!--?=
-lit$46225495$--> <!--?lit$46225495$--> <!--?lit$46225495$-->  <label> <slot=
-></slot> </label>  </template></faceplate-switch-input><!--?--></span> </sp=
-an>  </div> <!--?lit$46225495$--><!--?--> </li></rs-rooms-nav-filter-item>
-      <li class=3D"mt-xs flex">
-        <!--?lit$46225495$--><button rpl=3D"" aria-label=3D"Apply filters" =
-class=3D"ms-auto me-xs
-button-small px-[calc(var(--rem10)-var(--button-border-width,0px))]
-button-primary
-
-
-
-items-center justify-center
-button inline-flex " type=3D"submit"> <!--?lit$46225495$--><!----><span cla=
-ss=3D"flex items-center justify-center"> <!--?lit$46225495$--> <!--?lit$462=
-25495$--><span class=3D"flex items-center gap-xs"><!--?lit$46225495$-->Appl=
-y</span> </span> <!--?lit$46225495$--><!--?--><!----><!----><!----> </butto=
-n>
-      </li>
-        </rpl-menu>
-      </rpl-dropdown>
-    </template></rs-rooms-nav-filter>
-        </div>
-      </div>
-   =20
-      <rs-rooms-nav-filter-chips><template shadowmode=3D"open"><!----></tem=
-plate></rs-rooms-nav-filter-chips>
-      <!--?lit$46225495$--> <rs-virtual-scroll class=3D"flex-1" item-height=
-=3D"60" preservepreviousscrollkey=3D"rs-rooms-nav"><template shadowmode=3D"=
-open"><!---->
-      <!--?lit$46225495$--><!----><li rpl=3D"" class=3D"relative list-none =
-mt-0 " data-testid=3D"threads-button" role=3D"presentation"> <!--?lit$46225=
-495$--><!--?lit$46225495$--><div role=3D"button" tabindex=3D"0" class=3D"fl=
-ex justify-between relative px-md gap-xs text-secondary-plain hover:text-se=
-condary-plain-hover active:bg-interactive-pressed hover:bg-neutral-backgrou=
-nd-hover hover:no-underline cursor-pointer  py-xs  -outline-offset-1 " styl=
-e=3D"padding-inline-end:16px"> <!--?lit$46225495$--> <span class=3D"flex it=
-ems-center gap-xs min-w-0 shrink"> <!--?lit$46225495$--> <span class=3D"fle=
-x shrink-0 items-center justify-center h-xl w-xl text-20 leading-4 "> <!--?=
-lit$46225495$--><svg rpl=3D"" class=3D"rpl-rtl-icon" fill=3D"currentColor" =
-height=3D"20" icon-name=3D"reply" viewBox=3D"0 0 20 20" width=3D"20" xmlns=
-=3D"http://www.w3.org/2000/svg"> <!--?lit$46225495$--><!--?lit$46225495$-->=
-<path d=3D"M12.092 7.095H4.068l4.557-4.562a.898.898 0 00-1.27-1.27L1.26 7.3=
-55a.9.9 0 000 1.27l6.096 6.103c.18.18.41.26.64.26.229 0 .459-.09.639-.26a.9=
-.9 0 000-1.27L4.078 8.896h8.024a5.108 5.108 0 015.097 5.102V18.1c0 .5.4.9.9=
-.9.499 0 .899-.4.899-.9v-4.102c0-3.802-3.098-6.903-6.896-6.903h-.01Z"></pat=
-h><!--?--> </svg> </span> <!--?lit$46225495$--> <span class=3D"flex flex-co=
-l justify-center min-w-0 shrink py-[0.375rem]"> <span class=3D"text-body-2"=
-><!--?lit$46225495$--><span class=3D"text-tone-1 text-16 leading-5" data-te=
-stid=3D"nav-item-threads" aria-label=3D"View reply threads">
-      <!--?lit$46225495$-->Threads
-    </span></span> <span class=3D"text-caption-1 text-secondary-plain-weak"=
-><!--?lit$46225495$--></span> </span> </span> <!--?lit$46225495$--><span cl=
-ass=3D"flex items-center shrink-0"> <span class=3D"flex items-center justif=
-y-center h-lg"><!--?lit$46225495$--> <rs-notifications-badge class=3D"me-xs=
-" count=3D"0" shouldshowfullcount=3D""><template shadowmode=3D"open"><!----=
-></template></rs-notifications-badge><!--?lit$46225495$--><svg rpl=3D"" cla=
-ss=3D"rpl-rtl-icon" fill=3D"currentColor" height=3D"20" icon-name=3D"caret-=
-right" viewBox=3D"0 0 20 20" width=3D"20" xmlns=3D"http://www.w3.org/2000/s=
-vg"> <!--?lit$46225495$--><!--?lit$46225495$--><path d=3D"M13.7 10c0 .23-.0=
-88.46-.264.636l-4.6 4.6a.9.9 0 11-1.273-1.272L11.526 10 7.563 6.036a.9.9 0 =
-011.273-1.272l4.6 4.6A.897.897 0 0113.7 10Z"></path><!--?--> </svg><!--?-->=
-</span> </span>  </div> <!--?lit$46225495$--><!--?--> </li><!---->
-      <div style=3D"height: 0px"></div>
-      <rs-roving-focus-native>
-        <!--?lit$46225495$--><!---->
-        <rs-rooms-nav-room room=3D"!wauqgS2iTs-lRVn5Ygtw6Q:reddit.com" sele=
-cted=3D"" tabindex=3D"0"><template shadowmode=3D"open" shadowdelegatesfocus=
-=3D""><!---->
-      <div class=3D"relative group/container">
-        <a href=3D"https://www.reddit.com/room/!wauqgS2iTs-lRVn5Ygtw6Q%3Are=
-ddit.com" class=3D"peer container  selected " aria-label=3D"u/17O8 is perma=
-nently banned from r/Unexpected">
-          <rs-room-icon room=3D"!wauqgS2iTs-lRVn5Ygtw6Q:reddit.com"><templa=
-te shadowmode=3D"open"><!---->
-        <!--?lit$46225495$--> <div class=3D" avatar ">
-      <!--?lit$46225495$--><span rpl=3D"" avatar=3D"" class=3D"inline-flex =
-items-center justify-center w-xl h-xl relative "> <!--?lit$46225495$--> <!-=
--?lit$46225495$--><span rpl=3D"" class=3D"inline-block rounded-full  relati=
-ve [&amp;&gt;:first-child]:h-full [&amp;&gt;:first-child]:w-full [&amp;&gt;=
-:first-child]:mb-0 [&amp;&gt;:first-child]:rounded-[inherit] h-full w-full =
-[&amp;&gt;:first-child]:overflow-hidden [&amp;&gt;:first-child]:max-h-full"=
-> <!--?lit$46225495$-->
-        <rs-channel-icon channelname=3D"Unexpected" channeltype=3D"reddit_m=
-odmail" size=3D"sm" icon=3D"https://styles.redditmedia.com/t5_2w67q/styles/=
-communityIcon_9cgp16ko1rce1.png?width=3D64&amp;frame=3D1&amp;auto=3Dwebp&am=
-p;s=3D23e09e2af77f836d72f068e11b240d86421d97fb"><template shadowmode=3D"ope=
-n"><!----><img class=3D" flex justify-center items-center rounded-full w-fu=
-ll h-full " alt=3D"Unexpected channel icon" src=3D"https://styles.redditmed=
-ia.com/t5_2w67q/styles/communityIcon_9cgp16ko1rce1.png?width=3D64&amp;frame=
-=3D1&amp;auto=3Dwebp&amp;s=3D23e09e2af77f836d72f068e11b240d86421d97fb"></te=
-mplate></rs-channel-icon>
-      <!--?lit$46225495$--> </span></span>
-    </div>
-      </template></rs-room-icon>
-          <div class=3D"body">
-            <div class=3D"row">
-              <div class=3D"inline-flex items-center overflow-hidden group-=
-hover/container:me-xl group-hover/container:overflow-hidden group-hover/con=
-tainer:text-ellipsis group-focus-within/container:me-xl group-focus-within/=
-container:overflow-hidden group-focus-within/container:text-ellipsis">
-                <!--?lit$46225495$-->
-                <span class=3D"inline-flex items-center gap-2xs min-w-0 fle=
-x-1 overflow-hidden">
-                  <span class=3D"room-name truncate" dir=3D"auto"><!--?lit$=
-46225495$-->u/17O8 is permanently banned from r/Unexpected</span><!--?lit$4=
-6225495$--> </span><!--?lit$46225495$--><span class=3D"text-12 font-bold te=
-xt-global-moderator whitespace-nowrap ms-2xs">
-          MOD
-        </span>
-              </div>
-              <span class=3D"last-message-time group-hover/container:hidden=
- group-focus-within/container:hidden"><!--?lit$46225495$-->May 16</span>
-            </div>
-            <div class=3D"row">
-              <div class=3D"inline-block overflow-hidden text-ellipsis grou=
-p-hover/container:me-xl group-hover/container:overflow-hidden group-hover/c=
-ontainer:text-ellipsis group-focus-within/container:me-xl group-focus-withi=
-n/container:overflow-hidden group-focus-within/container:text-ellipsis">
-                <!--?lit$46225495$-->
-      <span class=3D"last-message" dir=3D"auto">
-        <!--?lit$46225495$-->r/Unexpected: Hello,
-You have been permanently banned from participating in /r/Unexpected(https:=
-//www.reddit.com/r/Unexpected) because your post(https://www.reddit.com/r/U=
-nexpected/comments/1te92wb/man_catches_a_snake/) violates this community's =
-rules. You won't be able to post or comment, but you can still view and sub=
-scribe to it.
-
-If you have a question regarding your ban, you can contact the moderator te=
-am by replying to this message.
-
-Reminder from the Reddit Admin team: If you use another account to circumve=
-nt this community ban, that will be considered a violation of the Reddit Ru=
-les(https://reddit.com/help/contentpolicy#section_prohibited_behavior) and =
-may result in your account being banned(https://www.reddithelp.com/en/categ=
-ories/reddit-101/rules-reporting/account-and-community-restrictions/suspens=
-ions) from the platform as a whole.
-
-      </span>
-   =20
-              </div>
-              <div class=3D"badges group-hover/container:hidden group-focus=
--within/container:hidden">
-                <!--?lit$46225495$-->
-              </div>
-            </div>
-            <!--?lit$46225495$-->
-          </div>
-        </a>
-        <!--?lit$46225495$-->
-      <div class=3D"absolute end-xs top-0 bottom-0 hidden group-hover/conta=
-iner:flex group-focus-within/container:flex items-center">
-        <!--?lit$46225495$--><button rpl=3D"" aria-label=3D"Pin room u/17O8=
- is permanently banned from r/Unexpected to the pinned room list" class=3D"=
-text-tone-2 group/pin-button
-button-small px-[calc(var(--rem10)-var(--button-border-width,0px))]
-button-secondary
-
-
-icon
-items-center justify-center
-button inline-flex " tabindex=3D"-1" type=3D"button"> <!--?lit$46225495$-->=
-<!----><span class=3D"flex items-center justify-center"> <!--?lit$46225495$=
---><span class=3D"flex"><!--?lit$46225495$--><svg rpl=3D"" class=3D"transit=
-ion-transform group-hover/pin-button:-rotate-45 group-focus/pin-button:-rot=
-ate-45" fill=3D"currentColor" height=3D"16" icon-name=3D"pin" viewBox=3D"0 =
-0 20 20" width=3D"16" xmlns=3D"http://www.w3.org/2000/svg"> <!--?lit$462254=
-95$--><!--?lit$46225495$--><path d=3D"M18.17 6.19c0-1.13-.44-2.19-1.24-2.99=
-l-.17-.17c-.8-.8-1.86-1.24-2.99-1.24-1.13 0-2.19.44-2.99 1.24L8.83 4.98a6.2=
- 6.2 0 00-2.71.12c-1.06.28-2.02.84-2.8 1.61a.9.9 0 00-.26.64c0 .24.09.47.26=
-.64l3.72 3.72-4.96 4.96a.9.9 0 000 1.27c.18.18.41.26.64.26.23 0 .46-.09.64-=
-.26l4.96-4.96 3.64 3.64c.17.17.4.26.64.26s.47-.1.64-.26c.77-.77 1.33-1.74 1=
-.61-2.79.24-.88.28-1.81.12-2.7l1.96-1.95c.8-.8 1.24-1.86 1.24-2.99ZM15.66 7=
-.9l-2.7 2.69c.35.89.4 1.86.15 2.78-.12.46-.32.89-.58 1.29L5.3 7.43a4.42 4.4=
-2 0 014.07-.42l2.69-2.69c.94-.94 2.48-.94 3.42 0l.17.17c.46.46.71 1.07.71 1=
-.71 0 .64-.25 1.26-.71 1.71l.01-.01Z"></path><!--?--> </svg></span> <!--?li=
-t$46225495$--> </span> <!--?lit$46225495$--><!--?--><!----><!----><!----> <=
-/button>
-      </div>
-   =20
-      </div>
-    </template></rs-rooms-nav-room>
-      <!----><!---->
-        <rs-rooms-nav-room room=3D"!z_vMcE--9sIS8F-OgyYvq7fRfV6EZMaWQf3uoi1=
-2wpU:reddit.com" tabindex=3D"-1"><template shadowmode=3D"open" shadowdelega=
-tesfocus=3D""><!---->
-      <div class=3D"relative group/container">
-        <a href=3D"https://www.reddit.com/room/!z_vMcE--9sIS8F-OgyYvq7fRfV6=
-EZMaWQf3uoi12wpU%3Areddit.com" class=3D"peer container   " aria-label=3D"Di=
-rect chat with BayanKusS">
-          <rs-room-icon room=3D"!z_vMcE--9sIS8F-OgyYvq7fRfV6EZMaWQf3uoi12wp=
-U:reddit.com"><template shadowmode=3D"open"><!----> <div class=3D" avatar "=
->
-      <!--?lit$46225495$--><span rpl=3D"" avatar=3D"" class=3D"inline-flex =
-items-center justify-center w-xl h-xl relative rtl-flip"> <!--?lit$46225495=
-$--> <!--?lit$46225495$--><span class=3D"inline-flex snoovatar relative  fp=
--avatar-container rounded-full w-xl h-xl min-w-[2rem] min-h-[2rem] isolate =
-box-content"><!--?lit$46225495$--> <!--?lit$46225495$--> <!--?lit$46225495$=
---><span class=3D"absolute start-0 end-0 bottom-0 mx-auto inline-flex shrin=
-k-0 justify-center box-border h-full w-full"> <!--?lit$46225495$--><!--?lit=
-$46225495$--> <span style=3D"background: var(--color-avatar-gradient)" clas=
-s=3D"rounded-full absolute h-full w-full inline-flex justify-center "> <!--=
-?lit$46225495$--> </span> <svg viewBox=3D"0 0 121 122" xmlns=3D"http://www.=
-w3.org/2000/svg" class=3D"overflow-hidden absolute bottom-0 w-xl h-xl"> <de=
-fs> <clipPath id=3D"fb68251c29ff78"> <path d=3D"M0 0V79L28.1628 105.5C35.01=
-3 115.465 46.4934 122 59.5 122C72.5066 122 83.987 115.465 90.8372 105.5L120=
-.5 79V0H0Z"></path> </clipPath> </defs> <!--?lit$46225495$--><image height=
-=3D"100%" width=3D"100%" href=3D"https://styles.redditmedia.com/t5_60w9ln/s=
-tyles/profileIcon_snoo90fd6c22-76ee-4e66-8cd7-0f691c072e6c-headshot.png?wid=
-th=3D64&amp;height=3D64&amp;frame=3D1&amp;auto=3Dwebp&amp;crop=3D64%3A64%2C=
-smart&amp;s=3D25874c99b1d400bf4c0970af2e05625e4ba4d922" alt=3D"User Avatar"=
- clip-path=3D"url(#fb68251c29ff78)"></image> </svg> </span><!--?--><!--?lit=
-$46225495$--> </span></span>
-    </div></template></rs-room-icon>
-          <div class=3D"body">
-            <div class=3D"row">
-              <div class=3D"inline-flex items-center overflow-hidden group-=
-hover/container:me-xl group-hover/container:overflow-hidden group-hover/con=
-tainer:text-ellipsis group-focus-within/container:me-xl group-focus-within/=
-container:overflow-hidden group-focus-within/container:text-ellipsis">
-                <!--?lit$46225495$-->
-                <span class=3D"inline-flex items-center gap-2xs min-w-0 fle=
-x-1 overflow-hidden">
-                  <span class=3D"room-name truncate" dir=3D"auto"><!--?lit$=
-46225495$-->BayanKusS</span><!--?lit$46225495$--> </span><!--?lit$46225495$=
--->
-              </div>
-              <span class=3D"last-message-time group-hover/container:hidden=
- group-focus-within/container:hidden"><!--?lit$46225495$-->Mar 19, 2023</sp=
-an>
-            </div>
-            <div class=3D"row">
-              <div class=3D"inline-block overflow-hidden text-ellipsis grou=
-p-hover/container:me-xl group-hover/container:overflow-hidden group-hover/c=
-ontainer:text-ellipsis group-focus-within/container:me-xl group-focus-withi=
-n/container:overflow-hidden group-focus-within/container:text-ellipsis">
-                <!--?lit$46225495$-->
-      <span class=3D"last-message" dir=3D"auto">
-        <!--?lit$46225495$-->You: Seni cok seviyorum canim askim =F0=9F=98=
-=8D
-      </span>
-   =20
-              </div>
-              <div class=3D"badges group-hover/container:hidden group-focus=
--within/container:hidden">
-                <!--?lit$46225495$-->
-              </div>
-            </div>
-            <!--?lit$46225495$-->
-          </div>
-        </a>
-        <!--?lit$46225495$-->
-      <div class=3D"absolute end-xs top-0 bottom-0 hidden group-hover/conta=
-iner:flex group-focus-within/container:flex items-center">
-        <!--?lit$46225495$--><button rpl=3D"" aria-label=3D"Pin room Direct=
- chat with BayanKusS to the pinned room list" class=3D"text-tone-2 group/pi=
-n-button
-button-small px-[calc(var(--rem10)-var(--button-border-width,0px))]
-button-secondary
-
-
-icon
-items-center justify-center
-button inline-flex " tabindex=3D"-1" type=3D"button"> <!--?lit$46225495$-->=
-<!----><span class=3D"flex items-center justify-center"> <!--?lit$46225495$=
---><span class=3D"flex"><!--?lit$46225495$--><svg rpl=3D"" class=3D"transit=
-ion-transform group-hover/pin-button:-rotate-45 group-focus/pin-button:-rot=
-ate-45" fill=3D"currentColor" height=3D"16" icon-name=3D"pin" viewBox=3D"0 =
-0 20 20" width=3D"16" xmlns=3D"http://www.w3.org/2000/svg"> <!--?lit$462254=
-95$--><!--?lit$46225495$--><path d=3D"M18.17 6.19c0-1.13-.44-2.19-1.24-2.99=
-l-.17-.17c-.8-.8-1.86-1.24-2.99-1.24-1.13 0-2.19.44-2.99 1.24L8.83 4.98a6.2=
- 6.2 0 00-2.71.12c-1.06.28-2.02.84-2.8 1.61a.9.9 0 00-.26.64c0 .24.09.47.26=
-.64l3.72 3.72-4.96 4.96a.9.9 0 000 1.27c.18.18.41.26.64.26.23 0 .46-.09.64-=
-.26l4.96-4.96 3.64 3.64c.17.17.4.26.64.26s.47-.1.64-.26c.77-.77 1.33-1.74 1=
-.61-2.79.24-.88.28-1.81.12-2.7l1.96-1.95c.8-.8 1.24-1.86 1.24-2.99ZM15.66 7=
-.9l-2.7 2.69c.35.89.4 1.86.15 2.78-.12.46-.32.89-.58 1.29L5.3 7.43a4.42 4.4=
-2 0 014.07-.42l2.69-2.69c.94-.94 2.48-.94 3.42 0l.17.17c.46.46.71 1.07.71 1=
-.71 0 .64-.25 1.26-.71 1.71l.01-.01Z"></path><!--?--> </svg></span> <!--?li=
-t$46225495$--> </span> <!--?lit$46225495$--><!--?--><!----><!----><!----> <=
-/button>
-      </div>
-   =20
-      </div>
-    </template></rs-rooms-nav-room>
-      <!---->
-      </rs-roving-focus-native>
-      <div style=3D"height: 0px"></div>
-    </template>
-    </rs-virtual-scroll><!--?--></template></rs-rooms-nav>
-    <!--?lit$46225495$--><div class=3D"flex flex-col overflow-auto">
-    <!--?lit$46225495$--><a rpl=3D"" aria-label=3D"Skip to chat navigation =
-bar" class=3D"sr-only focus:not-sr-only a
- =20
- =20
- =20
- =20
-  hover:underline
- =20
-  cursor-pointer" href=3D"https://www.reddit.com/r/GameDevTycoon/comments/1=
-otq1e4/simpleish_guide_for_178_expanded_part_3/#main-right-content"><!--?li=
-t$46225495$--><!--?lit$46225495$--><!--?lit$46225495$-->Skip to chat naviga=
-tion bar<!--?lit$46225495$--><!--?--></a>
-    <!--?lit$46225495$-->
-          <rs-page-overlay-manager><template shadowmode=3D"open"><!----><sl=
-ot></slot></template>
-            <rs-room room=3D"!wauqgS2iTs-lRVn5Ygtw6Q:reddit.com"><template =
-shadowmode=3D"open"><!---->
-      <main>
-        <!--?lit$46225495$-->
-    <header class=3D"flex items-center h-[2.75rem] min-h-[2.75rem] w-full p=
-s-sm pe-xs gap-2xs box-border  border-solid border-0 border-b border-b-tone=
--5 ">
-      <!--?lit$46225495$--><div class=3D"flex gap-sm items-center">
-      <!--?lit$46225495$-->
-      <rs-room-icon room=3D"!wauqgS2iTs-lRVn5Ygtw6Q:reddit.com"><template s=
-hadowmode=3D"open"><!---->
-        <!--?lit$46225495$--> <div class=3D" avatar ">
-      <!--?lit$46225495$--><span rpl=3D"" avatar=3D"" class=3D"inline-flex =
-items-center justify-center w-xl h-xl relative "> <!--?lit$46225495$--> <!-=
--?lit$46225495$--><span rpl=3D"" class=3D"inline-block rounded-full  relati=
-ve [&amp;&gt;:first-child]:h-full [&amp;&gt;:first-child]:w-full [&amp;&gt;=
-:first-child]:mb-0 [&amp;&gt;:first-child]:rounded-[inherit] h-full w-full =
-[&amp;&gt;:first-child]:overflow-hidden [&amp;&gt;:first-child]:max-h-full"=
-> <!--?lit$46225495$-->
-        <rs-channel-icon channelname=3D"Unexpected" channeltype=3D"reddit_m=
-odmail" size=3D"sm" icon=3D"https://styles.redditmedia.com/t5_2w67q/styles/=
-communityIcon_9cgp16ko1rce1.png?width=3D64&amp;frame=3D1&amp;auto=3Dwebp&am=
-p;s=3D23e09e2af77f836d72f068e11b240d86421d97fb"><template shadowmode=3D"ope=
-n"><!----><img class=3D" flex justify-center items-center rounded-full w-fu=
-ll h-full " alt=3D"Unexpected channel icon" src=3D"https://styles.redditmed=
-ia.com/t5_2w67q/styles/communityIcon_9cgp16ko1rce1.png?width=3D64&amp;frame=
-=3D1&amp;auto=3Dwebp&amp;s=3D23e09e2af77f836d72f068e11b240d86421d97fb"></te=
-mplate></rs-channel-icon>
-      <!--?lit$46225495$--> </span></span>
-    </div>
-      </template></rs-room-icon>
-    </div>
-      <div class=3D"max-w-[calc(100%_-_40px)] ps-2xs me-auto" tabindex=3D"0=
-">
-        <!--?lit$46225495$--> <div class=3D"text-14 font-sans font-semibold=
- line-clamp-1" dir=3D"auto" title=3D"u/17O8 is permanently banned from r/Un=
-expected" aria-label=3D"Current chat, u/17O8 is permanently banned from r/U=
-nexpected">
-      <!--?lit$46225495$-->u/17O8 is permanently banned from r/Unexpected
-    </div>
-    <!--?lit$46225495$--><div class=3D"text-10 text-tone-2 line-clamp-1" di=
-r=3D"auto" title=3D"r/Unexpected">
-          <!--?lit$46225495$--> <rs-room-typing-banner room=3D"!wauqgS2iTs-=
-lRVn5Ygtw6Q:reddit.com"><template shadowmode=3D"open"><!----><slot></slot><=
-/template>
-      <!--?lit$46225495$--><div class=3D"text-neutral-content-weak">
-        <!--?lit$46225495$--><a rpl=3D"" class=3D"text-neutral-content-weak=
- hover:text-neutral-content-weak no-visited a
- =20
- =20
- =20
- =20
-  hover:underline
- =20
-  cursor-pointer" href=3D"https://www.reddit.com/r/Unexpected/" target=3D"_=
-self" type=3D"button"><!--?lit$46225495$--><!--?lit$46225495$--><!--?lit$46=
-225495$-->r/Unexpected<!--?lit$46225495$--><!--?--></a> =E2=80=A2
-        <!--?lit$46225495$-->Mod mail
-      </div>
-    </rs-room-typing-banner>
-        </div><!--?-->
-      </div>
-      <div class=3D"flex flex-nowrap">
-        <!--?lit$46225495$-->
-      <rs-room-settings-button room=3D"!wauqgS2iTs-lRVn5Ygtw6Q:reddit.com">=
-<template shadowmode=3D"open"><!----><button rpl=3D"" aria-label=3D"u/17O8 =
-is permanently banned from r/Unexpected settings" class=3D"text-tone-2
-button-small px-[calc(var(--rem10)-var(--button-border-width,0px))]
-button-plain
-
-
-icon
-items-center justify-center
-button inline-flex " type=3D"button"> <!--?lit$46225495$--><!----><span cla=
-ss=3D"flex items-center justify-center"> <!--?lit$46225495$--><span class=
-=3D"flex"><!--?lit$46225495$--><svg rpl=3D"" fill=3D"currentColor" height=
-=3D"16" icon-name=3D"settings" viewBox=3D"0 0 20 20" width=3D"16" xmlns=3D"=
-http://www.w3.org/2000/svg"> <!--?lit$46225495$--><!--?lit$46225495$--><pat=
-h d=3D"M11.145 18.995h-2.29a1.56 1.56 0 01-1.501-1.134l-.051-.18a2.161 2.16=
-1 0 00-2.604-1.504l-.185.046a1.561 1.561 0 01-1.731-.734l-1.146-1.985a1.561=
- 1.561 0 01.229-1.864l.132-.137a2.163 2.163 0 000-3.007l-.13-.135a1.561 1.5=
-61 0 01-.23-1.866L2.783 4.51a1.56 1.56 0 011.73-.734l.186.046a2.161 2.161 0=
- 002.603-1.504l.05-.18a1.562 1.562 0 011.503-1.134h2.29c.697 0 1.31.463 1.5=
- 1.133l.053.183a2.157 2.157 0 002.599 1.502l.189-.047a1.561 1.561 0 011.73.=
-734l1.147 1.985a1.561 1.561 0 01-.23 1.864l-.133.14a2.162 2.162 0 000 3.004=
-l.132.137c.485.5.578 1.262.23 1.866l-1.145 1.984a1.56 1.56 0 01-1.731.734l-=
-.187-.047a2.16 2.16 0 00-2.601 1.503l-.052.182a1.562 1.562 0 01-1.502 1.134=
-Zm-2.11-1.8 1.933-.01a3.947 3.947 0 014.77-2.754l.01.002.967-1.672-.008-.00=
-7a3.943 3.943 0 010-5.508l.007-.007-.966-1.672-.01.002a3.945 3.945 0 01-4.7=
-71-2.754l-.003-.01-1.933.009A3.946 3.946 0 014.26 5.569l-.01-.002-.966 1.67=
-2.008.007a3.943 3.943 0 010 5.508l-.007.007.966 1.672.01-.002a3.947 3.947 0=
- 014.77 2.754l.004.01ZM10 13c-1.654 0-3-1.346-3-3s1.346-3 3-3 3 1.346 3 3-1=
-.346 3-3 3Zm0-4.2c-.661 0-1.2.539-1.2 1.2 0 .66.539 1.2 1.2 1.2.66 0 1.199-=
-.54 1.199-1.2 0-.661-.538-1.2-1.2-1.2Z"></path><!--?--> </svg></span> <!--?=
-lit$46225495$--> </span> <!--?lit$46225495$--><!--?--><!----><!----><!---->=
- </button></template></rs-room-settings-button>
-   =20
-        <rs-app-window-controls hidden-when-side-view-open=3D"" room=3D"!wa=
-uqgS2iTs-lRVn5Ygtw6Q:reddit.com"><template shadowmode=3D"open"><!---->
-      <!--?lit$46225495$--><button rpl=3D"" aria-label=3D"Open chat in full=
- screen" class=3D"
-button-small px-[calc(var(--rem10)-var(--button-border-width,0px))]
-button-plain
-
-
-icon
-items-center justify-center
-button inline-flex " type=3D"button"> <!--?lit$46225495$--><!----><span cla=
-ss=3D"flex items-center justify-center"> <!--?lit$46225495$--><span class=
-=3D"flex"><!--?lit$46225495$--><svg rpl=3D"" class=3D"rpl-rtl-icon" fill=3D=
-"currentColor" height=3D"16" icon-name=3D"external" viewBox=3D"0 0 20 20" w=
-idth=3D"16" xmlns=3D"http://www.w3.org/2000/svg"> <!--?lit$46225495$--><!--=
-?lit$46225495$--><path d=3D"M18 12v2.7a3.3 3.3 0 01-3.3 3.3H5.3A3.3 3.3 0 0=
-12 14.7V5.3A3.3 3.3 0 015.3 2H8v1.8H5.3c-.827 0-1.5.673-1.5 1.5v9.4c0 .827.=
-673 1.5 1.5 1.5h9.4c.827 0 1.5-.673 1.5-1.5V12H18Zm-.9-10h-4.992a.9.9 0 000=
- 1.8h2.82l-6.664 6.664a.9.9 0 101.273 1.272l6.662-6.662v2.818a.9.9 0 001.8 =
-0V2.9A.9.9 0 0017.1 2Z"></path><!--?--> </svg></span> <!--?lit$46225495$-->=
- </span> <!--?lit$46225495$--><!--?--><!----><!----><!----> </button>
-      <!--?lit$46225495$--><button rpl=3D"" aria-label=3D"Minimize chat win=
-dow" class=3D"
-button-small px-[calc(var(--rem10)-var(--button-border-width,0px))]
-button-plain
-
-
-icon
-items-center justify-center
-button inline-flex " type=3D"button"> <!--?lit$46225495$--><!----><span cla=
-ss=3D"flex items-center justify-center"> <!--?lit$46225495$--><span class=
-=3D"flex"><!--?lit$46225495$--><svg rpl=3D"" fill=3D"currentColor" height=
-=3D"16" icon-name=3D"caret-down" viewBox=3D"0 0 20 20" width=3D"16" xmlns=
-=3D"http://www.w3.org/2000/svg"> <!--?lit$46225495$--><!--?lit$46225495$-->=
-<path d=3D"M10 13.7a.897.897 0 01-.636-.264l-4.6-4.6a.9.9 0 111.272-1.273L1=
-0 11.526l3.964-3.963a.9.9 0 011.272 1.273l-4.6 4.6A.897.897 0 0110 13.7Z"><=
-/path><!--?--> </svg></span> <!--?lit$46225495$--> </span> <!--?lit$4622549=
-5$--><!--?--><!----><!----><!----> </button>
-      <!--?lit$46225495$--><button rpl=3D"" aria-label=3D"Close chat window=
-" class=3D"
-button-small px-[calc(var(--rem10)-var(--button-border-width,0px))]
-button-plain
-
-
-icon
-items-center justify-center
-button inline-flex " type=3D"button"> <!--?lit$46225495$--><!----><span cla=
-ss=3D"flex items-center justify-center"> <!--?lit$46225495$--><span class=
-=3D"flex"><!--?lit$46225495$--><svg rpl=3D"" fill=3D"currentColor" height=
-=3D"16" icon-name=3D"close" viewBox=3D"0 0 20 20" width=3D"16" xmlns=3D"htt=
-p://www.w3.org/2000/svg"> <!--?lit$46225495$--><!--?lit$46225495$--><path d=
-=3D"m11.273 10 5.363-5.363a.9.9 0 10-1.273-1.273L10 8.727 4.637 3.364a.9.9 =
-0 10-1.273 1.273L8.727 10l-5.363 5.363a.9.9 0 101.274 1.273L10 11.273l5.363=
- 5.363a.897.897 0 001.274 0 .9.9 0 000-1.273L11.275 10h-.002Z"></path><!--?=
---> </svg></span> <!--?lit$46225495$--> </span> <!--?lit$46225495$--><!--?-=
--><!----><!----><!----> </button>
-    </template></rs-app-window-controls>
-      </div>
-    </header>
- =20
-        <!--?lit$46225495$--><rs-room-banners class=3D"max-w-[100dvw] overf=
-low-y-auto" room=3D"!wauqgS2iTs-lRVn5Ygtw6Q:reddit.com"><template shadowmod=
-e=3D"open"><!----> <rs-room-offline-banner><template shadowmode=3D"open"><!=
-----></template></rs-room-offline-banner>
-      <rs-room-pinned-message-banner room=3D"!wauqgS2iTs-lRVn5Ygtw6Q:reddit=
-.com"><template shadowmode=3D"open"><!----></template></rs-room-pinned-mess=
-age-banner></template></rs-room-banners>
-        <!--?lit$46225495$-->
-                <rs-timeline class=3D"  " room=3D"!wauqgS2iTs-lRVn5Ygtw6Q:r=
-eddit.com"><template shadowmode=3D"open"><!---->
-      <div class=3D"relative overflow-y-auto overflow-x-hidden h-full flex =
-flex-col">
-        <!--?lit$46225495$-->
-      <rs-virtual-scroll-dynamic item-height=3D"48" cache-items-height=3D""=
- stick-to-bottom=3D"" use-roving-focus=3D"" itemselector=3D"rs-timeline-eve=
-nt"><template shadowmode=3D"open"><!---->
-      <slot name=3D"leading-items"></slot>
-      <div style=3D"min-height: 0px"></div>
-      <slot></slot>
-      <slot name=3D"before-items"></slot>
-      <!--?lit$46225495$--><!---->
-      <!--?lit$46225495$-->
-      <rs-timeline-delimiter date=3D"May 16" tabindex=3D"-1"><template shad=
-owmode=3D"open"><!---->
-      <div class=3D"delimiter" aria-label=3D"Message date separator indicat=
-or: May 16">
-        <!--?lit$46225495$-->May 16
-      </div>
-    </template></rs-timeline-delimiter>
-   =20
-      <!--?lit$46225495$-->
-      <rs-timeline-event data-id=3D"$jgqDK3BLiPhYZJNqth4YD6916F7ghTHIIB46Iy=
-h2HXw" tabindex=3D"-1"><template shadowmode=3D"open"><!----></template>
-        <!--?lit$46225495$-->
-      </rs-timeline-event>
-   =20
-    <!----><!---->
-      <!--?lit$46225495$-->
-      <!--?lit$46225495$-->
-      <rs-timeline-event data-id=3D"$iybOJg43k2cGrIhF_nYZ2dfs47rxfZ0onnCAsP=
-Iohl0" tabindex=3D"-1"><template shadowmode=3D"open"><!----></template>
-        <!--?lit$46225495$-->
-      </rs-timeline-event>
-   =20
-    <!----><!---->
-      <!--?lit$46225495$-->
-      <!--?lit$46225495$-->
-      <rs-timeline-event data-id=3D"$JuKOssPrOVDLPEB5gcLKCmIdELFzFbaToUZuQ-=
-c9vXE" last-live-item=3D"" tabindex=3D"-1"><template shadowmode=3D"open"><!=
-----><!--?lit$46225495$-->
-      <div class=3D" room-message regular " aria-label=3D"reddit said 5 mon=
-ths ago, Hello,
-You have been permanently banned from participating in /r/Unexpected(https:=
-//www.reddit.com/r/Unexpected) because your post(https://www.reddit.com/r/U=
-nexpected/comments/1te92wb/man_catches_a_snake/) violates this community's =
-rules. You won't be able to post or comment, but you can still view and sub=
-scribe to it.
-
-If you have a question regarding your ban, you can contact the moderator te=
-am by replying to this message.
-
-Reminder from the Reddit Admin team: If you use another account to circumve=
-nt this community ban, that will be considered a violation of the Reddit Ru=
-les(https://reddit.com/help/contentpolicy#section_prohibited_behavior) and =
-may result in your account being banned(https://www.reddithelp.com/en/categ=
-ories/reddit-101/rules-reporting/account-and-community-restrictions/suspens=
-ions) from the platform as a whole.
-, 0 replies, 0 reactions">
-        <!--?lit$46225495$--><!--?lit$46225495$-->
-      <!--?lit$46225495$--><div class=3D"user-avatar">
-      <a class=3D"flex no-underline" href=3D"https://www.reddit.com/r/Unexp=
-ected/" target=3D"_self"><!--?lit$46225495$--><span rpl=3D"" avatar=3D"" cl=
-ass=3D"inline-flex items-center justify-center w-xl h-xl relative "> <!--?l=
-it$46225495$--> <!--?lit$46225495$--><span rpl=3D"" class=3D"inline-block r=
-ounded-full  relative [&amp;&gt;:first-child]:h-full [&amp;&gt;:first-child=
-]:w-full [&amp;&gt;:first-child]:mb-0 [&amp;&gt;:first-child]:rounded-[inhe=
-rit] h-full w-full [&amp;&gt;:first-child]:overflow-hidden [&amp;&gt;:first=
--child]:max-h-full"> <!--?lit$46225495$--><rs-channel-icon channelname=3D"U=
-nexpected" channeltype=3D"reddit_modmail" icon=3D"https://styles.redditmedi=
-a.com/t5_2w67q/styles/communityIcon_9cgp16ko1rce1.png?width=3D64&amp;frame=
-=3D1&amp;auto=3Dwebp&amp;s=3D23e09e2af77f836d72f068e11b240d86421d97fb"><tem=
-plate shadowmode=3D"open"><!----><img class=3D" flex justify-center items-c=
-enter rounded-full w-full h-full " alt=3D"Unexpected channel icon" src=3D"h=
-ttps://styles.redditmedia.com/t5_2w67q/styles/communityIcon_9cgp16ko1rce1.p=
-ng?width=3D64&amp;frame=3D1&amp;auto=3Dwebp&amp;s=3D23e09e2af77f836d72f068e=
-11b240d86421d97fb"></template></rs-channel-icon><!--?lit$46225495$--> </spa=
-n></span>
-      </a>
-    </div>
-     <!--?lit$46225495$-->
-      <div class=3D"flex flex-col">
-        <div class=3D"flex items-center gap-x-2xs min-h-[1.25rem]">
-          <!--?lit$46225495$-->
-                <rs-timeline-event-hovercard-display-name name=3D"r/Unexpec=
-ted"><template shadowmode=3D"open"><!----> <a aria-label=3D"View subreddit =
-r/Unexpected" href=3D"https://www.reddit.com/r/Unexpected/" target=3D"_self=
-" class=3D"cursor-pointer no-underline inline-flex ">
-      <slot></slot>
-    </a></template>
-                  <span class=3D"user-name font-bold text-tone-1"><!--?lit$=
-46225495$-->r/Unexpected</span></rs-timeline-event-hovercard-display-name>
-             =20
-          <!--?lit$46225495$--><!--?lit$46225495$-->
-          <!--?lit$46225495$-->
-      <!--?lit$46225495$--><span class=3D"text-identity-moderator font-bold=
- text-12"><!--?lit$46225495$-->MOD</span>
-     <!--?lit$46225495$--> <!--?lit$46225495$--><faceplate-date ts=3D"2026-=
-05-15T22:50:23.185Z" locale=3D"en-US" class=3D""><!----><time datetime=3D"2=
-026-05-15T22:50:23.185Z" title=3D"Saturday, May 16, 2026 at 1:50:23 AM GMT+=
-3"><!--?lit$46225495$-->1:50 AM</time></faceplate-date>
-          <!--?lit$46225495$-->
-          <!--?lit$46225495$-->
-        </div>
-      </div>
-    <!--?-->
-        <!--?lit$46225495$--> <!--?lit$46225495$-->
-      <div class=3D"room-message-body">
-        <!--?lit$46225495$-->
-        <div dir=3D"auto" class=3D" room-message-text richtext "><!--?lit$4=
-6225495$--><rs-rtjson-renderer richtext=3D"{&quot;document&quot;: [{&quot;e=
-&quot;: &quot;par&quot;, &quot;c&quot;: [{&quot;e&quot;: &quot;text&quot;, =
-&quot;t&quot;: &quot;Hello, You have been permanently banned from participa=
-ting in &quot;}, {&quot;e&quot;: &quot;link&quot;, &quot;u&quot;: &quot;htt=
-ps://www.reddit.com/r/Unexpected&quot;, &quot;t&quot;: &quot;/r/Unexpected&=
-quot;}, {&quot;e&quot;: &quot;text&quot;, &quot;t&quot;: &quot; because &qu=
-ot;}, {&quot;e&quot;: &quot;link&quot;, &quot;u&quot;: &quot;https://www.re=
-ddit.com/r/Unexpected/comments/1te92wb/man_catches_a_snake/&quot;, &quot;t&=
-quot;: &quot;your post&quot;}, {&quot;e&quot;: &quot;text&quot;, &quot;t&qu=
-ot;: &quot; violates this community's rules. You won't be able to post or c=
-omment, but you can still view and subscribe to it.&quot;}]}, {&quot;e&quot=
-;: &quot;par&quot;, &quot;c&quot;: [{&quot;e&quot;: &quot;text&quot;, &quot=
-;t&quot;: &quot;If you have a question regarding your ban, you can contact =
-the moderator team by replying to this message.&quot;}]}, {&quot;e&quot;: &=
-quot;par&quot;, &quot;c&quot;: [{&quot;e&quot;: &quot;text&quot;, &quot;t&q=
-uot;: &quot;Reminder from the Reddit Admin team: If you use another account=
- to circumvent this community ban, that will be considered a violation of t=
-he &quot;, &quot;f&quot;: [[1, 0, 35]]}, {&quot;e&quot;: &quot;link&quot;, =
-&quot;u&quot;: &quot;https://reddit.com/help/contentpolicy#section_prohibit=
-ed_behavior&quot;, &quot;t&quot;: &quot;Reddit Rules&quot;}, {&quot;e&quot;=
-: &quot;text&quot;, &quot;t&quot;: &quot; and may result in your account be=
-ing &quot;}, {&quot;e&quot;: &quot;link&quot;, &quot;u&quot;: &quot;https:/=
-/www.reddithelp.com/en/categories/reddit-101/rules-reporting/account-and-co=
-mmunity-restrictions/suspensions&quot;, &quot;t&quot;: &quot;banned&quot;},=
- {&quot;e&quot;: &quot;text&quot;, &quot;t&quot;: &quot; from the platform =
-as a whole.&quot;}]}]}"><template shadowmode=3D"open"><!----><div dir=3D"au=
-to">
-      <!--?lit$46225495$--><div class=3D"rendererd-rtjson ">
-    <!--?lit$46225495$--><!----><p>
-    <!--?lit$46225495$--><!----><!--?lit$46225495$--><!----><!--?lit$462254=
-95$-->Hello, You have been permanently banned from participating in <!--?--=
-><!----><!--?--><!----><!----><a rel=3D"noopener nofollow ugc" href=3D"http=
-s://www.reddit.com/r/Unexpected" target=3D"_blank"><!--?lit$46225495$-->/r/=
-Unexpected</a><!----><!----><!--?lit$46225495$--><!----><!--?lit$46225495$-=
--> because <!--?--><!----><!--?--><!----><!----><a rel=3D"noopener nofollow=
- ugc" href=3D"https://www.reddit.com/r/Unexpected/comments/1te92wb/man_catc=
-hes_a_snake/" target=3D"_blank"><!--?lit$46225495$-->your post</a><!----><!=
-----><!--?lit$46225495$--><!----><!--?lit$46225495$--> violates this commun=
-ity's rules. You won't be able to post or comment, but you can still view a=
-nd subscribe to it.<!--?--><!----><!--?--><!---->
-  </p><!----><!----><p>
-    <!--?lit$46225495$--><!----><!--?lit$46225495$--><!----><!--?lit$462254=
-95$-->If you have a question regarding your ban, you can contact the modera=
-tor team by replying to this message.<!--?--><!----><!--?--><!---->
-  </p><!----><!----><p>
-    <!--?lit$46225495$--><!----><!--?lit$46225495$--><!----><!--?lit$462254=
-95$--><strong><!--?lit$46225495$-->Reminder from the Reddit Admin team</str=
-ong><!--?--><!----><!----><!--?lit$46225495$-->: If you use another account=
- to circumvent this community ban, that will be considered a violation of t=
-he <!--?--><!----><!--?--><!----><!----><a rel=3D"noopener nofollow ugc" hr=
-ef=3D"https://reddit.com/help/contentpolicy#section_prohibited_behavior" ta=
-rget=3D"_blank"><!--?lit$46225495$-->Reddit Rules</a><!----><!----><!--?lit=
-$46225495$--><!----><!--?lit$46225495$--> and may result in your account be=
-ing <!--?--><!----><!--?--><!----><!----><a rel=3D"noopener nofollow ugc" h=
-ref=3D"https://www.reddithelp.com/en/categories/reddit-101/rules-reporting/=
-account-and-community-restrictions/suspensions" target=3D"_blank"><!--?lit$=
-46225495$-->banned</a><!----><!----><!--?lit$46225495$--><!----><!--?lit$46=
-225495$--> from the platform as a whole.<!--?--><!----><!--?--><!---->
-  </p><!---->
-  </div>
-    </div></template></rs-rtjson-renderer></div>
-        <!--?lit$46225495$-->
-        <!--?lit$46225495$--><slot name=3D"message-attachment"></slot> <!--=
-?lit$46225495$--> <!--?lit$46225495$-->
-        <!--?lit$46225495$-->
-      <rs-timeline-event-reactions room=3D"!wauqgS2iTs-lRVn5Ygtw6Q:reddit.c=
-om"><template shadowmode=3D"open"><!----><!--?--></template></rs-timeline-e=
-vent-reactions>
-   =20
-      </div>
-   =20
-        <!--?lit$46225495$-->
-        <!--?lit$46225495$-->
-        <!--?lit$46225495$-->
-        <!--?lit$46225495$--><!--?-->
-      </div>
-      <!--?lit$46225495$-->
-    <!--?lit$46225495$--> <rs-timeline-event-menu><template shadowmode=3D"o=
-pen"><!----></template></rs-timeline-event-menu><!--?--></template>
-        <!--?lit$46225495$--><slot name=3D"first-message-attachment" slot=
-=3D"message-attachment"></slot>
-      </rs-timeline-event>
-   =20
-    <!----><!---->
-      <!--?lit$46225495$-->
-      <!--?lit$46225495$-->
-      <rs-timeline-event data-id=3D"$9_9nceh4WsRQdmvKSddzxiggprCjsWVNC2ySDc=
-TR78E" tabindex=3D"0"><template shadowmode=3D"open"><!----></template>
-        <!--?lit$46225495$-->
-      </rs-timeline-event>
-   =20
-    <!---->
-      <slot name=3D"after-items"></slot>
-      <div style=3D"min-height: 0px"></div>
-    </template>
-        <!-- Forward the timeline's attachment into the virtual scroller's =
-shadow root. -->
-        <slot name=3D"first-message-attachment" slot=3D"first-message-attac=
-hment"></slot>
-        <!--?lit$46225495$-->
-      <!--?lit$46225495$--><slot></slot>
-      <div class=3D"top-spacer"></div>
-   =20
-        <!--?lit$46225495$-->
-        <!--?lit$46225495$-->
-      </rs-virtual-scroll-dynamic>
-   =20
-        <!--?lit$46225495$--><button rpl=3D"" aria-label=3D"Jump to latest =
-message" class=3D"shadow-md absolute bottom-md end-md=20
-button-large px-[calc(var(--rem16)-var(--button-border-width,0px))]
-button-secondary
-
-
-icon
-items-center justify-center
-button inline-flex " type=3D"button"> <!--?lit$46225495$--><!----><span cla=
-ss=3D"flex items-center justify-center"> <!--?lit$46225495$--><span class=
-=3D"flex"><!--?lit$46225495$--><svg rpl=3D"" fill=3D"currentColor" height=
-=3D"20" icon-name=3D"chevron-down" viewBox=3D"0 0 20 20" width=3D"20" xmlns=
-=3D"http://www.w3.org/2000/svg"> <!--?lit$46225495$--><!--?lit$46225495$-->=
-<path d=3D"M2.1 7.5a.898.898 0 011.536-.636L10 13.227l6.364-6.363a.898.898 =
-0 011.272 0 .898.898 0 010 1.272l-7 7a.898.898 0 01-1.272 0l-7-7A.897.897 0=
- 012.1 7.5Z"></path><!--?--> </svg></span> <!--?lit$46225495$--> </span> <!=
---?lit$46225495$--><!--?--><!----><!----><!----> </button>
-      </div>
-      <rs-delete-message-modal room=3D"!wauqgS2iTs-lRVn5Ygtw6Q:reddit.com">=
-<template shadowmode=3D"open"><!----><rs-confirmation-modal><template shado=
-wmode=3D"open"><!---->
-      <rpl-dialog dialog-id=3D"rs-confirmation-modal-dialog" dialog-classna=
-me=3D"" label=3D"" variant=3D"default" style=3D"display: none;">
-      </rpl-dialog>
-    </template>
-    </rs-confirmation-modal></template></rs-delete-message-modal>
-    </template>
-                  <!--?lit$46225495$-->
-      <!--?lit$46225495$--><rs-room-info class=3D"flex-1" room=3D"!wauqgS2i=
-Ts-lRVn5Ygtw6Q:reddit.com"><template shadowmode=3D"open"><!---->
-      <div class=3D"heroes"><!--?lit$46225495$--> <!--?lit$46225495$--><spa=
-n rpl=3D"" avatar=3D"" class=3D"inline-flex items-center justify-center w-x=
-l h-xl relative "> <!--?lit$46225495$--> <!--?lit$46225495$--><span rpl=3D"=
-" class=3D"inline-block rounded-full  relative [&amp;&gt;:first-child]:h-fu=
-ll [&amp;&gt;:first-child]:w-full [&amp;&gt;:first-child]:mb-0 [&amp;&gt;:f=
-irst-child]:rounded-[inherit] h-full w-full [&amp;&gt;:first-child]:overflo=
-w-hidden [&amp;&gt;:first-child]:max-h-full"> <!--?lit$46225495$--><rs-chan=
-nel-icon channelname=3D"Unexpected" channeltype=3D"reddit_modmail" icon=3D"=
-https://styles.redditmedia.com/t5_2w67q/styles/communityIcon_9cgp16ko1rce1.=
-png?width=3D64&amp;frame=3D1&amp;auto=3Dwebp&amp;s=3D23e09e2af77f836d72f068=
-e11b240d86421d97fb"><template shadowmode=3D"open"><!----><img class=3D" fle=
-x justify-center items-center rounded-full w-full h-full " alt=3D"Unexpecte=
-d channel icon" src=3D"https://styles.redditmedia.com/t5_2w67q/styles/commu=
-nityIcon_9cgp16ko1rce1.png?width=3D64&amp;frame=3D1&amp;auto=3Dwebp&amp;s=
-=3D23e09e2af77f836d72f068e11b240d86421d97fb"></template></rs-channel-icon><=
-!--?lit$46225495$--> </span></span><!--?--></div>
-      <div class=3D"text-14 font-semibold"><!--?lit$46225495$-->u/17O8 is p=
-ermanently banned from r/Unexpected</div>
-      <div class=3D"text-12 text-neutral-content-weak">
-        <!--?lit$46225495$-->r/Unexpected<span class=3D"mx-2xs">=E2=80=A2</=
-span><!--?lit$46225495$-->Mod mail
-      </div>
-      <div class=3D"text-12 text-neutral-content-weak mt-xs text-center">
-        <!--?lit$46225495$-->This is a private conversation between you and=
- the moderators of
-            r/<!--?lit$46225495$-->Unexpected. <span class=3D"font-semibold=
-">Note</span>: There might be delays
-            between responses.
-      </div>
-    </template></rs-room-info>
-      <!--?lit$46225495$-->
-     <!--?lit$46225495$-->
-                </rs-timeline>
-             =20
-        <!--?lit$46225495$-->
-        <!--?lit$46225495$--><rs-message-composer room=3D"!wauqgS2iTs-lRVn5=
-Ygtw6Q:reddit.com" auto-focus=3D"" isimagedisabled=3D"" isgifdisabled=3D"" =
-isstickerdisabled=3D""><template shadowmode=3D"open"><!---->
-      <!--?lit$46225495$-->
-      <!--?lit$46225495$-->
-      <div class=3D"p-xs"><!--?lit$46225495$--> <form class=3D"flex flex-co=
-l relative px-xs bg-secondary-background rounded-[20px] cursor-text">
-      <div class=3D"message-box">
-        <!--?lit$46225495$--> <div tabindex=3D"-1" class=3D" backdrop clip-=
-content backdrop--hide-second-row text-14 ">
-      <div class=3D"mention-highlights" style=3D"height: 0px; overflow-x: a=
-uto;"><!--?lit$46225495$--></div>
-    </div>
-        <!--?lit$46225495$--> <div class=3D"h-fit py-[var(--rem10)] ">
-    <textarea name=3D"message" autocomplete=3D"off" rows=3D"1" placeholder=
-=3D"Message" aria-label=3D"Write message" class=3D" text-tone-1 text-14 exp=
-anded-max-height-7-lines " style=3D"overflow-x: hidden; overflow-wrap: brea=
-k-word;"></textarea>
-  </div>
-        <!--?lit$46225495$--><div class=3D"py-2xs self-end"><!--?lit$462254=
-95$--> <rpl-tooltip placement=3D"top" appearance=3D"neutral"><template shad=
-owmode=3D"open"><!----> <rpl-popper part=3D"popper" exportparts=3D"
-          popup:popper--popup,
-          arrow:popper--arrow
-        " flip=3D"" shift=3D"" arrow=3D"" safe-area=3D"" no-screen-reader=
-=3D"" class=3D" tooltip " placement=3D"top" distance=3D"4" skidding=3D"0" s=
-trategy=3D"absolute"><template shadowmode=3D"open"><!----> <slot name=3D"an=
-chor"></slot> <span part=3D"safe-area" class=3D" popup-safe-area "></span> =
-<div part=3D"popup" class=3D" popup popup--has-arrow " aria-hidden=3D"true"=
-> <slot></slot> <!--?lit$46225495$--><div part=3D"arrow" class=3D"popup--ar=
-row" role=3D"presentation"></div> </div> </template> <slot slot=3D"anchor" =
-aria-describedby=3D"tooltip"></slot>  </rpl-popper> </template>
-    <!--?lit$46225495$--><button rpl=3D"" disabled=3D"" aria-label=3D"Send =
-message" class=3D"ms-auto button-send button-send--animated
-button-small px-[calc(var(--rem10)-var(--button-border-width,0px))]
-button-plain
-
-
-icon
-items-center justify-center
-button inline-flex " type=3D"submit"> <!--?lit$46225495$--><!----><span cla=
-ss=3D"flex items-center justify-center"> <!--?lit$46225495$--><span class=
-=3D"flex"><!--?lit$46225495$--><svg rpl=3D"" class=3D"rpl-rtl-icon" fill=3D=
-"currentColor" height=3D"16" icon-name=3D"send-fill" viewBox=3D"0 0 20 20" =
-width=3D"16" xmlns=3D"http://www.w3.org/2000/svg"> <!--?lit$46225495$--><!-=
--?lit$46225495$--><path d=3D"M18.1 9.1 4.54 1.6c-1.15-.63-2.48.44-2.1 1.7l1=
-.44 4.77c.19.63.77 1.06 1.43 1.06H10v1.75H5.3c-.66 0-1.23.43-1.42 1.06l-1.4=
-5 4.77c-.38 1.25.95 2.33 2.1 1.7l13.57-7.48c.72-.4.72-1.43 0-1.83Z"></path>=
-<!--?--> </svg></span> <!--?lit$46225495$--> </span> <!--?lit$46225495$--><=
-!--?--><!----><!----><!----> </button>
-    <span slot=3D"content"><!--?lit$46225495$-->Send message</span>
-  </rpl-tooltip></div>
-      </div>
-
-      <!--?lit$46225495$-->
-      <!--?lit$46225495$-->
-    </form></div>
-    </template></rs-message-composer>
-        <!--?lit$46225495$-->
-      </main>
-      <!--?lit$46225495$-->
-      <rs-nsfw-channel-confirmation room=3D"!wauqgS2iTs-lRVn5Ygtw6Q:reddit.=
-com"><template shadowmode=3D"open"><!----></template></rs-nsfw-channel-conf=
-irmation>
-    </template></rs-room>
-          </rs-page-overlay-manager>
-       =20
-  </div><!--?lit$46225495$--><!--?-->
-      </div>
-     <!--?lit$46225495$--><rs-age-gate-modal><template shadowmode=3D"open">=
-<!----></template></rs-age-gate-modal>
-    </template>
-      <rs-matrix-client uri=3D"https://matrix.redditspace.com"><template sh=
-adowmode=3D"open"><!----></template></rs-matrix-client>
-      <reddit-chat-gql-client><template shadowmode=3D"open"><!----></templa=
-te></reddit-chat-gql-client>
-      <rs-dynamic-configs config=3D"{&quot;web_chat_large_group_threshold&q=
-uot;:100,&quot;chat_pinned_room_limit&quot;:5}"><template shadowmode=3D"ope=
-n"><!----></template></rs-dynamic-configs>
-      <rs-experiments config=3D"{&quot;web_chat_draft_query_param_ks&quot;:=
-&quot;enabled&quot;,&quot;web_chat_image_preupload&quot;:&quot;enabled&quot=
-;,&quot;web_chat_send_button_animation&quot;:&quot;enabled&quot;,&quot;web_=
-chat_timeline_animation&quot;:&quot;enabled&quot;,&quot;web_chat_new_loadin=
-g_shimmers&quot;:&quot;enabled&quot;,&quot;web_chat_report_flow_v4&quot;:&q=
-uot;enabled&quot;,&quot;web_q3_a11y_improvement&quot;:&quot;enabled&quot;,&=
-quot;web_chat_rpl_hovercard&quot;:&quot;enabled&quot;,&quot;web_chat_expand=
-ed_composer&quot;:&quot;enabled&quot;,&quot;web_chat_reduce_event_fetching&=
-quot;:&quot;enabled&quot;,&quot;web_chat_reduce_event_fetching_v2&quot;:&qu=
-ot;enabled&quot;,&quot;web_chat_keep_image_uploads&quot;:&quot;enabled&quot=
-;,&quot;web_chat_media_upload_unload_warning&quot;:&quot;enabled&quot;,&quo=
-t;web_chat_no_aggregated_relations_filter&quot;:&quot;enabled&quot;,&quot;w=
-eb_chat_prevent_db_deletion&quot;:&quot;enabled&quot;,&quot;shreddit_human_=
-verification_m1&quot;:&quot;enabled&quot;,&quot;web_chat_loginless_auth&quo=
-t;:&quot;enabled&quot;,&quot;web_chat_db_pagination&quot;:&quot;enabled&quo=
-t;}"><template shadowmode=3D"open"><!----></template></rs-experiments>
-      <rs-history track-change=3D"" mode=3D"memory" pseudo-origin=3D"https:=
-//chat.reddit.com" initial-path=3D"/room/!wauqgS2iTs-lRVn5Ygtw6Q%253Areddit=
-.com"><template shadowmode=3D"open"><!----></template></rs-history>
-     =20
-    <rs-current-user id=3D"t2_1d1re3dm" display-name=3D"17O8" nsfw=3D"true"=
- preferences=3D"{&quot;language&quot;:&quot;en&quot;,&quot;isNsfwContentSho=
-wn&quot;:true,&quot;isNsfwMediaBlocked&quot;:false,&quot;isNightModeEnabled=
-&quot;:true}" moderated-subreddits=3D"{}"><template shadowmode=3D"open"><!-=
----></template></rs-current-user>
-   <rs-sentry-client dsn=3D"https://112489a1da354154aa9116028b27ed7b@error-=
-tracking.reddit.com/o418887/4504057396854784" environment=3D"production" re=
-lease=3D"1.0.0-v2516.sha.476c9ca" user=3D"{&quot;id&quot;:&quot;t2_1d1re3dm=
-&quot;}" embedded=3D""><template shadowmode=3D"open"><!----></template></rs=
--sentry-client>
-    </rs-app>
-  </div>
-       =20
-    <!--?--> <!--?lit$46225495$--> </faceplate-alert-reporter> </div> <!--?=
-lit$46225495$--> <!--?lit$46225495$--> </div>  </div>  </template></div></s=
-hreddit-app>
+    </div></shreddit-app>
        =20
    =20
    =20
