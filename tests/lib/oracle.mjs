@@ -37,65 +37,51 @@ var RNG=function(){return 0.5};var TREND=1;var __D={};
 var GameManager={};var Reviews={};
 `;
 
+function liftFunction(anchor, assignAs) {
+  const at = GAME_SOURCE.indexOf(anchor);
+  if (at < 0) throw new Error(`codeNw.js no longer contains: ${anchor}`);
+  if (GAME_SOURCE.indexOf(anchor, at + 1) >= 0) throw new Error(`codeNw.js holds more than one: ${anchor}`);
+  const fn = GAME_SOURCE.indexOf("function", at);
+  const open = GAME_SOURCE.indexOf("{", fn);
+  return `${assignAs}=${GAME_SOURCE.slice(fn, closingBracket(GAME_SOURCE, open, "{", "}") + 1)};\n`;
+}
+
+function liftConstant(key) {
+  const found = [...GAME_SOURCE.matchAll(new RegExp(`[{,]${key}:([0-9.E]+)[,}]`, "g"))];
+  if (found.length !== 1) throw new Error(`codeNw.js should declare ${key} once, found ${found.length}`);
+  return found[0][1];
+}
+
+const LIFTED = [
+  ["getGoldenRatio:function(", "GameGenre.getGoldenRatio"],
+  ["getGenreWeighting:function(", "GameGenre.getGenreWeighting"],
+  ["Missions.getGenreWeighting=function(", "Missions.getGenreWeighting"],
+  ["General.getGameSizeDurationFactor=", "General.getGameSizeDurationFactor"],
+  ["General.getMultiPlatformDurationFactor=function(", "General.getMultiPlatformDurationFactor"],
+  ["General.getGameSizePointsFactor=function(", "General.getGameSizePointsFactor"],
+  ["General.getAudienceWeighting=function(", "General.getAudienceWeighting"],
+  ["General.getOptimalTeamSize=function(", "General.getOptimalTeamSize"],
+  ["Platforms.getNormalizedAudienceWeighting=function(", "Platforms.getNormalizedAudienceWeighting"],
+  ["Platforms.getNormalizedGenreWeighting=function(", "Platforms.getNormalizedGenreWeighting"],
+  ["Platforms.getNormGenreWeighting=function(", "Platforms.getNormGenreWeighting"],
+  ["Platforms.getGenreWeighting=function(", "Platforms.getGenreWeighting"],
+  ["Platforms.getPlatformsAudienceWeighting=", "Platforms.getPlatformsAudienceWeighting"],
+];
+
 const GAME_HELPERS = `
 var GameGenre={Action:{id:"Action"},Adventure:{id:"Adventure"},RPG:{id:"RPG"},
   Simulation:{id:"Simulation"},Strategy:{id:"Strategy"},Casual:{id:"Casual"}};
-GameGenre.getAll=function(){return[this.Action,this.Adventure,this.RPG,this.Simulation,this.Strategy,this.Casual]};
-GameGenre.getGoldenRatio=function(a,b){if(b)return(2*GameGenre.getGoldenRatio(a)+GameGenre.getGoldenRatio(b))/3;
- if(a===GameGenre.Action)return 1.8;if(a===GameGenre.Adventure)return 0.4;if(a===GameGenre.RPG)return 0.6;
- if(a===GameGenre.Simulation)return 1.6;if(a===GameGenre.Strategy)return 1.4;if(a===GameGenre.Casual)return 0.5;
- throw"unknown genre: "+a;};
-GameGenre.getGenreWeighting=function(a,b,c){if(void 0===a)return 1;
- if(c)return(GameGenre.getGenreWeighting(a,c)+2*GameGenre.getGenreWeighting(a,b))/3;
- if(b===GameGenre.Action)return a[0];if(b===GameGenre.Adventure)return a[1];if(b===GameGenre.RPG)return a[2];
- if(b===GameGenre.Simulation)return a[3];if(b===GameGenre.Strategy)return a[4];if(b===GameGenre.Casual)return a[5];
- throw"unknown genre: "+b;};
-var Missions={BASE_DURATION:1800};
+var Missions={BASE_DURATION:${liftConstant("BASE_DURATION")}};
 var __data=JSON.parse(__dataJson);
 Missions.Stage1Missions=__data.stage1;Missions.Stage2Missions=__data.stage2;Missions.Stage3Missions=__data.stage3;
 Missions.DevMissions=Missions.Stage1Missions.concat(Missions.Stage2Missions.concat(Missions.Stage3Missions));
 Missions.DevMissions.forEach(function(m){m.missionType="dev";m.level=1;m.experience=0});
 Missions.getAllMissions=function(){return Missions.DevMissions.slice()};
 Missions.getMissionWithId=function(id){return Missions.DevMissions.first(function(m){return m.id===id})};
-Missions.getGenreWeighting=function(a,b){var c=b.genre,f=b.secondGenre,d=a;
- d.genreWeightings||(d=Missions.getAllMissions().first(function(x){return x.id===d.id}));
- var k=d.genreWeightings.slice();
- if(b.topic.missionOverrides){var m=Missions.DevMissions.indexOf(d);
-  if(-1!=m)for(var l=b.topic.missionOverrides,g=0;g<l.length;g++){var n=l[g][m];n&&(k[g]=n)}}
- return GameGenre.getGenreWeighting(k,c,f)};
 var General={};
-General.getGameSizeDurationFactor=function(a){return"small"===a?GameFlags.SMALL_GAME_DURATION_FACTOR:
- "medium"===a?GameFlags.MEDIUM_GAME_DURATION_FACTOR:"large"===a?GameFlags.LARGE_GAME_DURATION_FACTOR:
- "aaa"===a?GameFlags.AAA_GAME_DURATION_FACTOR:1};
-General.getMultiPlatformDurationFactor=function(a,b){var c=a.platforms,l=1,g=1;
- a.engine&&void 0==b&&a.engine.parts.first(function(p){return"MultiPlatformOptimized"==p.id})&&(g=0.5);
- for(var f=1;f<c.length;f++)l*=1+(GameFlags.MULTIPLATFORM_DURATION_FACTOR-1)*g;return l};
-General.getGameSizePointsFactor=function(a){return"small"===a.gameSize?GameFlags.SMALL_GAME_POINTS_FACTOR:
- "medium"===a.gameSize?GameFlags.MEDIUM_GAME_POINTS_FACTOR:"large"===a.gameSize?GameFlags.LARGE_GAME_POINTS_FACTOR:
- "aaa"===a.gameSize?GameFlags.AAA_GAME_POINTS_FACTOR:1};
-General.getAudienceWeighting=function(a,b){if(void 0===b||void 0===a)return 1;
- if("young"===b)return a[0];if("everyone"===b)return a[1];if("mature"===b)return a[2];throw"unknown audience";};
 General.getAudienceLabel=function(a){return a};
-General.getOptimalTeamSize=function(a){switch(a.gameSize){case "aaa":return 6;case "large":return 5;
- case "medium":return 3;default:return 1}};
 var Platforms={};
-Platforms.getNormalizedAudienceWeighting=function(a){return 0.8<=a?a+0.2:0.7<=a?a+0.1:a+0.05};
-Platforms.getNormalizedGenreWeighting=function(a){return 1==a?1.1:0.9==a?1.05:0.8==a?1:0.7==a?0.95:0.6==a?0.9:1};
-Platforms.getNormGenreWeighting=function(a,c,f){if(void 0===a)return 1;
- if(f)return(Platforms.getNormGenreWeighting(a,f)+2*Platforms.getNormGenreWeighting(a,c))/3;
- if(c===GameGenre.Action)return Platforms.getNormalizedGenreWeighting(a[0]);
- if(c===GameGenre.Adventure)return Platforms.getNormalizedGenreWeighting(a[1]);
- if(c===GameGenre.RPG)return Platforms.getNormalizedGenreWeighting(a[2]);
- if(c===GameGenre.Simulation)return Platforms.getNormalizedGenreWeighting(a[3]);
- if(c===GameGenre.Strategy)return Platforms.getNormalizedGenreWeighting(a[4]);
- if(c===GameGenre.Casual)return Platforms.getNormalizedGenreWeighting(a[5]);throw"unknown genre: "+c;};
-Platforms.getGenreWeighting=function(a,c,f){for(var d=1,k=1,m=0,l=0;l<a.length;l++){
- var g=Platforms.getNormGenreWeighting(a[l].genreWeightings,c,f);
- l<a.length-1?(d*=GameFlags.MULTIPLATFORM_WEIGHTING,m+=g*d,k-=d):m+=g*k}return m};
-Platforms.getPlatformsAudienceWeighting=function(a,c,f){if(void 0===c||void 0===a)return f?0.8:1;
- if("young"===c)return f?a[0]:Platforms.getNormalizedAudienceWeighting(a[0]);
- if("everyone"===c)return f?a[1]:Platforms.getNormalizedAudienceWeighting(a[1]);
- if("mature"===c)return f?a[2]:Platforms.getNormalizedAudienceWeighting(a[2]);throw"unknown audience";};
+${LIFTED.map(([anchor, name]) => liftFunction(anchor, name)).join("")}
 var GameTrends={getCurrentTrendFactor:function(){return TREND}};
 `;
 
