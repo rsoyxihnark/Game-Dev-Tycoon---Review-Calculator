@@ -1,5 +1,22 @@
 # Changelog
 
+## 1.4.0
+
+- Under Internal final score, a new bar fills toward 10 in the score's color, with a mark at 9
+- The score panel now glows in the color of the Displayed in-game score
+- The header now carries a 10 logo, and the title is drawn in a blue to purple gradient
+- The slider handles under Development sliders are now round and glow when you hover or drag them
+- Checkboxes are now ticked in the calculator's blue
+- Back-solve from a past game, Pick a Perfect Game, Auto-suggest optimal and Solve now have a sheen and lift with a glow on hover
+- The bars in Reviewer score distribution and Development sliders now have a soft shine
+- Number, text and list boxes now brighten their border on hover and turn blue while you type in them
+- Cards now have a faint highlight along their top edge
+- Selected text is now highlighted in the calculator's blue
+- The floating score badge on narrow screens now blurs the page behind it
+- Fixed the score numbers in Reviewer score distribution overlapping the p5, median and p95 line below them
+- Fixed the median tag in Reviewer score distribution covering the percentage of the bar it sits on
+- Fixed the line about the target your next game must beat staying in the score panel after the score could no longer be worked out
+
 ## 1.3.0
 
 - Your own console, under Platforms, lets you score a game released on a console you built in the Hardware lab
