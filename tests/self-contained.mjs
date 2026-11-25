@@ -563,6 +563,82 @@ try {
       JSON.stringify({ errs: errs.slice(0, 3), full: seen.full, empty: seen.empty }));
     await ctx.close();
   }
+
+  {
+    const first = await freshPage(null, ALL_UNLOCKED);
+    let p = first.p;
+    const errs = first.errs;
+    const set = async (pairs) => p.evaluate((list) => {
+      for (const [id, v] of list) {
+        const e = document.querySelector(id);
+        e.value = v;
+        e.dispatchEvent(new Event("input", { bubbles: true }));
+        e.dispatchEvent(new Event("change", { bubbles: true }));
+      }
+    }, pairs);
+    const look = () => p.evaluate(() => {
+      const cb = document.querySelector('[data-plat="Your console"]');
+      return {
+        shown: cb.closest("label").style.display !== "none",
+        enabled: !cb.disabled,
+        checked: [...document.querySelectorAll("[data-plat]:checked")].map((x) => x.dataset.plat),
+        score: document.querySelector("#o_score").textContent,
+        q: document.querySelector("#o_q").innerText,
+        next: document.querySelector("#o_next").textContent,
+        advice: document.querySelector("#o_sug").innerText,
+      };
+    });
+    const click = (sel) => p.evaluate((s) => document.querySelector(s).click(), sel);
+    await set([["#i_year", "30"], ["#i_clevel", "4"], ["#i_fans", "3000000"], ["#i_size", "large"],
+      ["#i_topic", "Fantasy"], ["#i_genre", "RPG"], ["#i_aud", "everyone"], ["#i_tl", "7"],
+      ["#i_tsa", "4"], ["#i_top", "400"], ["#i_D", "1400"], ["#i_T", "840"], ["#i_team", "5"]]);
+    await p.waitForTimeout(800);
+    const off = await look();
+    await click("#i_cc_on");
+    await p.waitForTimeout(300);
+    await click('[data-plat="Your console"]');
+    await p.waitForTimeout(900);
+    const on = await look();
+    await set([["#i_cc_g2", "1"], ["#i_clevel", "3"]]);
+    await p.waitForTimeout(900);
+    const odd = await look();
+    await set([["#i_clevel", "4"], ["#i_record", "300"]]);
+    await p.waitForTimeout(900);
+    const recorded = await look();
+    const saved = await p.evaluate(() => localStorage.getItem("gdt_calc_state_v2"));
+    await first.ctx.close();
+    const second = await freshPage(saved, ALL_UNLOCKED);
+    p = second.p;
+    await p.waitForTimeout(600);
+    const reloaded = await look();
+    await click("#i_cc_on");
+    await p.waitForTimeout(900);
+    const dropped = await look();
+    await click("#i_expansion");
+    await p.waitForTimeout(900);
+    const pack = await look();
+
+    check("Your console stays out of the platform list until its panel switches it on",
+      !off.shown && !off.enabled && on.shown && on.enabled && on.checked.join() === "Your console" && on.score !== "-",
+      JSON.stringify({ off, on }));
+    check("fits no console can have, and a console below office level 4, are both called out",
+      odd.advice.includes("No console of yours can have these fits") && odd.advice.includes("Your console needs office level 4") &&
+        odd.q !== on.q,
+      JSON.stringify(odd));
+    check("a record on file asks for its base score, and a given one shows the next target",
+      on.next.includes("Fill in Record base score") && recorded.next.startsWith("Next target:"),
+      JSON.stringify({ before: on.next, after: recorded.next }));
+    check("your console, its fits and the record base score come back from the saved form",
+      reloaded.checked.join() === "Your console" && reloaded.score === recorded.score && reloaded.next === recorded.next,
+      JSON.stringify({ recorded, reloaded }));
+    check("switching your console off moves the game back to PC",
+      !dropped.shown && dropped.checked.join() === "PC" && dropped.score !== "-", JSON.stringify(dropped));
+    check("an expansion pack without MMO is called out", pack.advice.includes("An expansion pack is always an MMO"),
+      pack.advice.slice(0, 300));
+    const allErrs = [...errs, ...second.errs];
+    check("none of that threw an error", allErrs.length === 0, allErrs.slice(0, 3).join("\n"));
+    await second.ctx.close();
+  }
 } finally {
   await browser.close();
 }

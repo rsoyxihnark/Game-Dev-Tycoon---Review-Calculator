@@ -8,6 +8,7 @@ const SUITES = [
   "text-length.mjs",
   "data-parity.mjs",
   "score-parity.mjs",
+  "target-parity.mjs",
   "reviewer-parity.mjs",
   "slider-boundary.mjs",
   "suggester.mjs",

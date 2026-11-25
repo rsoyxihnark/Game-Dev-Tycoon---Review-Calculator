@@ -119,7 +119,7 @@ export function oracleSpec(p, n) {
     expansion: p.expansion, sameEng: p.sameEng, betterEng: p.betterEng, seq: p.seq,
     trend: p.trend, fans: p.fans, companyLevel: p.companyLevel, tsa: p.tsa, year: p.year,
     lastTopScore: p.lastTopScore, newStaff: p.newStaff, staffN: n, experts: p.experts,
-    teamContrib: p.teamContrib, fatigue: p.fatigue,
+    teamContrib: p.teamContrib, fatigue: p.fatigue, custom: p.customConsole || null,
     sliderByIndex: PAGE_MISSION_IDS.map((id) => p.sliders[id] ?? 0),
   };
 }

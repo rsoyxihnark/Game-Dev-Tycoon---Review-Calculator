@@ -13,6 +13,7 @@ const PROBES = [
   ["p=!1;z=(10*z).clamp(1,10);", "p=!1;__D.zPre=z;z=(10*z).clamp(1,10);__D.z_raw=z;"],
   ["u=f(d,g)/10;", "u=f(d,g)/10;__D.u=u;"],
   ["g.score=z;", "__D.score=z;g.score=z;"],
+  ["Reviews.reviewGame=function(a){", "Reviews.__target=a;Reviews.reviewGame=function(a){"],
 ];
 
 const PRELUDE = `
@@ -33,7 +34,7 @@ Math.randomSign=function(){return 0===Math.floor(2*RNG())?-1:1};
 var GDT={fire:function(){},eventKeys:{gameplay:{beforeGameReview:0,afterGameReview:1}}};
 var Media={createSequelStory:function(){},createExtensionPackStory:function(){}};
 var Notification=function(){};var NotificationType={};
-var RNG=function(){return 0.5};var TREND=1;var __D={};
+var RNG=function(){return 0.5};var TREND=1;var __D={};var __lastCompany=null;
 var GameManager={};var Reviews={};
 `;
 
@@ -91,6 +92,8 @@ function __build(specJson){
   var topic=__data.topics.first(function(t){return t.id===sp.topic});
   var all=Missions.DevMissions;
   var pl=[]; for(var i=0;i<sp.platforms.length;i++){ var pid=sp.platforms[i];
+    if(sp.custom&&pid===sp.custom.id){pl.push({id:"c0ffee-console",isCustom:!0,
+      genreWeightings:sp.custom.g,audienceWeightings:sp.custom.a,techLevel:sp.custom.tl});continue;}
     pl.push(__data.platforms.first(function(x){return x.id===pid})); }
   var game={technologyPoints:sp.T,designPoints:sp.D,gameSize:sp.size,
     genre:GameGenre[sp.genre],secondGenre:sp.second?GameGenre[sp.second]:null,
@@ -126,14 +129,18 @@ function __build(specJson){
   var gameLog=[];
   if(sp.fatigue) gameLog.push({genre:game.genre,secondGenre:game.secondGenre,topic:game.topic,
     score:5,platforms:pl,flags:{},sequelTo:null,title:"prev"});
-  var company={lastTopScore:sp.lastTopScore,previousTopScore:0,lastTopScoreWeek:0,
-    lastTopScoreIncrease:0,lastTopScoreGameSize:sp.size,currentWeek:0,currentLevel:sp.companyLevel,
+  var company={lastTopScore:sp.lastTopScore,previousTopScore:sp.previousTopScore||0,
+    lastTopScoreWeek:sp.lastTopScoreWeek||0,lastTopScoreIncrease:sp.lastTopScoreIncrease||0,
+    lastTopScoreGameSize:sp.lastTopScoreGameSize||sp.size,currentWeek:sp.currentWeek||0,currentLevel:sp.companyLevel,
     fans:sp.fans,staff:staff,gameLog:gameLog,topScoreAchievements:sp.tsa,
     getCurrentDate:function(){return{year:sp.year}},getRandom:RNG,currentGame:game,
     getGameById:function(){return{title:"prev",releaseWeek:0,score:5,platforms:pl,flags:{}}}};
   GameManager.company=company; TREND=sp.trend;
   __D={}; Reviews.rateGame(company);
   __D.expertCount=want; __D.scoreFinal=game.score;
+  __D.after={lastTopScore:company.lastTopScore,lastTopScoreIncrease:company.lastTopScoreIncrease,
+    previousTopScore:company.previousTopScore,lastTopScoreWeek:company.lastTopScoreWeek};
+  __lastCompany=company;
   return JSON.parse(JSON.stringify(__D));
 }
 `;
@@ -173,6 +180,13 @@ export function buildOracle() {
       ctx.__rng = rng;
       runInContext("RNG=__rng;", ctx);
       return build(JSON.stringify(params));
+    },
+    targetAt(week, year) {
+      ctx.__week = week;
+      ctx.__year = year;
+      return runInContext(
+        "__lastCompany.currentWeek=__week;__lastCompany.getCurrentDate=function(){return{year:__year}};" +
+        "Reviews.__target(__lastCompany)", ctx);
     },
     loadReviewerTransform() {
       const i = GAME_SOURCE.indexOf("Reviews.getReviews=function(a,b,c,l){");

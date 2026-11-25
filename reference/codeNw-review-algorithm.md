@@ -90,7 +90,7 @@ or AAA, refused otherwise with "MMO's cannot be small or medium.", and an MMO ne
 engine carrying the `mmoSupport` part, refused with "Engine does not support MMO.". So every
 game that reaches the MMO doubling in `rateGame` is a large or an AAA one.
 
-Which sizes and features exist at all is research, never an office level. Medium games want
+Which sizes and features exist at all is research. Medium games want
 10 research points and a second member of staff, large games 40 points with over 140000 fans
 and more than four staff, AAA 2000 points and a large game already scored at a straight 10,
 and MMO 1700 points once Internet Opportunities is researched. Multi Genre is 80 points and `isLaterOrEqualThan(12,8)`, Multi Platform
@@ -98,6 +98,16 @@ and MMO 1700 points once Internet Opportunities is researched. Multi Genre is 80
 neither call passes one, so the equal-month branch compares against `undefined` and is always
 false: the two become researchable a month after the numbers read, year 12 month 9 and year
 17 month 3.
+
+None of those tests reads the office level, but two of them pin one down all the same. The
+garage holds you alone, since `maxStaff` starts at 1, so Medium Games and every size above it
+can only be researched after the first move. AAA and MMO sit in `Research.bigProjects`, the
+R&D lab's list, and `unlockRnDLab` fires only at office level 4, the same level
+`unlockHwLab` wants before any console of your own can be built. An expansion pack is offered
+only for a game in the log with `flags.mmo` that is still on sale, and the `createPack`
+branch copies that game's topic, genres, audience, size and platforms, locks them, and sets
+the expansion's own MMO flag. The calculator warns about each of these setups when they are
+entered, and about a large or AAA game at 140000 fans or fewer.
 
 Three platform functions on line 426 have near-identical names and different jobs:
 `Platforms.getNormalizedGenreWeighting` maps one raw weight to its normalised value,
@@ -412,6 +422,13 @@ the sixth bad, and a second genre counts half. A studio that has made nothing bu
 Adventures builds a console that is great at exactly those and bad at whatever it never
 touched. The audience array works the same way over three slots instead of six.
 
+Those two arrays can only ever be the six genre values and three audience values above in
+some order. The calculator's Your own console panel takes them in the game's own symbols,
+together with the console's tech level, and warns when the fits entered are not one of those
+orders. `score-parity.mjs` scores games on such a console against `rateGame`, in every
+platform slot, and runs both functions above over random game logs to hold the panel's
+description of them to the code.
+
 
 **Bugs**: with no bugs the factor is exactly 1 and the branch is skipped. With bugs,
 `A = 1 - 0.8 * clamp(100/(technology+design)*bugs, 0, 100)/100`, so it floors at 0.2.
@@ -483,6 +500,18 @@ if (previousTopScore > newScore) previousTopScore = newScore
 So it lands a third of the way from the smaller of the old record and the old target up
 towards the new base score, and never above that score. The `abs` makes no difference to the
 result, because the line after it caps anything that overshoots.
+
+All of that runs inside `b`, and `b` is reached from the ceiling demotion, from both upper
+branches of the early-game cap and from the closing `9<=z`. Every one of those paths starts
+at 9 or more after the technical expertise factor, so a game raises the target exactly when
+that score reaches 9 and its base score beats `lastTopScore`. The early cap and the demotion
+change what the game shows, never whether it counts.
+
+Every other input to the step is on screen or is the target itself, so the calculator
+projects the next target once it is given `lastTopScore` as Record base score: the full
+target, the value the ramp starts from and the warm-up in weeks. Before the first record the
+old record is 0 and nothing is missing. `target-parity.mjs` holds the projection to the
+game's own `a` week by week through the warm-up, in all three year bands.
 
 Two penalties then land on the ratio, while it is still `l / topScore` and not yet
 multiplied by ten:
@@ -1198,6 +1227,11 @@ looking at a 1.0 pair. Space with Adventure, asked about as a pair that does not
   page, sharing one random stream, and requires the two to be identical bit for bit.
   It also has the game check the Design and Technology total the page says a 9 needs: at that
   total the game's score before its random cuts is 9 or more, and one point less it is not.
+  It scores games on a console of your own in every platform slot, and runs the game's own
+  console-fit functions over random game logs.
+- `target-parity.mjs` releases games against a record held in every state the game can
+  hold it in, warm-up included, and requires the page's next target to match the game's own
+  target function at every week of the next warm-up.
 - `reviewer-parity.mjs` does the same for the four reviewer scores.
 - `slider-boundary.mjs` sweeps every slider triple that lands exactly on a focus threshold.
 - `suggester.mjs` scores the slider suggester's pick with the game's own review code and
@@ -1206,7 +1240,8 @@ looking at a 1.0 pair. Space with Adventure, asked about as a pair that does not
   six sets and never fall below every 0.9 mission at 100.
 - `self-contained.mjs` loads the page in a browser with the network off, then puts it into the
   states a player can reach that once broke it: every genre or audience locked, a saved form
-  state of the wrong shape, an in-game month or week typed past its limit.
+  state of the wrong shape, an in-game month or week typed past its limit. It also switches
+  Your console on and off, and brings it back from a saved form.
 - `text-length.mjs` holds the repository to the 248 character limit and the punctuation rules.
 - `release-consistency.mjs` checks the version, the changelog section and the workflow agree.
 
@@ -1214,9 +1249,10 @@ Run them with `npm test`. `tests/lib/oracle.mjs` is the piece that lifts `Review
 out of `codeNw.js` and runs it. It lifts the thirteen genre, mission, size, audience and
 platform helpers that function calls, and `Missions.BASE_DURATION`, out of the same file by
 name rather than retyping them. It makes four kinds of change to that source, all named in
-the file: five probe insertions that only copy intermediates onto a global, one replacement
-of the review-message loop inside `getReviews`, a stub for `getReviews` on the score path,
-and a stub for the trend factor, which the calculator takes as an input. Every anchor is
+the file: six probe insertions that only copy intermediates or the target function onto a
+global, one replacement of the review-message loop inside `getReviews`, a stub for
+`getReviews` on the score path, and a stub for the trend factor, which the calculator takes
+as an input. Every anchor is
 unique in the whole file, and the loader fails loudly if one disappears, or if a lifted
 helper's name shows up twice, so a future version of the game cannot quietly slip past the
 tests.

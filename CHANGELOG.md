@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.3.0
+
+- Your own console, under Platforms, lets you score a game released on a console you built in the Hardware lab
+- The advice now warns when the fits set in Your own console are not ones Game Dev Tycoon can give a console
+- Under Internal final score, the calculator now shows the target your next game must beat once this game sets a record
+- The new Record base score field takes the l_total of your record game, so the calculator can work out the target your next game must beat
+- The advice now warns when Is expansion pack is ticked without MMO, since Game Dev Tycoon only makes expansions for an MMO
+- The advice now warns that AAA games, MMO and Your own console need Company office level 4
+- The advice now warns when a large or AAA game has 140000 fans or fewer, since Large Games only becomes researchable above that
+- The Notes tab now explains Your own console and how the target your next game must beat is set
+- Fixed the advice calling a large game in the garage possible with mods, when no medium, large or AAA game can be made there
+
 ## 1.2.0
 
 - Under Internal final score, the calculator now shows how many Design + Technology points a 9 needs at your balance
